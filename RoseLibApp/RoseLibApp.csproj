@@ -6,10 +6,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="RoseLib\Test Cases\BaseSelector.cs.t" />
     <None Remove="RoseLib\Test Cases\ClassSelector.cs.t" />
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="RoseLib\Test Cases\BaseSelector.cs.t">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="RoseLib\Test Cases\ClassSelector.cs.t">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>

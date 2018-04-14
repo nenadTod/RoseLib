@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace RoseLibApp.RoseLib.Selectors
+namespace RoseLibApp.RoseLib.Selectors.Test
 {
     public class BaseSelector
     {
@@ -29,6 +29,13 @@ namespace RoseLibApp.RoseLib.Selectors
             }
         }
 
+
+        public BaseSelector()
+        {
+            currentNode = null;
+            currentNodesList = null;
+        }
+
         public BaseSelector(StreamReader reader)
         {
             var code = reader.ReadToEnd();
@@ -37,12 +44,12 @@ namespace RoseLibApp.RoseLib.Selectors
 
         public BaseSelector(SyntaxNode node)
         {
-            CurrentNode = node;
+            currentNode = node;
         }
 
         public BaseSelector(List<SyntaxNode> nodes)
         {
-            CurrentNodesList = nodes;
+            currentNodesList = nodes;
         }
     }
 }
