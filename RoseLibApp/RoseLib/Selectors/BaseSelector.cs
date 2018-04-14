@@ -1,6 +1,8 @@
 ﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace RoseLibApp.RoseLib.Selectors
@@ -32,6 +34,12 @@ namespace RoseLibApp.RoseLib.Selectors
         {
             currentNode = null;
             currentNodesList = null;
+        }
+
+        public BaseSelector(StreamReader reader)
+        {
+            var code = reader.ReadToEnd();
+            CurrentNode = SyntaxFactory.ParseCompilationUnit(code);
         }
 
         public BaseSelector(SyntaxNode node)

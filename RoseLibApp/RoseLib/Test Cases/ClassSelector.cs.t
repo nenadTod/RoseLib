@@ -4,9 +4,8 @@ using System.Linq;
 using System;
 using System.Collections.Generic;
 using RoseLibApp.RoseLib.Validation_Attributes;
-using System.IO;
 
-namespace RoseLibApp.RoseLib.Selectors
+namespace RoseLibApp.RoseLib.Selectors.Test
 {
     public class ClassSelector : BaseSelector
     {
@@ -16,7 +15,11 @@ namespace RoseLibApp.RoseLib.Selectors
         {
         }
 
-        public ClassSelector(StreamReader reader) : base(reader)
+		public ClassSelector(int num) : base()
+        {
+        }
+
+		public ClassSelector(SyntaxNode node, int num) : base(node)
         {
         }
 
@@ -35,10 +38,16 @@ namespace RoseLibApp.RoseLib.Selectors
         /// <summary>
         /// Finds a field declaration of a given name, if such exists.
         /// </summary>
+        /// <param name="root">Root node</param>
         /// <param name="fieldName">Name of the variable being declared</param>
-        public void FindFieldDeclaration([NotBlank] string fieldName)
+        public void FindFieldDeclaration([NotNull] SyntaxNode root, [NotBlank] string fieldName)
         {
-            var fieldDeclarations = CurrentNode?.DescendantNodes().OfType<FieldDeclarationSyntax>().ToList();
+            if (fieldName == null)
+            {
+                throw new ArgumentNullException("fieldName");
+            }
+
+            var fieldDeclarations = root.DescendantNodes().OfType<FieldDeclarationSyntax>().ToList();
             foreach (var fieldDeclaration in fieldDeclarations)
             {
                 var declaratorExists = fieldDeclaration.DescendantNodes().OfType<VariableDeclaratorSyntax>().
@@ -56,9 +65,10 @@ namespace RoseLibApp.RoseLib.Selectors
         /// <summary>
         /// Finds the last field declaration, if such exists.
         /// </summary>
-        public void FindLastFieldDeclaration()
+        /// <param name="root">Root node</param>
+        public void FindLastFieldDeclaration([NotNull] SyntaxNode root)
         {
-            CurrentNode = CurrentNode?.DescendantNodes().OfType<FieldDeclarationSyntax>().LastOrDefault();
+            CurrentNode = root.DescendantNodes().OfType<FieldDeclarationSyntax>().LastOrDefault();
         }
 
         #endregion
@@ -68,19 +78,21 @@ namespace RoseLibApp.RoseLib.Selectors
         /// <summary>
         /// Finds a property declaration of a given name.
         /// </summary>
+        /// <param name="root">Root node</param>
         /// <param name="propertyName">Name of the property.</param>
-        public void FindPropertyDeclaration([NotBlank] string propertyName)
+        public void FindPropertyDeclaration([NotNull] SyntaxNode root, [NotBlank] string propertyName)
         {
-            CurrentNode = CurrentNode?.DescendantNodes().OfType<PropertyDeclarationSyntax>().
+            CurrentNode = root.DescendantNodes().OfType<PropertyDeclarationSyntax>().
                 Where(p => p.Identifier.ValueText == propertyName).FirstOrDefault();
         }
 
         /// <summary>
         /// Finds the last property declaration.
         /// </summary>
-        public void FindLastPropertyDeclaration()
+        /// <param name="root">Root node</param>
+        public void FindLastPropertyDeclaration([NotNull] SyntaxNode root)
         {
-            CurrentNode = CurrentNode?.DescendantNodes().OfType<PropertyDeclarationSyntax>().LastOrDefault();
+            CurrentNode = root.DescendantNodes().OfType<PropertyDeclarationSyntax>().LastOrDefault();
         }
 
         #endregion
@@ -90,35 +102,37 @@ namespace RoseLibApp.RoseLib.Selectors
         /// <summary>
         /// Finds and returns occurances of (possibly overloaded) methods with a specified name, if such exist.
         /// </summary>
+        /// <param name="root">Root node</param>
         /// <param name="methodName">Method's name</param>
-        public void FindOverloadedMethodDeclarations([NotBlank] string methodName)
+        public void FindOverloadedMethodDeclarations([NotNull] SyntaxNode root, [NotBlank] string methodName)
         {
-            var allMethods = CurrentNode?.DescendantNodes().OfType<MethodDeclarationSyntax>();
+            var allMethods = root.DescendantNodes().OfType<MethodDeclarationSyntax>();
 
-            CurrentNodesList = allMethods?.Where(p => p.Identifier.ValueText == methodName).Cast<SyntaxNode>().ToList();
+            CurrentNodesList = allMethods.Where(p => p.Identifier.ValueText == methodName).Cast<SyntaxNode>().ToList();
         }
 
         /// <summary>
         /// Finds and returns a method with a specified name if such exists. If there is method overloading, returns the first one.
         /// </summary>
+        /// <param name="root">Root node</param>
         /// <param name="methodName">Method's name</param>
-        public void FindMethodDeclaration([NotBlank] string methodName)
+        public void FindMethodDeclaration([NotNull] SyntaxNode root, [NotBlank] string methodName)
         {
-            FindOverloadedMethodDeclarations(methodName);
+            FindOverloadedMethodDeclarations(root, methodName);
 
-            CurrentNode = CurrentNodesList?.FirstOrDefault();
+            CurrentNode = CurrentNodesList.FirstOrDefault();
         }
 
         /// <summary>
         /// Finds and returns a method with a specified name and parameter types, if such exists.
         /// </summary>
+        /// <param name="root">Root node</param>
         /// <param name="methodName">Method's name</param>
-        /// <param name="parameterTypes">Array of strings representing parameters' types.</param>
-        public void FindMethodDeclaration([NotBlank] string methodName, params string[] parameterTypes)
+        public void FindMethodDeclaration([NotNull] SyntaxNode root, [NotBlank] string methodName, params string[] parameterTypes)
         {
-            FindOverloadedMethodDeclarations(methodName);
+            FindOverloadedMethodDeclarations(root, methodName);
 
-            if (CurrentNodesList?.Count == 0)
+            if (CurrentNodesList.Count == 0)
             {
                 CurrentNode = null;
             }
@@ -139,9 +153,10 @@ namespace RoseLibApp.RoseLib.Selectors
         /// <summary>
         /// Finds the last method declaration.
         /// </summary>
-        public void FindLastMethodDeclaration()
+        /// <param name="root">Root node</param>
+        public void FindLastMethodDeclaration([NotNull] SyntaxNode root)
         {
-            CurrentNode = CurrentNode?.DescendantNodes().OfType<FieldDeclarationSyntax>().LastOrDefault();
+            CurrentNode = root.DescendantNodes().OfType<FieldDeclarationSyntax>().LastOrDefault();
         }
 
         #endregion
@@ -150,38 +165,40 @@ namespace RoseLibApp.RoseLib.Selectors
 
         /// <summary>
         /// Finds all constructors of a class
-        /// </summary>
-        public void FindOverloadedConstructorDeclarations()
+        /// <param name="root">Root node</param>
+        public void FindOverloadedConstructorDeclarations([NotNull] SyntaxNode root)
         {
-            CurrentNodesList = CurrentNode?.DescendantNodes().OfType<ConstructorDeclarationSyntax>().Cast<SyntaxNode>().ToList();
+            CurrentNodesList = root.DescendantNodes().OfType<ConstructorDeclarationSyntax>().Cast<SyntaxNode>().ToList();
         }
 
         /// <summary>
 		/// Finds a parameterless constructor of a class. 
 		/// </summary>
-		public void FindParameterlessConstructorDeclaration()
+		/// <param name="root">Root node</param>
+		public void FindParameterlessConstructorDeclaration([NotNull] SyntaxNode root)
         {
-            FindOverloadedConstructorDeclarations();
+            FindOverloadedConstructorDeclarations(root);
 
             var constructors = CurrentNodesList
-                ?.Where(n => 
+                .Where(n => 
                 {
                     var c = n as ConstructorDeclarationSyntax;
                     return c.ParameterList.DescendantNodes().Count() == 0;
                 })
                 .ToList();
 
-            CurrentNode = constructors?.FirstOrDefault();
+            CurrentNode = constructors.FirstOrDefault();
         }
 
         /// <summary>
         /// Finds and returns a constructor with parameters' types, if such exists.
         /// </summary>
-        public void FindConstructorDeclaration(params string[] parameterTypes)
+        /// <param name="root">Root node</param>
+        public void FindConstructorDeclaration([NotNull] SyntaxNode root, params string[] parameterTypes)
         {
-            FindOverloadedConstructorDeclarations();
+            FindOverloadedConstructorDeclarations(root);
 
-            if (CurrentNodesList?.Count == 0)
+            if (CurrentNodesList.Count == 0)
             {
                 CurrentNode = null;
             }
@@ -193,21 +210,12 @@ namespace RoseLibApp.RoseLib.Selectors
                 if (areSame)
                 {
                     CurrentNode = constructorDeclaration;
-                    return;
                 }
             }
 
             CurrentNode = null;
         }
 
-        /// <summary>
-        /// Find last declared constructor
-        /// </summary>
-        public void FindLastConstructorDeclaration()
-        {
-            FindOverloadedConstructorDeclarations();
-            CurrentNode = CurrentNodesList?.LastOrDefault();
-        }
         #endregion
 
         #region Finding destructor declaration
@@ -215,9 +223,10 @@ namespace RoseLibApp.RoseLib.Selectors
         /// <summary>
         /// A method that find a destructor.
         /// </summary>
-        public void FindDestructor()
+        /// <param name="root">Root node</param>
+        public void FindDestructor([NotNull] SyntaxNode root)
         {
-            CurrentNode = CurrentNode?.DescendantNodes().OfType<DestructorDeclarationSyntax>().FirstOrDefault();
+            CurrentNode = root.DescendantNodes().OfType<DestructorDeclarationSyntax>().FirstOrDefault();
         }
 
         #endregion
@@ -241,7 +250,7 @@ namespace RoseLibApp.RoseLib.Selectors
 
             for (int i = 0; i < foundParameters.Count(); i++)
             {
-                string foundType = foundParameters[i].Type.ToString();
+                string foundType = (foundParameters[i].Type as ITypeSymbol).ToDisplayString();
                 string expectedType = parameterTypes[i];
                 if (foundType != expectedType)
                 {

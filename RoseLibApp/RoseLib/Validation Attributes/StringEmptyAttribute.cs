@@ -10,7 +10,7 @@ namespace RoseLibApp.RoseLib.Validation_Attributes
         public override void Validate(object value, string argumentName)
         {
             string strValue = value as string;
-            if (value == null || strValue.Length == 0)
+            if (String.IsNullOrWhiteSpace(strValue))
             {
                 throw new ArgumentException("String should not be null nor empty.", argumentName);
             }
