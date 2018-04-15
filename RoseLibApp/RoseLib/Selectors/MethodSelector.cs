@@ -17,11 +17,11 @@ namespace RoseLibApp.RoseLib.Selectors
         {
         }
 
-        public MethodSelector(SyntaxNode node) : base(node)
+        public MethodSelector(MethodDeclarationSyntax node) : base(node)
         {
         }
 
-        public MethodSelector(List<SyntaxNode> nodes) : base(nodes)
+        public MethodSelector(List<MethodDeclarationSyntax> nodes) : base(nodes.Cast<SyntaxNode>().ToList())
         {
         }
 
@@ -47,11 +47,10 @@ namespace RoseLibApp.RoseLib.Selectors
                               select name).Any();
                 if (found)
                 {
-                    CurrentNode = invocation;
-                    return true;
+                    return NextStep(invocation);
                 }
             }
-            CurrentNode = null;
+
             return false;
         }
 
@@ -79,11 +78,9 @@ namespace RoseLibApp.RoseLib.Selectors
 
             if (found.Any())
             {
-                CurrentNodesList = found;
-                return true;
+                return NextStep(found);
             }
 
-            CurrentNodesList = null;
             return false;
         }
 
@@ -96,16 +93,12 @@ namespace RoseLibApp.RoseLib.Selectors
         {
             var declarator = CurrentNode?.DescendantNodes().OfType<VariableDeclaratorSyntax>()
                 .Where(v => v.Identifier.ValueText == variableName).FirstOrDefault();
-            if (declarator == null)
+            if (declarator != null)
             {
-                CurrentNode = null;
-                return false;
+                return NextStep(declarator.Parent);
             }
-            else
-            {
-                CurrentNode = declarator.Parent;
-                return true;
-            }
+
+            return false;
         }
 
         /// <summary>
@@ -117,15 +110,10 @@ namespace RoseLibApp.RoseLib.Selectors
             List<StatementSyntax> statements = CurrentNode?.DescendantNodes().OfType<StatementSyntax>().ToList();
             if (statements.Count() > 0)
             {
-                CurrentNode = statements.Last();
-                return true;
+                return NextStep(statements.Last());
             }
-            else
-            {
-                CurrentNode = null;
-                return false;
-            }
-
+            
+            return false;
         }
         #endregion
 

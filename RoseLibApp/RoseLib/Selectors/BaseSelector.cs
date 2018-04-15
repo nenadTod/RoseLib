@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using RoseLibApp.RoseLib.Model;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,40 +10,63 @@ namespace RoseLibApp.RoseLib.Selectors
 {
     public class BaseSelector
     {
-        private SyntaxNode currentNode;
-        private List<SyntaxNode> currentNodesList;
+        private Stack<SelectedObject> pastNodes;
 
-        public SyntaxNode CurrentNode
-        {
-            get { return currentNode; }
-            protected set {
-                currentNodesList = null;
-                currentNode = value;
-            }
-        }
-        public List<SyntaxNode> CurrentNodesList
-        {
-            get { return currentNodesList; }
-            set {
-                currentNode = null;
-                currentNodesList = value;
-            }
-        }
-
+        private SelectedObject Current { get; set; }
         public BaseSelector(StreamReader reader)
         {
             var code = reader.ReadToEnd();
-            CurrentNode = SyntaxFactory.ParseCompilationUnit(code);
+            Current =  new SelectedObject(SyntaxFactory.ParseCompilationUnit(code));
         }
+
+        public SyntaxNode CurrentNode { get { return Current.CurrentNode; } }
+        public List<SyntaxNode> CurrentNodesList { get { return Current.CurrentNodesList; } }
 
         public BaseSelector(SyntaxNode node)
         {
-            CurrentNode = node;
+            Current = new SelectedObject(node);
         }
 
         public BaseSelector(List<SyntaxNode> nodes)
         {
-            CurrentNodesList = nodes;
+            Current = new SelectedObject(nodes);
+        }
+
+        protected bool NextStep(SyntaxNode node)
+        {
+            if (node != null)
+            {
+                pastNodes.Push(Current);
+                Current = new SelectedObject(node);
+                return true;
+            }
+
+            return false;
+            
+        }
+
+        protected bool NextStep(List<SyntaxNode> nodes)
+        {
+            if (nodes != null && nodes.Count != 0)
+            {
+                pastNodes.Push(Current);
+                Current = new SelectedObject(nodes);
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool StepBack()
+        {
+            SelectedObject previous = null;
+            if (pastNodes.TryPop(out previous))
+            {
+                Current = previous;
+                return true;
+            }
+
+            return false;
         }
     }
 }

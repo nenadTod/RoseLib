@@ -15,5 +15,26 @@ namespace RoseLibApp
 
             }
         }
+
+
+
+        #region Experimental
+
+        public static implicit operator Program(byte b)  // explicit byte to digit conversion operator
+        {
+            return new Program();
+        }
+
+        public static implicit operator Program(int x)  // explicit byte to digit conversion operator
+        {
+            return new Program();
+        }
+
+        public static Program operator +(Program b)
+        {
+            return new Program();
+        }
+
+        #endregion
     }
 }

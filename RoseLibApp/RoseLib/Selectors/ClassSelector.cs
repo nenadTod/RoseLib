@@ -14,32 +14,29 @@ namespace RoseLibApp.RoseLib.Selectors
 
         public ClassSelector(StreamReader reader) : base(reader)
         {
+            // TODO: Only files containing class declaration should be accepted?
         }
 
-        public ClassSelector(SyntaxNode node) : base(node)
+        public ClassSelector(ClassDeclarationSyntax node) : base(node)
         {
         }
-
-        public ClassSelector(List<SyntaxNode> nodes) : base(nodes)
-        {
-        }
-
+        
         #endregion
 
         #region Converters
 
-        public MethodSelector ToMethodSelector()
+        public MethodSelector ToMethodSelector() //TODO: Solve the situation between Constructors, Coverter Operators, Operators.
         {
             if(CurrentNode != null && CurrentNode is BaseMethodDeclarationSyntax)
             {
-                return new MethodSelector(CurrentNode);
+                return new MethodSelector(CurrentNode as MethodDeclarationSyntax);
             }
 
             if(CurrentNodesList != null && CurrentNodesList.Any())
             {
                 if(CurrentNodesList.First() is BaseMethodDeclarationSyntax)
                 {
-                    return new MethodSelector(CurrentNodesList);
+                    return new MethodSelector(CurrentNodesList.Cast<MethodDeclarationSyntax>().ToList());
                 }
             }
 
@@ -50,34 +47,12 @@ namespace RoseLibApp.RoseLib.Selectors
 
         #region Finding field declarations
 
-        #region Experimental
-        /// <summary>
-        /// Experimental
-        /// </summary>
-        /// <param name="fieldName"></param>
-        /// <returns></returns>
-        public bool TryFindFieldDeclaration([NotBlank] string fieldName)
-        {
-            return FindFieldDeclarationNew(fieldName) != null;
-        }
-
-        /// <summary>
-        /// Experimental
-        /// </summary>
-        /// <param name="fieldName"></param>
-        /// <returns></returns>
-        public bool GoToFieldDeclaration([NotBlank] string fieldName)
-        {
-            CurrentNode = FindFieldDeclarationNew(fieldName);
-            return CurrentNode != null;
-        }
-        
         /// <summary>
         /// Finds a field declaration of a given name, if such exists.
         /// </summary>
         /// <param name="fieldName">Name of the variable being declared</param>
-        /// <returns>Field declaration if found, null otherwise.</returns>
-        private FieldDeclarationSyntax FindFieldDeclarationNew([NotBlank] string fieldName)
+        /// <returns>True if found, false otherwise.</returns>
+        public bool FindFieldDeclaration([NotBlank] string fieldName)
         {
             var fieldDeclarations = CurrentNode?.DescendantNodes().OfType<FieldDeclarationSyntax>().ToList();
             foreach (var fieldDeclaration in fieldDeclarations)
@@ -87,69 +62,14 @@ namespace RoseLibApp.RoseLib.Selectors
 
                 if (declaratorExists)
                 {
-                    return fieldDeclaration;
+                    return NextStep(fieldDeclaration);
                 }
             }
 
-            return null;
-        }
-        #endregion
-
-        /// <summary>
-        /// Finds a field declaration of a given name, if such exists.
-        /// </summary>
-        /// <param name="fieldName">Name of the variable being declared</param>
-        /// <returns>True if found, false otherwise.</returns>
-        public FieldDeclarationSyntax FindFieldDeclaration([NotBlank] string fieldName)
-        {
-            var fieldDeclarations = CurrentNode?.DescendantNodes().OfType<FieldDeclarationSyntax>().ToList();
-            foreach (var fieldDeclaration in fieldDeclarations)
-            {
-                var declaratorExists = fieldDeclaration.DescendantNodes().OfType<VariableDeclaratorSyntax>().
-                    Where(d => d.Identifier.ValueText == fieldName).Any();
-
-                if (declaratorExists)
-                {
-                    CurrentNode = fieldDeclaration;
-                    return true;
-                }
-            }
-
-            CurrentNode = null;
-            return null;
+            return false;
         }
 
-        #region Experimental
 
-        /// <summary>
-        /// Experimental
-        /// </summary>
-        /// <returns>True if found, false otherwise.</returns>
-        public bool TryFindLastFieldDeclaration()
-        {
-            return FindLastFieldDeclarationNew() != null;
-        }
-
-        /// <summary>
-        /// Experimental
-        /// </summary>
-        /// <returns></returns>
-        public bool GoToLastFieldDeclartion()
-        {
-            CurrentNode = FindLastFieldDeclarationNew();
-            return CurrentNode != null;
-        }
-
-        /// <summary>
-        /// Finds the last field declaration, if such exists.
-        /// </summary>
-        /// <returns>Last field declaration if any, null otherwise.</returns>
-        private FieldDeclarationSyntax FindLastFieldDeclarationNew()
-        {
-            return CurrentNode?.DescendantNodes().OfType<FieldDeclarationSyntax>().LastOrDefault();
-        }
-
-        #endregion
 
         /// <summary>
         /// Finds the last field declaration, if such exists.
@@ -157,8 +77,8 @@ namespace RoseLibApp.RoseLib.Selectors
         /// <returns>True if found, false otherwise.</returns>
         public bool FindLastFieldDeclaration()
         {
-            CurrentNode = CurrentNode?.DescendantNodes().OfType<FieldDeclarationSyntax>().LastOrDefault();
-            return CurrentNode != null;
+            var result = CurrentNode?.DescendantNodes().OfType<FieldDeclarationSyntax>().LastOrDefault();
+            return NextStep(result);
         }
 
         #endregion
@@ -172,9 +92,10 @@ namespace RoseLibApp.RoseLib.Selectors
         ///  <returns>True if found, false otherwise.</returns>
         public bool FindPropertyDeclaration([NotBlank] string propertyName)
         {
-            CurrentNode = CurrentNode?.DescendantNodes().OfType<PropertyDeclarationSyntax>().
+            var result = CurrentNode?.DescendantNodes().OfType<PropertyDeclarationSyntax>().
                 Where(p => p.Identifier.ValueText == propertyName).FirstOrDefault();
-            return CurrentNode != null; 
+
+            return NextStep(result);
         }
 
         /// <summary>
@@ -183,8 +104,8 @@ namespace RoseLibApp.RoseLib.Selectors
         /// <returns>True if found, false otherwise.</returns>
         public bool FindLastPropertyDeclaration()
         {
-            CurrentNode = CurrentNode?.DescendantNodes().OfType<PropertyDeclarationSyntax>().LastOrDefault();
-            return CurrentNode != null;
+            var result = CurrentNode?.DescendantNodes().OfType<PropertyDeclarationSyntax>().LastOrDefault();
+            return NextStep(result);
         }
 
         #endregion
@@ -200,8 +121,8 @@ namespace RoseLibApp.RoseLib.Selectors
         {
             var allMethods = CurrentNode?.DescendantNodes().OfType<MethodDeclarationSyntax>();
 
-            CurrentNodesList = allMethods?.Where(p => p.Identifier.ValueText == methodName).Cast<SyntaxNode>().ToList();
-            return CurrentNodesList != null;
+            var result = allMethods?.Where(p => p.Identifier.ValueText == methodName).Cast<SyntaxNode>().ToList();
+            return NextStep(result);
         }
 
         /// <summary>
@@ -213,8 +134,8 @@ namespace RoseLibApp.RoseLib.Selectors
         {
             FindOverloadedMethodDeclarations(methodName);
 
-            CurrentNode = CurrentNodesList?.FirstOrDefault();
-            return CurrentNode != null;
+            var result = CurrentNodesList?.FirstOrDefault();
+            return NextStep(result);
         }
 
         /// <summary>
@@ -233,12 +154,10 @@ namespace RoseLibApp.RoseLib.Selectors
 
                 if (areSame)
                 {
-                    CurrentNode = methodDeclaration;
-                    return true;
+                    return NextStep(methodDeclaration);
                 }
             }
 
-            CurrentNode = null;
             return false;
         }
 
@@ -248,8 +167,8 @@ namespace RoseLibApp.RoseLib.Selectors
         /// <returns>True if found, false otherwise.</returns>
         public bool FindLastMethodDeclaration()
         {
-            CurrentNode = CurrentNode?.DescendantNodes().OfType<FieldDeclarationSyntax>().LastOrDefault();
-            return CurrentNode != null;
+            var result = CurrentNode?.DescendantNodes().OfType<FieldDeclarationSyntax>().LastOrDefault();
+            return NextStep(result);
         }
 
         #endregion
@@ -262,28 +181,8 @@ namespace RoseLibApp.RoseLib.Selectors
         /// <returns>True if found, false otherwise.</returns>
         public bool FindOverloadedConstructorDeclarations()
         {
-            CurrentNodesList = CurrentNode?.DescendantNodes().OfType<ConstructorDeclarationSyntax>().Cast<SyntaxNode>().ToList();
-            return CurrentNodesList != null;
-        }
-
-        /// <summary>
-		/// Finds a parameterless constructor of a class. 
-		/// </summary>
-        /// <returns>True if found, false otherwise.</returns>
-		public bool FindParameterlessConstructorDeclaration()
-        {
-            FindOverloadedConstructorDeclarations();
-
-            var constructors = CurrentNodesList
-                ?.Where(n => 
-                {
-                    var c = n as ConstructorDeclarationSyntax;
-                    return c.ParameterList.DescendantNodes().Count() == 0;
-                })
-                .ToList();
-
-            CurrentNode = constructors?.FirstOrDefault();
-            return CurrentNode != null;
+            var result = CurrentNode?.DescendantNodes().OfType<ConstructorDeclarationSyntax>().Cast<SyntaxNode>().ToList();
+            return NextStep(result);
         }
 
         /// <summary>
@@ -300,12 +199,10 @@ namespace RoseLibApp.RoseLib.Selectors
 
                 if (areSame)
                 {
-                    CurrentNode = constructorDeclaration;
-                    return true;
+                    return NextStep(constructorDeclaration);
                 }
             }
 
-            CurrentNode = null;
             return false;
         }
 
@@ -316,8 +213,8 @@ namespace RoseLibApp.RoseLib.Selectors
         public bool FindLastConstructorDeclaration()
         {
             FindOverloadedConstructorDeclarations();
-            CurrentNode = CurrentNodesList?.LastOrDefault();
-            return CurrentNode != null;
+            var result = CurrentNodesList?.LastOrDefault();
+            return NextStep(result);
         }
         #endregion
 
@@ -329,8 +226,8 @@ namespace RoseLibApp.RoseLib.Selectors
         /// <returns>True if found, false otherwise.</returns>
         public bool FindDestructor()
         {
-            CurrentNode = CurrentNode?.DescendantNodes().OfType<DestructorDeclarationSyntax>().FirstOrDefault();
-            return CurrentNode != null;
+            var result = CurrentNode?.DescendantNodes().OfType<DestructorDeclarationSyntax>().FirstOrDefault();
+            return NextStep(result);
         }
 
         #endregion
