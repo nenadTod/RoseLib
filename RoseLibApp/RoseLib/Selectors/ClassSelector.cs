@@ -48,10 +48,10 @@ namespace RoseLibApp.RoseLib.Selectors
         #region Finding field declarations
 
         /// <summary>
-        /// Finds a field declaration of a given name, if such exists.
+        /// Finds a field declaration of a given name (if such exists) and makes it the current node.
         /// </summary>
         /// <param name="fieldName">Name of the variable being declared</param>
-        /// <returns>True if found, false otherwise.</returns>
+        /// <returns>True if found and made current, false otherwise.</returns>
         public bool FindFieldDeclaration([NotBlank] string fieldName)
         {
             var fieldDeclarations = CurrentNode?.DescendantNodes().OfType<FieldDeclarationSyntax>().ToList();
@@ -72,9 +72,9 @@ namespace RoseLibApp.RoseLib.Selectors
 
 
         /// <summary>
-        /// Finds the last field declaration, if such exists.
+        /// Finds the last field declaration of a given name (if such exists) and it makes it the current node.
         /// </summary>
-        /// <returns>True if found, false otherwise.</returns>
+        /// <returns>True if found and made current, false otherwise.</returns>
         public bool FindLastFieldDeclaration()
         {
             var result = CurrentNode?.DescendantNodes().OfType<FieldDeclarationSyntax>().LastOrDefault();
@@ -86,10 +86,10 @@ namespace RoseLibApp.RoseLib.Selectors
         #region Finding property declarations
 
         /// <summary>
-        /// Finds a property declaration of a given name.
+        /// Finds a property declaration of a given name (if such exists) and makes it the current node.
         /// </summary>
         /// <param name="propertyName">Name of the property.</param>
-        ///  <returns>True if found, false otherwise.</returns>
+        ///  <returns>True if found and made current, false otherwise.</returns>
         public bool FindPropertyDeclaration([NotBlank] string propertyName)
         {
             var result = CurrentNode?.DescendantNodes().OfType<PropertyDeclarationSyntax>().
@@ -99,9 +99,9 @@ namespace RoseLibApp.RoseLib.Selectors
         }
 
         /// <summary>
-        /// Finds the last property declaration.
+        /// Finds the last property declaration of a given name (if such exists) and makes it the current node.
         /// </summary>
-        /// <returns>True if found, false otherwise.</returns>
+        /// <returns>True if found and made current, false otherwise.</returns>
         public bool FindLastPropertyDeclaration()
         {
             var result = CurrentNode?.DescendantNodes().OfType<PropertyDeclarationSyntax>().LastOrDefault();
@@ -113,10 +113,10 @@ namespace RoseLibApp.RoseLib.Selectors
         #region Finding method declarations
 
         /// <summary>
-        /// Finds and returns occurances of (possibly overloaded) methods with a specified name, if such exist.
+        /// Finds occurances of (possibly overloaded) methods with a specified name, if such exist, and makes them current.
         /// </summary>
         /// <param name="methodName">Method's name</param>
-        /// <returns>True if found, false otherwise.</returns>
+        /// <returns>True if any found and made current, false otherwise.</returns>
         public bool FindOverloadedMethodDeclarations([NotBlank] string methodName)
         {
             var allMethods = CurrentNode?.DescendantNodes().OfType<MethodDeclarationSyntax>();
@@ -126,10 +126,10 @@ namespace RoseLibApp.RoseLib.Selectors
         }
 
         /// <summary>
-        /// Finds and returns a method with a specified name if such exists. If there is method overloading, returns the first one.
+        /// Finds a method with a specified name (if such exists) and makes it the current node. If there is method overloading the first one is made current. 
         /// </summary>
         /// <param name="methodName">Method's name</param>
-        /// <returns>True if found, false otherwise.</returns>
+        /// <returns>True if found and made current, false otherwise.</returns>
         public bool FindMethodDeclaration([NotBlank] string methodName)
         {
             FindOverloadedMethodDeclarations(methodName);
@@ -139,11 +139,11 @@ namespace RoseLibApp.RoseLib.Selectors
         }
 
         /// <summary>
-        /// Finds and returns a method with a specified name and parameter types, if such exists.
+        /// Finds a method with a specified name and parameter types, if such exists, and makes it the current node.
         /// </summary>
         /// <param name="methodName">Method's name</param>
         /// <param name="parameterTypes">Array of strings representing parameters' types.</param>
-        /// <returns>True if found, false otherwise.</returns>
+        /// <returns>True if found and made current, false otherwise.</returns>
         public bool FindMethodDeclaration([NotBlank] string methodName, params string[] parameterTypes)
         {
             FindOverloadedMethodDeclarations(methodName);
@@ -162,9 +162,9 @@ namespace RoseLibApp.RoseLib.Selectors
         }
 
         /// <summary>
-        /// Finds the last method declaration.
+        /// Finds the last method declaration and makes it the current node.
         /// </summary>
-        /// <returns>True if found, false otherwise.</returns>
+        /// <returns>True if found and made current, false otherwise.</returns>
         public bool FindLastMethodDeclaration()
         {
             var result = CurrentNode?.DescendantNodes().OfType<FieldDeclarationSyntax>().LastOrDefault();
@@ -176,9 +176,9 @@ namespace RoseLibApp.RoseLib.Selectors
         #region Finding constructor declarations
 
         /// <summary>
-        /// Finds all constructors of a class
+        /// Finds all constructors of a class, and makes them current.
         /// </summary>
-        /// <returns>True if found, false otherwise.</returns>
+        /// <returns>True if found and made current, false otherwise.</returns>
         public bool FindOverloadedConstructorDeclarations()
         {
             var result = CurrentNode?.DescendantNodes().OfType<ConstructorDeclarationSyntax>().Cast<SyntaxNode>().ToList();
@@ -186,9 +186,9 @@ namespace RoseLibApp.RoseLib.Selectors
         }
 
         /// <summary>
-        /// Finds and returns a constructor with parameters' types, if such exists.
+        /// Finds a constructor with parameters' types and makes it the current node, if such exists.
         /// </summary>
-        /// <returns>True if found, false otherwise.</returns>
+        /// <returns>True if found and made current, false otherwise.</returns>
         public bool FindConstructorDeclaration(params string[] parameterTypes)
         {
             FindOverloadedConstructorDeclarations();
@@ -207,9 +207,9 @@ namespace RoseLibApp.RoseLib.Selectors
         }
 
         /// <summary>
-        /// Find last declared constructor
+        /// Find last declared constructor and makes it the current node.
         /// </summary>
-        /// <returns>True if found, false otherwise.</returns>
+        /// <returns>True if found and made current, false otherwise.</returns>
         public bool FindLastConstructorDeclaration()
         {
             FindOverloadedConstructorDeclarations();
@@ -221,9 +221,9 @@ namespace RoseLibApp.RoseLib.Selectors
         #region Finding destructor declaration
 
         /// <summary>
-        /// A method that find a destructor.
+        /// A method that find a destructor and makes it the current node.
         /// </summary>
-        /// <returns>True if found, false otherwise.</returns>
+        /// <returns>True if found and made current, false otherwise.</returns>
         public bool FindDestructor()
         {
             var result = CurrentNode?.DescendantNodes().OfType<DestructorDeclarationSyntax>().FirstOrDefault();
@@ -235,7 +235,7 @@ namespace RoseLibApp.RoseLib.Selectors
         #region Common functionalities
 
         /// <summary>
-        /// A method that compares types of a parameters of a given method, with expected values.
+        /// A method that compares types of parameters of a given method, with expected values.
         /// </summary>
         /// <param name="node">A base method node. (It is in inheritance tree of constructors and ordinary methods)</param>
         /// <param name="parameterTypes">Expected parameters.</param>

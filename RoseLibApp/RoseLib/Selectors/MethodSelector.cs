@@ -30,11 +30,11 @@ namespace RoseLibApp.RoseLib.Selectors
         #region
 
         /// <summary>
-		/// Finds a method invocation of the given name which is a descendant of the provided root
+		/// Finds a method invocation of the given name which is a descendant of the provided root, and makes it the current node.
 		/// </summary>
 		/// <param name="root">Root node</param>
 		/// <param name="methodName">Method's name</param>
-		/// <returns>True if found, false otherwise</returns>
+		/// <returns>True if found and made current, false otherwise</returns>
 		public bool FindMethodInvocationByMethodName([NotBlank] string methodName)
         {
             var invocations = CurrentNode?.DescendantNodes().OfType<InvocationExpressionSyntax>().ToList();
@@ -55,10 +55,10 @@ namespace RoseLibApp.RoseLib.Selectors
         }
 
         /// <summary>
-		/// Finds all method invocations of the given name which are a descendant of the provided root
+		/// Finds all method invocations of the given name which are a descendant of the provided root, and makes them the current standing point.
 		/// </summary>
 		/// <param name="methodName">Method's name</param>
-		/// <returns>True if found, false otherwise</returns>
+		/// <returns>True if found and made current, false otherwise</returns>
 		public bool FindAllMethodInvocationByMethodName([NotBlank] string methodName)
         {
             var invocations = CurrentNode?.DescendantNodes().OfType<ExpressionStatementSyntax>().ToList();
@@ -85,10 +85,10 @@ namespace RoseLibApp.RoseLib.Selectors
         }
 
         /// <summary>
-		///Finds variable declaration based on the variable's name if it exists within the specified root.
+		///Finds variable declaration based on the variable's name if it exists within the specified root, and is made current.
 		/// </summary>
 		/// <param name="variableName">Name of the variable</param>
-		/// <returns>True if found, false otherwise</returns>
+		/// <returns>True if found and made current, false otherwise</returns>
 		public bool FindVariableDeclaration([NotBlank] string variableName)
         {
             var declarator = CurrentNode?.DescendantNodes().OfType<VariableDeclaratorSyntax>()
@@ -102,9 +102,9 @@ namespace RoseLibApp.RoseLib.Selectors
         }
 
         /// <summary>
-		/// Finds the last statement contained by the given syntax node
+		/// Finds the last statement contained by the given syntax node, and makes it current.
 		/// </summary>
-		/// <returns>True if found, false otherwise</returns>
+		/// <returns>True if found made current, false otherwise</returns>
 		public bool FindLastStatement()
         {
             List<StatementSyntax> statements = CurrentNode?.DescendantNodes().OfType<StatementSyntax>().ToList();
