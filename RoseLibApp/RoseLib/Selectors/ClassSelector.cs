@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using RoseLibApp.RoseLib.Validation_Attributes;
 using System.IO;
+using System.Runtime.CompilerServices;
 
 namespace RoseLibApp.RoseLib.Selectors
 {
@@ -224,10 +225,83 @@ namespace RoseLibApp.RoseLib.Selectors
         /// A method that find a destructor and makes it the current node.
         /// </summary>
         /// <returns>True if found and made current, false otherwise.</returns>
-        public bool FindDestructor()
+        public bool FindDestructorDeclaration()
         {
             var result = CurrentNode?.DescendantNodes().OfType<DestructorDeclarationSyntax>().FirstOrDefault();
             return NextStep(result);
+        }
+
+        #endregion
+
+        #region Find conversion operator
+
+        public bool FindConversionOperatorDeclaration([NotBlank] string parameterType)
+        {
+            var conversionOperators = CurrentNode?.DescendantNodes().OfType<ConversionOperatorDeclarationSyntax>();
+            foreach (var co in conversionOperators)
+            {
+                if(CompareParameterTypes(co, parameterType))
+                {
+                    return NextStep(co);
+                }
+            }
+
+            return false;
+        }
+
+        #endregion
+
+        #region Find operator
+
+        const short PARAM_NUM_OF_UNARY = 1;
+        const short PARAM_NUM_OF_BINARY = 2;
+
+
+        public bool FindUnaryOperatorDeclaration(string operatorToken)
+        {
+            var resultingOperator = CurrentNode?.DescendantNodes().OfType<OperatorDeclarationSyntax>()
+                .Where(op => op.ParameterList.Parameters.Count == PARAM_NUM_OF_UNARY && op.OperatorToken.ToString() == operatorToken)
+                .FirstOrDefault();
+
+            return NextStep(resultingOperator);
+        }
+
+        public bool FindAllUnaryOperatorDeclarations()
+        {
+            var resultingOperators = CurrentNode?.DescendantNodes().OfType<OperatorDeclarationSyntax>()
+                .Where(op => op.ParameterList.Parameters.Count == PARAM_NUM_OF_UNARY).ToList<SyntaxNode>();
+
+            return NextStep(resultingOperators);
+        }
+
+        public bool FindBinaryOperatorDeclaration(string operatorToken, string firstParameterType, string secondParameterType)
+        {
+            var resultingOperators = GetBinaryOperators(operatorToken);
+
+            foreach(var op in resultingOperators)
+            {
+                if(CompareParameterTypes(op, firstParameterType, secondParameterType))
+                {
+                    return NextStep(op);
+                }
+            }
+
+            return false;
+        }
+
+        public bool FindOverloadedBinaryOperatorDeclarations(string operatorToken)
+        {
+
+            var resultingOperators = GetBinaryOperators(operatorToken).ToList<SyntaxNode>();
+
+            return NextStep(resultingOperators);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private IEnumerable<OperatorDeclarationSyntax> GetBinaryOperators(string operatorToken)
+        {
+            return CurrentNode?.DescendantNodes().OfType<OperatorDeclarationSyntax>()
+               .Where(op => op.OperatorToken.ToString() == operatorToken && op.ParameterList.Parameters.Count == PARAM_NUM_OF_BINARY);
         }
 
         #endregion
