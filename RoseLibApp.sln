@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27428.2002
+VisualStudioVersion = 15.0.26730.10
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoseLibApp", "RoseLibApp\RoseLibApp.csproj", "{FC5197E6-F366-47A0-B588-9CFBD8428950}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoseLibApp", "RoseLibApp\RoseLibApp.csproj", "{C0B6F8E2-92B3-4254-9C42-C85F561C05D4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{FC5197E6-F366-47A0-B588-9CFBD8428950}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FC5197E6-F366-47A0-B588-9CFBD8428950}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FC5197E6-F366-47A0-B588-9CFBD8428950}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FC5197E6-F366-47A0-B588-9CFBD8428950}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0B6F8E2-92B3-4254-9C42-C85F561C05D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0B6F8E2-92B3-4254-9C42-C85F561C05D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0B6F8E2-92B3-4254-9C42-C85F561C05D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0B6F8E2-92B3-4254-9C42-C85F561C05D4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {720AF5D8-4E51-43DB-A009-6ECEFE6322C5}
+		SolutionGuid = {EFE190DE-9B83-4DBE-A8DD-2AA13F5FD319}
 	EndGlobalSection
 EndGlobal
