@@ -114,6 +114,7 @@
     <Compile Include="RoseLib\Selectors\BaseSelector.cs" />
     <Compile Include="RoseLib\Selectors\ClassSelector.cs" />
     <Compile Include="RoseLib\Selectors\MethodSelector.cs" />
+    <Compile Include="RoseLib\Selectors\NamespaceSelector.cs" />
     <Compile Include="RoseLib\Validation Attributes\ArgumentValidationAttribute.cs" />
     <Compile Include="RoseLib\Validation Attributes\NotNullAttribute.cs" />
     <Compile Include="RoseLib\Validation Attributes\StringEmptyAttribute.cs" />

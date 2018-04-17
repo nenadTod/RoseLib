@@ -30,12 +30,12 @@ namespace RoseLibApp.RoseLib.Selectors
         #region
 
         /// <summary>
-		/// Finds a method invocation of the given name which is a descendant of the provided root, and makes it the current node.
+		/// Finds an invocation of a method of the given name which is a descendant of the provided root, and makes it the current node.
 		/// </summary>
 		/// <param name="root">Root node</param>
 		/// <param name="methodName">Method's name</param>
 		/// <returns>True if found and made current, false otherwise</returns>
-		public bool FindMethodInvocationByMethodName([NotBlank] string methodName)
+		public bool SelectMethodInvocation([NotBlank] string methodName)
         {
             var invocations = CurrentNode?.DescendantNodes().OfType<InvocationExpressionSyntax>().ToList();
 
@@ -59,7 +59,7 @@ namespace RoseLibApp.RoseLib.Selectors
 		/// </summary>
 		/// <param name="methodName">Method's name</param>
 		/// <returns>True if found and made current, false otherwise</returns>
-		public bool FindAllMethodInvocationByMethodName([NotBlank] string methodName)
+		public bool SelectAllMethodInvocationByMethodName([NotBlank] string methodName)
         {
             var invocations = CurrentNode?.DescendantNodes().OfType<ExpressionStatementSyntax>().ToList();
             List<SyntaxNode> found = new List<SyntaxNode>();
@@ -89,7 +89,7 @@ namespace RoseLibApp.RoseLib.Selectors
 		/// </summary>
 		/// <param name="variableName">Name of the variable</param>
 		/// <returns>True if found and made current, false otherwise</returns>
-		public bool FindVariableDeclaration([NotBlank] string variableName)
+		public bool SelectVariableDeclaration([NotBlank] string variableName)
         {
             var declarator = CurrentNode?.DescendantNodes().OfType<VariableDeclaratorSyntax>()
                 .Where(v => v.Identifier.ValueText == variableName).FirstOrDefault();
@@ -105,7 +105,7 @@ namespace RoseLibApp.RoseLib.Selectors
 		/// Finds the last statement contained by the given syntax node, and makes it current.
 		/// </summary>
 		/// <returns>True if found made current, false otherwise</returns>
-		public bool FindLastStatement()
+		public bool SelectLastStatement()
         {
             List<StatementSyntax> statements = CurrentNode?.DescendantNodes().OfType<StatementSyntax>().ToList();
             if (statements.Count() > 0)

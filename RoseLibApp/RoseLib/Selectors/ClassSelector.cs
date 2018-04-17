@@ -9,16 +9,16 @@ using System.Runtime.CompilerServices;
 
 namespace RoseLibApp.RoseLib.Selectors
 {
-    public class ClassSelector : BaseSelector
+    public class ClassStructSelector : NamespaceSelector
     {
         #region Constructors
 
-        public ClassSelector(StreamReader reader) : base(reader)
+        public ClassStructSelector(StreamReader reader) : base(reader)
         {
             // TODO: Only files containing class declaration should be accepted?
         }
 
-        public ClassSelector(ClassDeclarationSyntax node) : base(node)
+        public ClassStructSelector(ClassDeclarationSyntax node) : base(node)
         {
         }
         
@@ -46,14 +46,14 @@ namespace RoseLibApp.RoseLib.Selectors
 
         #endregion
 
-        #region Finding field declarations
+        #region Select field declarations
 
         /// <summary>
-        /// Finds a field declaration of a given name (if such exists) and makes it the current node.
+        /// Selects a field declaration of a given name (if such exists) and makes it the current node.
         /// </summary>
         /// <param name="fieldName">Name of the variable being declared</param>
         /// <returns>True if found and made current, false otherwise.</returns>
-        public bool FindFieldDeclaration([NotBlank] string fieldName)
+        public bool SelectFieldDeclaration([NotBlank] string fieldName)
         {
             var fieldDeclarations = CurrentNode?.DescendantNodes().OfType<FieldDeclarationSyntax>().ToList();
             foreach (var fieldDeclaration in fieldDeclarations)
@@ -76,7 +76,7 @@ namespace RoseLibApp.RoseLib.Selectors
         /// Finds the last field declaration of a given name (if such exists) and it makes it the current node.
         /// </summary>
         /// <returns>True if found and made current, false otherwise.</returns>
-        public bool FindLastFieldDeclaration()
+        public bool SelectLastFieldDeclaration()
         {
             var result = CurrentNode?.DescendantNodes().OfType<FieldDeclarationSyntax>().LastOrDefault();
             return NextStep(result);
@@ -84,14 +84,14 @@ namespace RoseLibApp.RoseLib.Selectors
 
         #endregion
 
-        #region Finding property declarations
+        #region Select property declarations
 
         /// <summary>
         /// Finds a property declaration of a given name (if such exists) and makes it the current node.
         /// </summary>
         /// <param name="propertyName">Name of the property.</param>
         ///  <returns>True if found and made current, false otherwise.</returns>
-        public bool FindPropertyDeclaration([NotBlank] string propertyName)
+        public bool SelectPropertyDeclaration([NotBlank] string propertyName)
         {
             var result = CurrentNode?.DescendantNodes().OfType<PropertyDeclarationSyntax>().
                 Where(p => p.Identifier.ValueText == propertyName).FirstOrDefault();
@@ -103,7 +103,7 @@ namespace RoseLibApp.RoseLib.Selectors
         /// Finds the last property declaration of a given name (if such exists) and makes it the current node.
         /// </summary>
         /// <returns>True if found and made current, false otherwise.</returns>
-        public bool FindLastPropertyDeclaration()
+        public bool SelectLastPropertyDeclaration()
         {
             var result = CurrentNode?.DescendantNodes().OfType<PropertyDeclarationSyntax>().LastOrDefault();
             return NextStep(result);
@@ -111,14 +111,14 @@ namespace RoseLibApp.RoseLib.Selectors
 
         #endregion
 
-        #region Finding method declarations
+        #region Select method declarations
 
         /// <summary>
         /// Finds occurances of (possibly overloaded) methods with a specified name, if such exist, and makes them current.
         /// </summary>
         /// <param name="methodName">Method's name</param>
         /// <returns>True if any found and made current, false otherwise.</returns>
-        public bool FindOverloadedMethodDeclarations([NotBlank] string methodName)
+        public bool SelectOverloadedMethodDeclarations([NotBlank] string methodName)
         {
             var allMethods = CurrentNode?.DescendantNodes().OfType<MethodDeclarationSyntax>();
 
@@ -131,9 +131,9 @@ namespace RoseLibApp.RoseLib.Selectors
         /// </summary>
         /// <param name="methodName">Method's name</param>
         /// <returns>True if found and made current, false otherwise.</returns>
-        public bool FindMethodDeclaration([NotBlank] string methodName)
+        public bool SelectMethodDeclaration([NotBlank] string methodName)
         {
-            FindOverloadedMethodDeclarations(methodName);
+            SelectOverloadedMethodDeclarations(methodName);
 
             var result = CurrentNodesList?.FirstOrDefault();
             return NextStep(result);
@@ -145,9 +145,9 @@ namespace RoseLibApp.RoseLib.Selectors
         /// <param name="methodName">Method's name</param>
         /// <param name="parameterTypes">Array of strings representing parameters' types.</param>
         /// <returns>True if found and made current, false otherwise.</returns>
-        public bool FindMethodDeclaration([NotBlank] string methodName, params string[] parameterTypes)
+        public bool SelectMethodDeclaration([NotBlank] string methodName, params string[] parameterTypes)
         {
-            FindOverloadedMethodDeclarations(methodName);
+            SelectOverloadedMethodDeclarations(methodName);
 
             foreach (var methodDeclaration in CurrentNodesList)
             {
@@ -166,7 +166,7 @@ namespace RoseLibApp.RoseLib.Selectors
         /// Finds the last method declaration and makes it the current node.
         /// </summary>
         /// <returns>True if found and made current, false otherwise.</returns>
-        public bool FindLastMethodDeclaration()
+        public bool SelectLastMethodDeclaration()
         {
             var result = CurrentNode?.DescendantNodes().OfType<FieldDeclarationSyntax>().LastOrDefault();
             return NextStep(result);
@@ -174,13 +174,13 @@ namespace RoseLibApp.RoseLib.Selectors
 
         #endregion
 
-        #region Finding constructor declarations
+        #region Select constructor declarations
 
         /// <summary>
         /// Finds all constructors of a class, and makes them current.
         /// </summary>
         /// <returns>True if found and made current, false otherwise.</returns>
-        public bool FindOverloadedConstructorDeclarations()
+        public bool SelectOverloadedConstructorDeclarations()
         {
             var result = CurrentNode?.DescendantNodes().OfType<ConstructorDeclarationSyntax>().Cast<SyntaxNode>().ToList();
             return NextStep(result);
@@ -190,9 +190,9 @@ namespace RoseLibApp.RoseLib.Selectors
         /// Finds a constructor with parameters' types and makes it the current node, if such exists.
         /// </summary>
         /// <returns>True if found and made current, false otherwise.</returns>
-        public bool FindConstructorDeclaration(params string[] parameterTypes)
+        public bool SelectConstructorDeclaration(params string[] parameterTypes)
         {
-            FindOverloadedConstructorDeclarations();
+            SelectOverloadedConstructorDeclarations();
 
             foreach (var constructorDeclaration in CurrentNodesList)
             {
@@ -211,21 +211,21 @@ namespace RoseLibApp.RoseLib.Selectors
         /// Find last declared constructor and makes it the current node.
         /// </summary>
         /// <returns>True if found and made current, false otherwise.</returns>
-        public bool FindLastConstructorDeclaration()
+        public bool SelectLastConstructorDeclaration()
         {
-            FindOverloadedConstructorDeclarations();
+            SelectOverloadedConstructorDeclarations();
             var result = CurrentNodesList?.LastOrDefault();
             return NextStep(result);
         }
         #endregion
 
-        #region Finding destructor declaration
+        #region Select destructor declaration
 
         /// <summary>
         /// A method that find a destructor and makes it the current node.
         /// </summary>
         /// <returns>True if found and made current, false otherwise.</returns>
-        public bool FindDestructorDeclaration()
+        public bool SelectDestructorDeclaration()
         {
             var result = CurrentNode?.DescendantNodes().OfType<DestructorDeclarationSyntax>().FirstOrDefault();
             return NextStep(result);
@@ -233,9 +233,9 @@ namespace RoseLibApp.RoseLib.Selectors
 
         #endregion
 
-        #region Find conversion operator
+        #region Select conversion operator
 
-        public bool FindConversionOperatorDeclaration([NotBlank] string parameterType)
+        public bool SelectConversionOperatorDeclaration([NotBlank] string parameterType)
         {
             var conversionOperators = CurrentNode?.DescendantNodes().OfType<ConversionOperatorDeclarationSyntax>();
             foreach (var co in conversionOperators)
@@ -251,13 +251,13 @@ namespace RoseLibApp.RoseLib.Selectors
 
         #endregion
 
-        #region Find operator
+        #region Select operator
 
         const short PARAM_NUM_OF_UNARY = 1;
         const short PARAM_NUM_OF_BINARY = 2;
 
 
-        public bool FindUnaryOperatorDeclaration(string operatorToken)
+        public bool SelectUnaryOperatorDeclaration(string operatorToken)
         {
             var resultingOperator = CurrentNode?.DescendantNodes().OfType<OperatorDeclarationSyntax>()
                 .Where(op => op.ParameterList.Parameters.Count == PARAM_NUM_OF_UNARY && op.OperatorToken.ToString() == operatorToken)
@@ -266,7 +266,7 @@ namespace RoseLibApp.RoseLib.Selectors
             return NextStep(resultingOperator);
         }
 
-        public bool FindAllUnaryOperatorDeclarations()
+        public bool SelectAllUnaryOperatorDeclarations()
         {
             var resultingOperators = CurrentNode?.DescendantNodes().OfType<OperatorDeclarationSyntax>()
                 .Where(op => op.ParameterList.Parameters.Count == PARAM_NUM_OF_UNARY).ToList<SyntaxNode>();
@@ -274,7 +274,7 @@ namespace RoseLibApp.RoseLib.Selectors
             return NextStep(resultingOperators);
         }
 
-        public bool FindBinaryOperatorDeclaration(string operatorToken, string firstParameterType, string secondParameterType)
+        public bool SelectBinaryOperatorDeclaration(string operatorToken, string firstParameterType, string secondParameterType)
         {
             var resultingOperators = GetBinaryOperators(operatorToken);
 
@@ -289,7 +289,7 @@ namespace RoseLibApp.RoseLib.Selectors
             return false;
         }
 
-        public bool FindOverloadedBinaryOperatorDeclarations(string operatorToken)
+        public bool SelectOverloadedBinaryOperatorDeclarations(string operatorToken)
         {
 
             var resultingOperators = GetBinaryOperators(operatorToken).ToList<SyntaxNode>();
