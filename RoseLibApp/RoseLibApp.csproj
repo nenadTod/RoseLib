@@ -107,21 +107,22 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\SelectedObject.cs" />
+    <Compile Include="RoseLib\Composers\ClassComposer.cs" />
+    <Compile Include="RoseLib\Model\SelectedObject.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Selectors\BaseSelector.cs" />
-    <Compile Include="Selectors\ClassSelector.cs" />
-    <Compile Include="Selectors\MethodSelector.cs" />
-    <Compile Include="Validation Attributes\ArgumentValidationAttribute.cs" />
-    <Compile Include="Validation Attributes\NotNullAttribute.cs" />
-    <Compile Include="Validation Attributes\StringEmptyAttribute.cs" />
+    <Compile Include="RoseLib\Selectors\BaseSelector.cs" />
+    <Compile Include="RoseLib\Selectors\ClassSelector.cs" />
+    <Compile Include="RoseLib\Selectors\MethodSelector.cs" />
+    <Compile Include="RoseLib\Validation Attributes\ArgumentValidationAttribute.cs" />
+    <Compile Include="RoseLib\Validation Attributes\NotNullAttribute.cs" />
+    <Compile Include="RoseLib\Validation Attributes\StringEmptyAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <None Include="Test Cases\BaseSelector.cs.t" />
-    <None Include="Test Cases\ClassSelector.cs.t" />
+    <None Include="RoseLib\Test Cases\BaseSelector.cs.t" />
+    <None Include="RoseLib\Test Cases\ClassSelector.cs.t" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

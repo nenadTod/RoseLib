@@ -10,7 +10,7 @@ namespace RoseLibApp.RoseLib.Selectors
 {
     public class BaseSelector
     {
-        private Stack<SelectedObject> pastNodes;
+        private Stack<SelectedObject> pastNodes = new Stack<SelectedObject>();
 
         private SelectedObject Current { get; set; }
         public BaseSelector(StreamReader reader)
@@ -59,10 +59,9 @@ namespace RoseLibApp.RoseLib.Selectors
 
         public bool StepBack()
         {
-            SelectedObject previous = null;
-            if (pastNodes.TryPop(out previous))
+            if(pastNodes.Peek() != null)
             {
-                Current = previous;
+                Current = pastNodes.Pop();
                 return true;
             }
 
