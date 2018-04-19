@@ -108,11 +108,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="RoseLib\Composers\ClassComposer.cs" />
+    <Compile Include="RoseLib\Composers\CompilationUnitComposer.cs" />
+    <Compile Include="RoseLib\Composers\IComposer.cs" />
+    <Compile Include="RoseLib\Composers\NamespaceComposer.cs" />
     <Compile Include="RoseLib\Model\SelectedObject.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RoseLib\Selectors\BaseSelector.cs" />
     <Compile Include="RoseLib\Selectors\ClassSelector.cs" />
+    <Compile Include="RoseLib\Selectors\CompilationUnitSelector.cs" />
     <Compile Include="RoseLib\Selectors\MethodSelector.cs" />
     <Compile Include="RoseLib\Selectors\NamespaceSelector.cs" />
     <Compile Include="RoseLib\Validation Attributes\ArgumentValidationAttribute.cs" />
@@ -122,8 +126,12 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <None Include="RoseLib\Test Cases\BaseSelector.cs.t" />
-    <None Include="RoseLib\Test Cases\ClassSelector.cs.t" />
+    <None Include="RoseLib\Test Cases\BaseSelector.cs.t">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="RoseLib\Test Cases\ClassSelector.cs.t">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

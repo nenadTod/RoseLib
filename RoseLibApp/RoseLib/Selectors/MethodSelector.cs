@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using RoseLibApp.RoseLib.Composers;
 using RoseLibApp.RoseLib.Validation_Attributes;
 using System;
 using System.Collections.Generic;
@@ -9,19 +10,19 @@ using System.Text;
 
 namespace RoseLibApp.RoseLib.Selectors
 {
-    public class MethodSelector : BaseSelector
+    public class MethodComposer<T> : BaseSelector<T> where T:IComposer
     {
         #region Constructors
 
-        public MethodSelector(StreamReader reader) : base(reader)
+        public MethodComposer(StreamReader reader) : base(reader)
         {
         }
 
-        public MethodSelector(MethodDeclarationSyntax node) : base(node)
+        public MethodComposer(MethodDeclarationSyntax node) : base(node)
         {
         }
 
-        public MethodSelector(List<MethodDeclarationSyntax> nodes) : base(nodes.Cast<SyntaxNode>().ToList())
+        public MethodComposer(List<MethodDeclarationSyntax> nodes) : base(nodes.Cast<SyntaxNode>().ToList())
         {
         }
 
@@ -47,7 +48,7 @@ namespace RoseLibApp.RoseLib.Selectors
                               select name).Any();
                 if (found)
                 {
-                    return NextStep(invocation);
+                    //return NextStep(invocation);
                 }
             }
 
@@ -78,7 +79,7 @@ namespace RoseLibApp.RoseLib.Selectors
 
             if (found.Any())
             {
-                return NextStep(found);
+                //return NextStep(found);
             }
 
             return false;
@@ -95,7 +96,7 @@ namespace RoseLibApp.RoseLib.Selectors
                 .Where(v => v.Identifier.ValueText == variableName).FirstOrDefault();
             if (declarator != null)
             {
-                return NextStep(declarator.Parent);
+                //return NextStep(declarator.Parent);
             }
 
             return false;
@@ -110,7 +111,7 @@ namespace RoseLibApp.RoseLib.Selectors
             List<StatementSyntax> statements = CurrentNode?.DescendantNodes().OfType<StatementSyntax>().ToList();
             if (statements.Count() > 0)
             {
-                return NextStep(statements.Last());
+                //return NextStep(statements.Last());
             }
             
             return false;

@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using RoseLibApp.RoseLib.Composers;
 using RoseLibApp.RoseLib.Model;
 using System;
 using System.Collections.Generic;
@@ -8,8 +9,9 @@ using System.Text;
 
 namespace RoseLibApp.RoseLib.Selectors
 {
-    public class BaseSelector
-    {
+    public class BaseSelector<T> where T: IComposer
+    { 
+        protected T Composer { get; set; }
         private Stack<SelectedObject> pastNodes = new Stack<SelectedObject>();
 
         private SelectedObject Current { get; set; }
@@ -32,40 +34,36 @@ namespace RoseLibApp.RoseLib.Selectors
             Current = new SelectedObject(nodes);
         }
 
-        protected bool NextStep(SyntaxNode node)
+        protected void NextStep(SyntaxNode node)
         {
-            if (node != null)
+            if(node == null)
             {
-                pastNodes.Push(Current);
-                Current = new SelectedObject(node);
-                return true;
+                throw new InvalidOperationException($"{typeof(T).Name}: Selection failed!");
             }
 
-            return false;
-            
+            pastNodes.Push(Current);
+            Current = new SelectedObject(node);
         }
 
-        protected bool NextStep(List<SyntaxNode> nodes)
+        protected void NextStep(List<SyntaxNode> nodes)
         {
-            if (nodes != null && nodes.Count != 0)
+            if (nodes == null)
             {
-                pastNodes.Push(Current);
-                Current = new SelectedObject(nodes);
-                return true;
+                throw new InvalidOperationException($"{typeof(T).Name}: Selection failed!");
             }
 
-            return false;
+            pastNodes.Push(Current);
+            Current = new SelectedObject(nodes);
         }
 
-        public bool StepBack()
+        public T StepBack()
         {
             if(pastNodes.Peek() != null)
             {
                 Current = pastNodes.Pop();
-                return true;
             }
 
-            return false;
+            return Composer;
         }
     }
 }
