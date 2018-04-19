@@ -12,12 +12,8 @@ namespace RoseLibApp.RoseLib.Composers
 {
     class NamespaceComposer : NamespaceSelector<NamespaceComposer>, IComposer
     {
-        public NamespaceDeclarationSyntax Root { get; set; }
-
         public NamespaceComposer(NamespaceDeclarationSyntax @namespace, IComposer parent):base(@namespace)
         {
-            NextStep(@namespace);
-            Root = @namespace;
             Composer = this;
             ParentComposer = parent;
         }
@@ -26,13 +22,30 @@ namespace RoseLibApp.RoseLib.Composers
 
         public void Replace(SyntaxNode oldNode, SyntaxNode newNode)
         {
-            var newRoot = Root.ReplaceNode(oldNode, newNode);
+            if (oldNode.GetType() != newNode.GetType())
+            {
+                throw new Exception("Old and new node must be of the same type");
+            }
+
+            Reset();
+
+            var newRoot = CurrentNode;
+
+            if (!(oldNode is NamespaceDeclarationSyntax))
+            {
+                newRoot = CurrentNode.ReplaceNode(oldNode, newNode);
+            }
+            else
+            {
+                newRoot = newNode;
+            }
 
             if (ParentComposer != null)
             {
-                ParentComposer.Replace(Root, newRoot);
+                ParentComposer.Replace(CurrentNode, newRoot);
             }
-            Root = newRoot;
+
+            ReplaceHead(newRoot);
         }
     }
 }

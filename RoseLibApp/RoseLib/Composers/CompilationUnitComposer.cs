@@ -13,17 +13,21 @@ namespace RoseLibApp.RoseLib.Composers
     class CompilationUnitComposer : CompilationUnitSelector<CompilationUnitComposer>, IComposer
     {
         public IComposer ParentComposer { get; set; }
-        private CompilationUnitSyntax Root { get; set; }
         
         public CompilationUnitComposer(StreamReader sr):base(sr)
         {
-            Root = CurrentNode as CompilationUnitSyntax;
             Composer = this;
         }
 
         public void Replace(SyntaxNode oldNode, SyntaxNode newNode)
         {
-            Root = Root.ReplaceNode(oldNode, newNode);
+            if (oldNode.GetType() != newNode.GetType())
+            {
+                throw new Exception("Old and new node must be of the same type");
+            }
+
+            var newRoot = CurrentNode.ReplaceNode(oldNode, newNode);
+            ResetAndReplaceHead(newRoot);
         }
     }
 }

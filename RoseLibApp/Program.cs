@@ -20,7 +20,7 @@ namespace RoseLibApp
                 var cc = namespaceComposer.ToClassComposer();
                 cc.Rename("Ninja");
 
-                Console.WriteLine(cuc.Root.ToFullString());
+                Console.WriteLine(cuc.CurrentNode.ToFullString());
             }
         }
     }

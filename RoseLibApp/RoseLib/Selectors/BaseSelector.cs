@@ -12,26 +12,25 @@ namespace RoseLibApp.RoseLib.Selectors
     public class BaseSelector<T> where T: IComposer
     { 
         protected T Composer { get; set; }
-        private Stack<SelectedObject> pastNodes = new Stack<SelectedObject>();
+        private Stack<SelectedObject> nodes = new Stack<SelectedObject>();
 
-        private SelectedObject Current { get; set; }
         public BaseSelector(StreamReader reader)
         {
             var code = reader.ReadToEnd();
-            Current =  new SelectedObject(SyntaxFactory.ParseCompilationUnit(code));
+            nodes.Push(new SelectedObject(SyntaxFactory.ParseCompilationUnit(code)));
         }
 
-        public SyntaxNode CurrentNode { get { return Current.CurrentNode; } }
-        public List<SyntaxNode> CurrentNodesList { get { return Current.CurrentNodesList; } }
+        public SyntaxNode CurrentNode => nodes.Peek()?.CurrentNode;
+        public List<SyntaxNode> CurrentNodesList => nodes.Peek()?.CurrentNodesList;
 
         public BaseSelector(SyntaxNode node)
         {
-            Current = new SelectedObject(node);
+            nodes.Push(new SelectedObject(node));
         }
 
         public BaseSelector(List<SyntaxNode> nodes)
         {
-            Current = new SelectedObject(nodes);
+            this.nodes.Push(new SelectedObject(nodes));
         }
 
         protected void NextStep(SyntaxNode node)
@@ -41,8 +40,7 @@ namespace RoseLibApp.RoseLib.Selectors
                 throw new InvalidOperationException($"{typeof(T).Name}: Selection failed!");
             }
 
-            pastNodes.Push(Current);
-            Current = new SelectedObject(node);
+            nodes.Push(new SelectedObject(node));
         }
 
         protected void NextStep(List<SyntaxNode> nodes)
@@ -52,18 +50,40 @@ namespace RoseLibApp.RoseLib.Selectors
                 throw new InvalidOperationException($"{typeof(T).Name}: Selection failed!");
             }
 
-            pastNodes.Push(Current);
-            Current = new SelectedObject(nodes);
+            this.nodes.Push(new SelectedObject(nodes));
+        }
+
+        public T Reset()
+        {
+            while (nodes.Count > 1)
+            {
+                nodes.Pop();
+            }
+
+            return Composer;
         }
 
         public T StepBack()
         {
-            if(pastNodes.Peek() != null)
+            if(nodes.Peek() != null && nodes.Count > 1)
             {
-                Current = pastNodes.Pop();
+                nodes.Pop();
             }
 
             return Composer;
+        }
+
+        protected void ResetAndReplaceHead(SyntaxNode node)
+        {
+            Reset();
+            nodes.Pop();
+            nodes.Push(new SelectedObject(node));
+        }
+
+        protected void ReplaceHead(SyntaxNode node)
+        {
+            nodes.Pop();
+            nodes.Push(new SelectedObject(node));
         }
     }
 }

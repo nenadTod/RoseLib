@@ -13,45 +13,59 @@ namespace RoseLibApp.RoseLib.Composers
     public class ClassComposer: ClassStructSelector<ClassComposer>, IComposer
     {
         public IComposer ParentComposer { get; set; }
-        private ClassDeclarationSyntax Root { get; set; }
-
+        
         public ClassComposer(ClassDeclarationSyntax @class, IComposer parentComposer) : base(@class)
         {
-            NextStep(@class);
-            Root = @class;
             Composer = this;
             ParentComposer = parentComposer;
         }
 
         public ClassComposer(ClassDeclarationSyntax @class):base(@class)
         {
-            NextStep(@class);
             Composer = this;
         }
         
         public ClassComposer Rename(string newName)
         {
-            if (!(CurrentNode is ClassDeclarationSyntax))
+            if(!(CurrentNode is ClassDeclarationSyntax))
             {
-                throw new Exception("Pera");
+                throw new Exception("Rename can only be called if class node is selected! Call Reset if you want to select the class node.");
             }
 
             var id = SyntaxFactory.Identifier(newName);
             var newNode = (CurrentNode as ClassDeclarationSyntax).WithIdentifier(id);
             newNode = RenameConstuctors(newNode, id) as ClassDeclarationSyntax;
-            Replace(Root, newNode);
+            Replace(CurrentNode, newNode);
 
             return this;
         }
 
         public void Replace(SyntaxNode oldNode, SyntaxNode newNode)
         {
-            if(ParentComposer != null)
+            if (oldNode.GetType() != newNode.GetType())
             {
-                ParentComposer.Replace(oldNode, newNode);
+                throw new Exception("Old and new node must be of the same type");
             }
 
-            Root = newNode as ClassDeclarationSyntax;
+            Reset();
+
+            var newRoot = CurrentNode;
+
+            if(!(oldNode is ClassDeclarationSyntax))
+            {
+                newRoot = CurrentNode.ReplaceNode(oldNode, newNode);
+            }
+            else
+            {
+                newRoot = newNode;
+            }
+           
+            if(ParentComposer != null)
+            {
+                ParentComposer.Replace(CurrentNode, newRoot);
+            }
+
+            ReplaceHead(newRoot);
         }
 
         private SyntaxNode RenameConstuctors(SyntaxNode root, SyntaxToken identifier)
