@@ -110,7 +110,9 @@
     <Compile Include="RoseLib\Composers\ClassComposer.cs" />
     <Compile Include="RoseLib\Composers\CompilationUnitComposer.cs" />
     <Compile Include="RoseLib\Composers\IComposer.cs" />
+    <Compile Include="RoseLib\Composers\MethodComposer.cs" />
     <Compile Include="RoseLib\Composers\NamespaceComposer.cs" />
+    <Compile Include="RoseLib\Model\RLParameter.cs" />
     <Compile Include="RoseLib\Model\SelectedObject.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

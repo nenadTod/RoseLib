@@ -10,19 +10,19 @@ using System.Text;
 
 namespace RoseLibApp.RoseLib.Selectors
 {
-    public class MethodComposer<T> : BaseSelector<T> where T:IComposer
+    public class MethodSelector<T> : BaseSelector<T> where T:IComposer
     {
         #region Constructors
 
-        public MethodComposer(StreamReader reader) : base(reader)
+        public MethodSelector(StreamReader reader) : base(reader)
         {
         }
 
-        public MethodComposer(MethodDeclarationSyntax node) : base(node)
+        public MethodSelector(MethodDeclarationSyntax node) : base(node)
         {
         }
 
-        public MethodComposer(List<MethodDeclarationSyntax> nodes) : base(nodes.Cast<SyntaxNode>().ToList())
+        public MethodSelector(List<MethodDeclarationSyntax> nodes) : base(nodes.Cast<SyntaxNode>().ToList())
         {
         }
 

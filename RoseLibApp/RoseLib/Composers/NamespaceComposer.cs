@@ -20,32 +20,50 @@ namespace RoseLibApp.RoseLib.Composers
 
         public IComposer ParentComposer { get; set; }
 
-        public void Replace(SyntaxNode oldNode, SyntaxNode newNode)
+        public List<SyntaxNode> Replace(SyntaxNode oldNode, SyntaxNode newNode, List<SyntaxNode> nodesToTrack)
         {
             if (oldNode.GetType() != newNode.GetType())
             {
                 throw new Exception("Old and new node must be of the same type");
             }
 
+            var trackedNodes = new List<SyntaxNode>();
+
+            if (nodesToTrack != null)
+            {
+                trackedNodes.AddRange(nodesToTrack);
+            }
+
             Reset();
 
             var newRoot = CurrentNode;
 
-            if (!(oldNode is NamespaceDeclarationSyntax))
+            if (ParentComposer != null)
             {
-                newRoot = CurrentNode.ReplaceNode(oldNode, newNode);
+                trackedNodes.Add(CurrentNode);
+                trackedNodes = ParentComposer.Replace(oldNode, newNode, trackedNodes);
+                var tempNode = trackedNodes.LastOrDefault();
+
+                if (tempNode != null)
+                {
+                    newRoot = tempNode;
+                    trackedNodes.Remove(newRoot);
+                }
             }
             else
             {
-                newRoot = newNode;
-            }
-
-            if (ParentComposer != null)
-            {
-                ParentComposer.Replace(CurrentNode, newRoot);
+                if (!(oldNode is NamespaceDeclarationSyntax))
+                {
+                    newRoot = newRoot.ReplaceNode(oldNode, newNode);
+                }
+                else
+                {
+                    newRoot = newNode;
+                }
             }
 
             ReplaceHead(newRoot);
+            return trackedNodes;
         }
     }
 }

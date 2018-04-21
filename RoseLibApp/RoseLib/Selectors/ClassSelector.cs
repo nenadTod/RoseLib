@@ -22,28 +22,28 @@ namespace RoseLibApp.RoseLib.Selectors
         public ClassStructSelector(ClassDeclarationSyntax node) : base(node)
         {
         }
-        
+
         #endregion
 
         #region Converters
 
-        //public MethodComposer ToMethodSelector() //TODO: Solve the situation between Constructors, Coverter Operators, Operators.
-        //{
-        //    if(CurrentNode != null && CurrentNode is BaseMethodDeclarationSyntax)
-        //    {
-        //        return new MethodComposer(CurrentNode as MethodDeclarationSyntax);
-        //    }
+        public MethodComposer ToMethodComposer() //TODO: Solve the situation between Constructors, Coverter Operators, Operators.
+        {
+            if (CurrentNode != null && CurrentNode is BaseMethodDeclarationSyntax)
+            {
+                return new MethodComposer(CurrentNode as MethodDeclarationSyntax, Composer);
+            }
 
-        //    if(CurrentNodesList != null && CurrentNodesList.Any())
-        //    {
-        //        if(CurrentNodesList.First() is BaseMethodDeclarationSyntax)
-        //        {
-        //            return new MethodComposer(CurrentNodesList.Cast<MethodDeclarationSyntax>().ToList());
-        //        }
-        //    }
+            if (CurrentNodesList != null && CurrentNodesList.Any())
+            {
+                if (CurrentNodesList.First() is BaseMethodDeclarationSyntax)
+                {
+                    return new MethodComposer(CurrentNodesList.Cast<MethodDeclarationSyntax>().ToList());
+                }
+            }
 
-        //    return null;
-        //}
+            return null;
+        }
 
         #endregion
 

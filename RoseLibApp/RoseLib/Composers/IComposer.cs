@@ -10,6 +10,6 @@ namespace RoseLibApp.RoseLib.Composers
     public interface IComposer
     {
         IComposer ParentComposer { get; set; }
-        void Replace(SyntaxNode oldNode, SyntaxNode newNode);
+        List<SyntaxNode> Replace(SyntaxNode oldNode, SyntaxNode newNode, List<SyntaxNode> trackedNodes);
     }
 }
