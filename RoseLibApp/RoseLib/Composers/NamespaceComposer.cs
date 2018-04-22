@@ -10,7 +10,7 @@ using Microsoft.CodeAnalysis.CSharp;
 
 namespace RoseLibApp.RoseLib.Composers
 {
-    class NamespaceComposer : NamespaceSelector<NamespaceComposer>, IComposer
+    public class NamespaceComposer : NamespaceSelector<NamespaceComposer>, IComposer
     {
         public NamespaceComposer(NamespaceDeclarationSyntax @namespace, IComposer parent):base(@namespace)
         {
@@ -64,6 +64,29 @@ namespace RoseLibApp.RoseLib.Composers
 
             ReplaceHead(newRoot);
             return trackedNodes;
+        }
+
+        public NamespaceComposer Delete()
+        {
+            var nodeForRemoval = CurrentNode;
+            Reset();
+
+            var @namespace = CurrentNode;
+
+            if (@namespace == nodeForRemoval)
+            {
+                throw new Exception("Root of the composer cannot be deleted. Deletion can be done using parent selector.");
+            }
+            if (nodeForRemoval == null)
+            {
+                throw new Exception("You cannot perform delete operation when the value of the current node is null.");
+
+            }
+
+            var newClass = @namespace.RemoveNode(nodeForRemoval, SyntaxRemoveOptions.KeepExteriorTrivia);
+            Replace(@namespace, newClass, null);
+
+            return this;
         }
     }
 }

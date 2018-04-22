@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace RoseLibApp.RoseLib.Selectors
 {
-    class CompilationUnitSelector<T>: BaseSelector<T> where T:IComposer
+    public class CompilationUnitSelector<T>: BaseSelector<T> where T:IComposer
     {
         public CompilationUnitSelector(StreamReader sr):base(sr)
         {

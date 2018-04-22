@@ -20,6 +20,29 @@ namespace RoseLibApp.RoseLib.Composers
             Composer = this;
         }
 
+        public CompilationUnitComposer Delete()
+        {
+            var nodeForRemoval = CurrentNode;
+            Reset();
+
+            var cu = CurrentNode;
+
+            if (cu == nodeForRemoval)
+            {
+                throw new Exception("Root of the composer cannot be deleted. Deletion can be done using parent selector.");
+            }
+            if (nodeForRemoval == null)
+            {
+                throw new Exception("You cannot perform delete operation when the value of the current node is null.");
+
+            }
+
+            var newClass = cu.RemoveNode(nodeForRemoval, SyntaxRemoveOptions.KeepExteriorTrivia);
+            Replace(cu, newClass, null);
+
+            return this;
+        }
+
         public List<SyntaxNode> Replace(SyntaxNode oldNode, SyntaxNode newNode, List<SyntaxNode> nodesToTrack)
         {
             if (oldNode.GetType() != newNode.GetType())

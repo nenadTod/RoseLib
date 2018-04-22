@@ -7,7 +7,7 @@ using RoseLibApp.RoseLib.Validation_Attributes;
 
 namespace RoseLibApp.RoseLib.Selectors.Test
 {
-    public class ClassSelector : BaseSelector
+    protected internal static class ClassSelector : BaseSelector
     {
         #region Constructors
 
@@ -32,6 +32,11 @@ namespace RoseLibApp.RoseLib.Selectors.Test
         }
 
         #endregion
+
+		#region
+		public int Dummy {get;set;}
+
+		#endregion
 
         #region Finding field declarations
 

@@ -278,5 +278,28 @@ namespace RoseLibApp.RoseLib.Composers
 
             return annotatedStatements;
         }
+
+        public MethodComposer Delete()
+        {
+            var nodeForRemoval = CurrentNode;
+            Reset();
+
+            var @method = CurrentNode;
+
+            if (@method == nodeForRemoval)
+            {
+                throw new Exception("Root of the composer cannot be deleted. Deletion can be done using parent selector.");
+            }
+            if (nodeForRemoval == null)
+            {
+                throw new Exception("You cannot perform delete operation when the value of the current node is null.");
+
+            }
+
+            var newClass = @method.RemoveNode(nodeForRemoval, SyntaxRemoveOptions.KeepExteriorTrivia);
+            Replace(@method, newClass, null);
+
+            return this;
+        }
     }
 }
