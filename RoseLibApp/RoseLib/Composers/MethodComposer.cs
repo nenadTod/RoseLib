@@ -9,11 +9,14 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.CSharp;
 using System.Reflection.Metadata;
 using RoseLibApp.RoseLib.Model;
+using RoseLibApp.RoseLib.Templates;
 
 namespace RoseLibApp.RoseLib.Composers
 {
     public class MethodComposer : MethodSelector<MethodComposer>, IComposer
     {
+        const string STATEMENT_ANNOTATION_KIND = "RoseLibStatement";
+
         public IComposer ParentComposer { get; set; }
 
         public MethodComposer(MethodDeclarationSyntax method, IComposer parent):base(method)
@@ -106,23 +109,49 @@ namespace RoseLibApp.RoseLib.Composers
             return this;
         }
 
-        public MethodComposer InsertStatementBefore(string statement)
+        public MethodComposer InsertStatementsBefore(params string[] statements)
         {
+            if (!(CurrentNode is StatementSyntax))
+            {
+                throw new Exception("InsertStatementsBefore can only be called if some statement node is selected!");
+            }
+
+            var currentStatement = CurrentNode;
+
+            Reset();
+            InsertStatements(currentStatement, statements);
             return this;
         }
 
-        public MethodComposer InsertStatementAfter(string statement)
+        public MethodComposer InsertStatementsAfter(params string[] statements)
         {
+            if (!(CurrentNode is StatementSyntax))
+            {
+                throw new Exception("InsertStatementsAfter can only be called if some statement node is selected!");
+            }
+
+            var currentStatement = CurrentNode;
+
+            Reset();
+            InsertStatements(currentStatement, statements, false);
             return this;
         }
 
-        public MethodComposer InsertStatement(string statement)
+        public MethodComposer InsertStatements(params string[] statements)
         {
+            Reset();
+            var method = CurrentNode as MethodDeclarationSyntax;
+            InsertStatements(method, statements);
+
             return this;
         }
 
-        public MethodComposer ReplaceBody(string body)
+        public MethodComposer Body(string body)
         {
+            Reset();
+            var method = CurrentNode as MethodDeclarationSyntax;
+            InsertStatements(method, new string[] { body }, true);
+
             return this;
         }
 
@@ -170,6 +199,84 @@ namespace RoseLibApp.RoseLib.Composers
 
             ReplaceHead(newRoot);
             return trackedNodes;
+        }
+
+
+        private void InsertStatements(MethodDeclarationSyntax method, string[] statements, bool clear = false)
+        {
+            SyntaxList<StatementSyntax> currentStatements = new SyntaxList<StatementSyntax>();
+
+            if (!clear)
+            {
+                currentStatements = method.Body.Statements;
+            }
+
+            var block = EvaluateStatements(statements);
+            SyntaxAnnotation annotation = null;
+            List<StatementSyntax> statementNodes = AnnotateStatements(block.Statements, out annotation); 
+            
+            currentStatements = currentStatements.AddRange(statementNodes);
+
+            var newBody = method.Body.WithStatements(currentStatements);
+            var newMethod = method.WithBody(newBody);
+
+            Replace(method, newMethod, null);
+            var annotatedNode = CurrentNode.GetAnnotatedNodes(annotation).First();
+
+            if (annotatedNode != null)
+            {
+                NextStep(annotatedNode);
+            }
+        }
+
+        private void InsertStatements(SyntaxNode currentStatement, string[] statements, bool before = true)
+        {
+            var block = EvaluateStatements(statements);
+            SyntaxAnnotation annotation = null;
+            List<StatementSyntax> statementNodes = AnnotateStatements(block.Statements, out annotation);
+            SyntaxNode newNode = null;
+         
+            if (before)
+            {
+                newNode = CurrentNode.InsertNodesBefore(currentStatement, statementNodes);
+            }
+            else
+            {
+                newNode = CurrentNode.InsertNodesAfter(currentStatement, statementNodes);
+            }
+
+            Replace(CurrentNode, newNode, null);
+            var annotatedNode = CurrentNode.GetAnnotatedNodes(annotation).First();
+
+            if (annotatedNode != null)
+            {
+                NextStep(annotatedNode);
+            }
+        }
+
+        private BlockSyntax EvaluateStatements(string[] statements)
+        {
+            var statementsTemplate = new CreateStatements();
+            statementsTemplate.statements = statements.ToList();
+            var methodStr = statementsTemplate.TransformText();
+            var tempMethod = CSharpSyntaxTree.ParseText(methodStr).GetRoot();
+
+            return tempMethod.DescendantNodes().OfType<BlockSyntax>().First();
+        }
+
+        private List<StatementSyntax> AnnotateStatements(SyntaxList<StatementSyntax> statements, out SyntaxAnnotation lastAnnotation)
+        {
+            List<StatementSyntax> annotatedStatements = new List<StatementSyntax>();
+            lastAnnotation = null;
+
+            foreach(var statement in statements)
+            {
+                var annotation = new SyntaxAnnotation(STATEMENT_ANNOTATION_KIND, Guid.NewGuid().ToString());
+                annotatedStatements.Add(statement.WithAdditionalAnnotations(annotation));
+                lastAnnotation = annotation;
+            }
+
+            return annotatedStatements;
         }
     }
 }

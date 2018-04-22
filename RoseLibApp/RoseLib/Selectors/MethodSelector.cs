@@ -106,15 +106,15 @@ namespace RoseLibApp.RoseLib.Selectors
 		/// Finds the last statement contained by the given syntax node, and makes it current.
 		/// </summary>
 		/// <returns>True if found made current, false otherwise</returns>
-		public bool SelectLastStatement()
+		public T SelectLastStatement()
         {
             List<StatementSyntax> statements = CurrentNode?.DescendantNodes().OfType<StatementSyntax>().ToList();
             if (statements.Count() > 0)
             {
-                //return NextStep(statements.Last());
+                NextStep(statements.Last());
             }
             
-            return false;
+            return Composer;
         }
         #endregion
 

@@ -121,6 +121,11 @@
     <Compile Include="RoseLib\Selectors\CompilationUnitSelector.cs" />
     <Compile Include="RoseLib\Selectors\MethodSelector.cs" />
     <Compile Include="RoseLib\Selectors\NamespaceSelector.cs" />
+    <Compile Include="RoseLib\Templates\CreateStatements.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CreateStatements.tt</DependentUpon>
+    </Compile>
     <Compile Include="RoseLib\Validation Attributes\ArgumentValidationAttribute.cs" />
     <Compile Include="RoseLib\Validation Attributes\NotNullAttribute.cs" />
     <Compile Include="RoseLib\Validation Attributes\StringEmptyAttribute.cs" />
@@ -135,10 +140,18 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="RoseLib\Templates\CreateStatements.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>CreateStatements.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -47,7 +47,7 @@ namespace RoseLibApp.RoseLib.Composers
             if (!newNode.HasAnnotations(NODE_ANNOTATION_KIND))
             {
                 customId = Guid.NewGuid().ToString();
-                annotation = new SyntaxAnnotation("RoseLibNewNode", customId);
+                annotation = new SyntaxAnnotation(NODE_ANNOTATION_KIND, customId);
                 newNode = newNode.WithAdditionalAnnotations(annotation);
             }
             else

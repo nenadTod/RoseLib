@@ -27,6 +27,15 @@ namespace RoseLibApp
                 mc.ReturnType("string");
                 mc.Parameters(new RLParameter("first", "string"));
                 mc.AppendParameters(new RLParameter("second", "bool"));
+                mc.SelectLastStatement();
+                mc.InsertStatementsBefore("Console.WriteLine(\"HelloWorld\");");
+                mc.InsertStatementsBefore("Console.WriteLine(\"HelloWorldBefore\");");
+                mc.InsertStatementsAfter("Console.WriteLine(\"HelloWorldAfter\");");
+
+                classComposer.SelectMethodDeclaration("FindLastFieldDeclaration");
+                var mc1 = classComposer.ToMethodComposer();
+                mc1.Body("Console.WriteLine(\"HelloWorld\");");
+                mc1.InsertStatements("Console.WriteLine(\"Hello\");", "Console.WriteLine(\"World\");");
 
                 Console.WriteLine(cuComposer.CurrentNode.ToFullString());
             }
