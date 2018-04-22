@@ -41,6 +41,43 @@ namespace RoseLibApp.RoseLib.Composers
             return this;
         }
 
+        public ClassComposer AddStaticKeyword()
+        {
+            dynamic twm = CurrentNode;
+            SyntaxTokenList modifiers = twm.Modifiers;
+
+            if(modifiers.Where(m => m.Kind() == SyntaxKind.StaticKeyword).Any())
+            {
+                return this;
+            }
+
+            modifiers = modifiers.Add(SyntaxFactory.Token(SyntaxKind.StaticKeyword));
+            SyntaxNode newNode = twm.WithModifiers(modifiers);
+            Replace(twm, newNode, null);
+
+            return this;
+        }
+
+        public ClassComposer RemoveStaticKeyword()
+        {
+            dynamic twm = CurrentNode;
+            SyntaxTokenList modifiers = twm.Modifiers;
+            for (int i = modifiers.Count - 1; i >= 0; i--)
+            {
+                var m = modifiers.ElementAt(i);
+                if (m.Kind() == SyntaxKind.StaticKeyword)
+                {
+                    modifiers = modifiers.RemoveAt(i);
+                    break;
+                }
+            }
+
+            SyntaxNode newNode = twm.WithModifiers(modifiers);
+            Replace(twm, newNode, null);
+
+            return this;
+        }
+
         public ClassComposer SetAccessModifier(AccessModifierTypes newType)
         {
             dynamic twm = CurrentNode;

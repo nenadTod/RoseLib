@@ -22,35 +22,36 @@ namespace RoseLibApp
                 //namespaceComposer.Delete();
                 
                 var classComposer = namespaceComposer.ToClassComposer();
-                classComposer.SetAccessModifier(ClassComposer.AccessModifierTypes.INTERNAL);
-                classComposer.Rename("RenamedClass");
-                classComposer.SelectMethodDeclaration("FindOverloadedConstructorDeclarations");
-                classComposer.SetAccessModifier(ClassComposer.AccessModifierTypes.PRIVATE);
+                classComposer.RemoveStaticKeyword();
+                //classComposer.SetAccessModifier(ClassComposer.AccessModifierTypes.INTERNAL);
+                //classComposer.Rename("RenamedClass");
+                //classComposer.SelectMethodDeclaration("FindOverloadedConstructorDeclarations");
+                //classComposer.SetAccessModifier(ClassComposer.AccessModifierTypes.PRIVATE);
 
-                classComposer.SelectMethodDeclaration("FindFieldDeclaration");
-                var mc = classComposer.ToMethodComposer();
-                mc.Rename("RenamedMethod");
-                mc.ReturnType("string");
-                mc.Parameters(new RLParameter("first", "string"));
-                mc.AppendParameters(new RLParameter("second", "bool"));
-                mc.SelectLastStatement();
-                mc.InsertStatementsBefore("Console.WriteLine(\"HelloWorld\");");
-                mc.InsertStatementsBefore("Console.WriteLine(\"HelloWorldBefore\");");
-                mc.InsertStatementsAfter("Console.WriteLine(\"HelloWorldAfter\");");
+                //classComposer.SelectMethodDeclaration("FindFieldDeclaration");
+                //var mc = classComposer.ToMethodComposer();
+                //mc.Rename("RenamedMethod");
+                //mc.ReturnType("string");
+                //mc.Parameters(new RLParameter("first", "string"));
+                //mc.AppendParameters(new RLParameter("second", "bool"));
+                //mc.SelectLastStatement();
+                //mc.InsertStatementsBefore("Console.WriteLine(\"HelloWorld\");");
+                //mc.InsertStatementsBefore("Console.WriteLine(\"HelloWorldBefore\");");
+                //mc.InsertStatementsAfter("Console.WriteLine(\"HelloWorldAfter\");");
 
-                classComposer.SelectMethodDeclaration("FindLastFieldDeclaration");
-                var mc1 = classComposer.ToMethodComposer();
-                mc1.Body("Console.WriteLine(\"HelloWorld\");");
-                mc1.InsertStatements("Console.WriteLine(\"Hello\");", "Console.WriteLine(\"World\");");
-                mc1.SelectLastStatement().Delete();
+                //classComposer.SelectMethodDeclaration("FindLastFieldDeclaration");
+                //var mc1 = classComposer.ToMethodComposer();
+                //mc1.Body("Console.WriteLine(\"HelloWorld\");");
+                //mc1.InsertStatements("Console.WriteLine(\"Hello\");", "Console.WriteLine(\"World\");");
+                //mc1.SelectLastStatement().Delete();
 
 
-                classComposer.SelectMethodDeclaration("FindLastPropertyDeclaration");
-                classComposer.Delete();
-                classComposer.SelectLastConstructorDeclaration();
-                classComposer.Delete();
-                classComposer.SelectPropertyDeclaration("Dummy");
-                classComposer.Delete();
+                //classComposer.SelectMethodDeclaration("FindLastPropertyDeclaration");
+                //classComposer.Delete();
+                //classComposer.SelectLastConstructorDeclaration();
+                //classComposer.Delete();
+                //classComposer.SelectPropertyDeclaration("Dummy");
+                //classComposer.Delete();
                 
                 Console.WriteLine(cuComposer.CurrentNode.ToFullString());
             }
