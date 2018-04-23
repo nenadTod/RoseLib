@@ -112,12 +112,14 @@
     <Compile Include="RoseLib\Composers\IComposer.cs" />
     <Compile Include="RoseLib\Composers\MethodComposer.cs" />
     <Compile Include="RoseLib\Composers\NamespaceComposer.cs" />
+    <Compile Include="RoseLib\Enums\AccessModifierTypes.cs" />
+    <Compile Include="RoseLib\Model\ClassOptions.cs" />
     <Compile Include="RoseLib\Model\RLParameter.cs" />
     <Compile Include="RoseLib\Model\SelectedObject.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RoseLib\Selectors\BaseSelector.cs" />
-    <Compile Include="RoseLib\Selectors\ClassSelector.cs" />
+    <Compile Include="RoseLib\Selectors\ClassStructSelector.cs" />
     <Compile Include="RoseLib\Selectors\CompilationUnitSelector.cs" />
     <Compile Include="RoseLib\Selectors\MethodSelector.cs" />
     <Compile Include="RoseLib\Selectors\NamespaceSelector.cs" />
@@ -125,6 +127,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>CreateStatements.tt</DependentUpon>
+    </Compile>
+    <Compile Include="RoseLib\Templates\CreateClass.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CreateClass.tt</DependentUpon>
     </Compile>
     <Compile Include="RoseLib\Validation Attributes\ArgumentValidationAttribute.cs" />
     <Compile Include="RoseLib\Validation Attributes\NotNullAttribute.cs" />
@@ -144,6 +151,10 @@
     <Content Include="RoseLib\Templates\CreateStatements.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>CreateStatements.cs</LastGenOutput>
+    </Content>
+    <Content Include="RoseLib\Templates\CreateClass.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>CreateClass.cs</LastGenOutput>
     </Content>
   </ItemGroup>
   <ItemGroup>

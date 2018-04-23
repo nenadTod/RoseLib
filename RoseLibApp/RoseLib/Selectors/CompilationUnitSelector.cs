@@ -11,6 +11,10 @@ namespace RoseLibApp.RoseLib.Selectors
 {
     public class CompilationUnitSelector<T>: BaseSelector<T> where T:IComposer
     {
+        protected CompilationUnitSelector()
+        {
+        }
+
         public CompilationUnitSelector(StreamReader sr):base(sr)
         {
         }

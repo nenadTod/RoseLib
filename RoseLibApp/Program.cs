@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis.CSharp;
+﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using RoseLibApp.RoseLib.Composers;
 using RoseLibApp.RoseLib.Model;
 using RoseLibApp.RoseLib.Selectors;
@@ -13,16 +14,17 @@ namespace RoseLibApp
         {
             using (StreamReader reader = new StreamReader(".\\RoseLib\\Test Cases\\ClassSelector.cs.t"))
             {
-                CompilationUnitComposer cuComposer =  new CompilationUnitComposer(reader);
-                cuComposer.SelectNamespace();
+                //CompilationUnitComposer cuComposer =  new CompilationUnitComposer(reader);
+                //cuComposer.SelectNamespace();
                 //cuComposer.Delete();
-                
-                var namespaceComposer = cuComposer.ToNamespaceComposer();
-                namespaceComposer.SelectClassDeclaration("ClassSelector");
+
+                //var namespaceComposer = cuComposer.ToNamespaceComposer();
+                //namespaceComposer.AddClass(new ClassOptions() { ClassName = "NewClass", IsPartial = true, IsStatic=true});
+                //namespaceComposer.SelectClassDeclaration("ClassSelector");
                 //namespaceComposer.Delete();
-                
-                var classComposer = namespaceComposer.ToClassComposer();
-                classComposer.RemoveStaticKeyword();
+
+                //var classComposer = namespaceComposer.ToClassComposer();
+                //classComposer.RemoveStaticKeyword();
                 //classComposer.SetAccessModifier(ClassComposer.AccessModifierTypes.INTERNAL);
                 //classComposer.Rename("RenamedClass");
                 //classComposer.SelectMethodDeclaration("FindOverloadedConstructorDeclarations");
@@ -52,8 +54,18 @@ namespace RoseLibApp
                 //classComposer.Delete();
                 //classComposer.SelectPropertyDeclaration("Dummy");
                 //classComposer.Delete();
-                
-                Console.WriteLine(cuComposer.CurrentNode.ToFullString());
+
+                CompilationUnitComposer cuComposer = new CompilationUnitComposer();
+                cuComposer.AddUsing("System")
+                    .AddUsing("System.IO")
+                    .AddNamespace("test.namespace");
+
+                cuComposer.SelectNamespace();
+                var nsComposer = cuComposer.ToNamespaceComposer();
+                nsComposer.AddClass(new ClassOptions() { ClassName = "TestClass", AccessModifier = RoseLib.Enums.AccessModifierTypes.INTERNAL });
+                nsComposer.SelectClassDeclaration("TestClass");
+
+                Console.WriteLine(cuComposer.CurrentNode.NormalizeWhitespace().ToFullString());
             }
         }
     }

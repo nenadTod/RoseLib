@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using System.IO;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace RoseLibApp.RoseLib.Composers
 {
@@ -18,6 +19,38 @@ namespace RoseLibApp.RoseLib.Composers
         public CompilationUnitComposer(StreamReader sr):base(sr)
         {
             Composer = this;
+        }
+
+        public CompilationUnitComposer()
+        {
+            Composer = this;
+
+            CompilationUnitSyntax cu = SyntaxFactory.CompilationUnit();
+            SetHead(cu);
+        }
+
+        public CompilationUnitComposer AddUsing(string @namespace)
+        {
+            Reset();
+
+            var cu = CurrentNode as CompilationUnitSyntax;
+            var newCu = cu.AddUsings(SyntaxFactory.UsingDirective(SyntaxFactory.IdentifierName(@namespace)));
+
+            Replace(cu, newCu, null);
+            return this;
+        }
+
+        public CompilationUnitComposer AddNamespace(string @namespace)
+        {
+            var namespaceDeclaration = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.IdentifierName(@namespace));
+
+            Reset();
+            var cu = CurrentNode as CompilationUnitSyntax;
+
+            var newCu = cu.AddMembers(namespaceDeclaration);
+            Replace(cu, newCu, null);
+
+            return this;
         }
 
         public CompilationUnitComposer Delete()
@@ -37,8 +70,8 @@ namespace RoseLibApp.RoseLib.Composers
 
             }
 
-            var newClass = cu.RemoveNode(nodeForRemoval, SyntaxRemoveOptions.KeepExteriorTrivia);
-            Replace(cu, newClass, null);
+            var newCU = cu.RemoveNode(nodeForRemoval, SyntaxRemoveOptions.KeepExteriorTrivia);
+            Replace(cu, newCU, null);
 
             return this;
         }

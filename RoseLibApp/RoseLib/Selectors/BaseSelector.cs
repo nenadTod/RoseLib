@@ -14,14 +14,18 @@ namespace RoseLibApp.RoseLib.Selectors
         protected T Composer { get; set; }
         private Stack<SelectedObject> nodes = new Stack<SelectedObject>();
 
+        public SyntaxNode CurrentNode => nodes.Peek()?.CurrentNode;
+        public List<SyntaxNode> CurrentNodesList => nodes.Peek()?.CurrentNodesList;
+
+        protected BaseSelector()
+        {
+        }
+
         public BaseSelector(StreamReader reader)
         {
             var code = reader.ReadToEnd();
             nodes.Push(new SelectedObject(SyntaxFactory.ParseCompilationUnit(code)));
         }
-
-        public SyntaxNode CurrentNode => nodes.Peek()?.CurrentNode;
-        public List<SyntaxNode> CurrentNodesList => nodes.Peek()?.CurrentNodesList;
 
         public BaseSelector(SyntaxNode node)
         {
@@ -73,10 +77,9 @@ namespace RoseLibApp.RoseLib.Selectors
             return Composer;
         }
 
-        protected void ResetAndReplaceHead(SyntaxNode node)
+        protected void SetHead(SyntaxNode node)
         {
-            Reset();
-            nodes.Pop();
+            nodes.Clear();
             nodes.Push(new SelectedObject(node));
         }
 

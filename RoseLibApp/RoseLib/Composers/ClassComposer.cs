@@ -1,6 +1,8 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using RoseLibApp.RoseLib.Enums;
+using RoseLibApp.RoseLib.Model;
 using RoseLibApp.RoseLib.Selectors;
 using System;
 using System.Collections.Generic;
@@ -210,15 +212,6 @@ namespace RoseLibApp.RoseLib.Composers
 
             return newRoot;
         }
-
-        public enum AccessModifierTypes
-        {
-            PRIVATE,
-            PROTECTED,
-            PRIVATE_PROTECTED,
-            INTERNAL,
-            PROTECTED_INTERNAL,
-            PUBLIC
-        }
+        
     }
 }

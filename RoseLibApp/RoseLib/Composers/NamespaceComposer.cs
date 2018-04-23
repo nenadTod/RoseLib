@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.CSharp;
+using RoseLibApp.RoseLib.Model;
+using RoseLibApp.RoseLib.Templates;
 
 namespace RoseLibApp.RoseLib.Composers
 {
@@ -85,6 +87,22 @@ namespace RoseLibApp.RoseLib.Composers
 
             var newClass = @namespace.RemoveNode(nodeForRemoval, SyntaxRemoveOptions.KeepExteriorTrivia);
             Replace(@namespace, newClass, null);
+
+            return this;
+        }
+
+        public NamespaceComposer AddClass(ClassOptions options)
+        {
+            var template = new CreateClass() { Options = options };
+            var code = template.TransformText();
+            var cu = SyntaxFactory.ParseCompilationUnit(code).NormalizeWhitespace();
+            var newClass = cu.DescendantNodes().OfType<ClassDeclarationSyntax>().First();
+
+            Reset();
+            var @namespace = CurrentNode as NamespaceDeclarationSyntax;
+            @namespace = @namespace.AddMembers(newClass);
+
+            Replace(CurrentNode, @namespace, null);
 
             return this;
         }

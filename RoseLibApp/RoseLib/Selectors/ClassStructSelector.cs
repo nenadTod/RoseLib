@@ -14,6 +14,10 @@ namespace RoseLibApp.RoseLib.Selectors
     {
         #region Constructors
 
+        protected ClassStructSelector()
+        {
+        }
+
         public ClassStructSelector(StreamReader reader) : base(reader)
         {
             // TODO: Only files containing class declaration should be accepted?

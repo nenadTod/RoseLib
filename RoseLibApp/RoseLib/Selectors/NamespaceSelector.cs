@@ -12,6 +12,10 @@ namespace RoseLibApp.RoseLib.Selectors
 {
     public class NamespaceSelector<T> : BaseSelector<T> where T:IComposer
     {
+        protected NamespaceSelector()
+        {
+        }
+
         public NamespaceSelector(StreamReader reader) : base(reader)
         {
 

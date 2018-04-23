@@ -1,0 +1,13 @@
+﻿<#@ template language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="RoseLibApp.RoseLib.Model" #>
+
+<#= Options.ModifiersToString() #> <# if(Options.IsStatic) {#> static <# } #> <# if(Options.IsPartial) {#> partial <# } #> class <#= Options.ClassName #> {
+}
+
+<#+ 
+	public ClassOptions Options {get; set;}
+#>
