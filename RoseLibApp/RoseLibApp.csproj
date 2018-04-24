@@ -114,6 +114,10 @@
     <Compile Include="RoseLib\Composers\NamespaceComposer.cs" />
     <Compile Include="RoseLib\Enums\AccessModifierTypes.cs" />
     <Compile Include="RoseLib\Model\ClassOptions.cs" />
+    <Compile Include="RoseLib\Model\FieldOptions.cs" />
+    <Compile Include="RoseLib\Model\AccessModifierOptions.cs" />
+    <Compile Include="RoseLib\Model\MethodOptions.cs" />
+    <Compile Include="RoseLib\Model\PropertyOptions.cs" />
     <Compile Include="RoseLib\Model\RLParameter.cs" />
     <Compile Include="RoseLib\Model\SelectedObject.cs" />
     <Compile Include="Program.cs" />

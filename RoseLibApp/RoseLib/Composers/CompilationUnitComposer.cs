@@ -31,7 +31,10 @@ namespace RoseLibApp.RoseLib.Composers
 
         public CompilationUnitComposer AddUsing(string @namespace)
         {
-            Reset();
+            if (!IsAtRoot())
+            {
+                throw new Exception("You must be positioned at a compilation unit (which is root to the composer) to add a using to it.");
+            }
 
             var cu = CurrentNode as CompilationUnitSyntax;
             var newCu = cu.AddUsings(SyntaxFactory.UsingDirective(SyntaxFactory.IdentifierName(@namespace)));
@@ -44,7 +47,11 @@ namespace RoseLibApp.RoseLib.Composers
         {
             var namespaceDeclaration = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.IdentifierName(@namespace));
 
-            Reset();
+            if (!IsAtRoot())
+            {
+                throw new Exception("You must be positioned at a compilation unit (which is root to the composer) to add a namespace to it.");
+            }
+
             var cu = CurrentNode as CompilationUnitSyntax;
 
             var newCu = cu.AddMembers(namespaceDeclaration);

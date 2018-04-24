@@ -28,6 +28,87 @@ namespace RoseLibApp.RoseLib.Composers
             Composer = this;
         }
         
+        public ClassComposer AddMethod(MethodOptions options)
+        {
+            if (!IsAtRoot())
+            {
+                throw new Exception("A class must be selected (which is also a root to the composer) to add a method to it.");
+            }
+
+            TypeSyntax returnType = SyntaxFactory.ParseTypeName(options.ReturnType);
+            var method = SyntaxFactory.MethodDeclaration(returnType, options.MethodName).WithModifiers(options.ModifiersToTokenList());
+
+            var @params = SyntaxFactory.ParameterList();
+            foreach (var param in options.Parameters)
+            {
+                var type = SyntaxFactory.IdentifierName(param.Type);
+                var name = SyntaxFactory.Identifier(param.Name);
+                var paramSyntax = SyntaxFactory
+                    .Parameter(new SyntaxList<AttributeListSyntax>(), SyntaxFactory.TokenList(), type, name, null);
+                @params = @params.AddParameters(paramSyntax);
+            }
+            @params = @params.NormalizeWhitespace();
+            method = method.WithParameterList(@params);
+
+            method = method.WithBody(SyntaxFactory.Block());
+
+            var newNode = (CurrentNode as ClassDeclarationSyntax).AddMembers(method);
+            Replace(CurrentNode, newNode, null);
+            
+            return this;
+        }
+
+        public ClassComposer AddField(FieldOptions options)
+        {
+            if (!IsAtRoot())
+            {
+                throw new Exception("A class must be selected (which is also a root to the composer) to add a field to it.");
+            }
+
+            TypeSyntax type = SyntaxFactory.ParseTypeName(options.FieldType);
+            var declaration = SyntaxFactory.VariableDeclaration(type,
+                    SyntaxFactory.SeparatedList(new[] 
+                        {
+                            SyntaxFactory.VariableDeclarator(SyntaxFactory.Identifier(options.FieldName))
+                        }
+                    )
+                );
+            
+
+            var fieldDeclaration = SyntaxFactory.FieldDeclaration( new SyntaxList<AttributeListSyntax>{ }, options.ModifiersToTokenList(), declaration);
+
+            var newNode = (CurrentNode as ClassDeclarationSyntax).AddMembers(fieldDeclaration);
+            Replace(CurrentNode, newNode, null);
+
+            return this;
+        }
+
+        public ClassComposer AddProperty(PropertyOptions options)
+        {
+            if (!IsAtRoot())
+            {
+                throw new Exception("A class must be selected (which is also a root to the composer) to add a field to it.");
+            }
+
+            PropertyDeclarationSyntax @property = SyntaxFactory
+                .PropertyDeclaration(SyntaxFactory.ParseTypeName(options.PropertyType), options.PropertyName)
+                .WithModifiers(options.ModifiersToTokenList());
+            
+            @property = @property.AddAccessorListAccessors(
+                SyntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
+                    .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken)
+                    ));
+            @property = @property.AddAccessorListAccessors(
+                SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
+                .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken)
+                ));
+
+            var newNode = (CurrentNode as ClassDeclarationSyntax).AddMembers(@property);
+            Replace(CurrentNode, newNode, null);
+
+            return this;
+        }
+
         public ClassComposer Rename(string newName)
         {
             if(!(CurrentNode is ClassDeclarationSyntax))

@@ -93,12 +93,16 @@ namespace RoseLibApp.RoseLib.Composers
 
         public NamespaceComposer AddClass(ClassOptions options)
         {
+            if (!IsAtRoot())
+            {
+                throw new Exception("The namespace must be selected (which is root to the composer) to add a class to it.");
+            }
+
             var template = new CreateClass() { Options = options };
             var code = template.TransformText();
             var cu = SyntaxFactory.ParseCompilationUnit(code).NormalizeWhitespace();
             var newClass = cu.DescendantNodes().OfType<ClassDeclarationSyntax>().First();
 
-            Reset();
             var @namespace = CurrentNode as NamespaceDeclarationSyntax;
             @namespace = @namespace.AddMembers(newClass);
 

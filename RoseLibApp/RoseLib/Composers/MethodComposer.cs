@@ -66,7 +66,7 @@ namespace RoseLibApp.RoseLib.Composers
         {
             if (!(CurrentNode is MethodDeclarationSyntax))
             {
-                throw new Exception("Rename can only be called if method node is selected! Call Reset if you want to select the method node.");
+                throw new Exception("Appending parameters can only be done if method node is selected! Call Reset if you want to select the method node.");
             }
             var existingParams= (CurrentNode as MethodDeclarationSyntax).ParameterList;
 
@@ -91,7 +91,7 @@ namespace RoseLibApp.RoseLib.Composers
         {
             if (!(CurrentNode is MethodDeclarationSyntax))
             {
-                throw new Exception("Rename can only be called if method node is selected! Call Reset if you want to select the method node.");
+                throw new Exception("Setting parameters only be done if method node is selected! Call Reset if you want to select the method node.");
             }
             var @params = SyntaxFactory.ParameterList();
             foreach (var param in parameters)

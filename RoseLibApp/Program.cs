@@ -1,9 +1,11 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using RoseLibApp.RoseLib.Composers;
+using RoseLibApp.RoseLib.Enums;
 using RoseLibApp.RoseLib.Model;
 using RoseLibApp.RoseLib.Selectors;
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace RoseLibApp
@@ -64,6 +66,33 @@ namespace RoseLibApp
                 var nsComposer = cuComposer.ToNamespaceComposer();
                 nsComposer.AddClass(new ClassOptions() { ClassName = "TestClass", AccessModifier = RoseLib.Enums.AccessModifierTypes.INTERNAL });
                 nsComposer.SelectClassDeclaration("TestClass");
+
+                RLParameter parameter = new RLParameter() { Type = "int", Name = "testParam" };
+                var clComposer = nsComposer.ToClassComposer();
+                clComposer.AddField(new FieldOptions
+                    {
+                        AccessModifier = AccessModifierTypes.PRIVATE,
+                        FieldName = "testField",
+                        FieldType = "Integer"
+                    }
+                );
+
+                clComposer.AddProperty(new PropertyOptions
+                    {
+                        AccessModifier = AccessModifierTypes.PUBLIC,
+                        PropertyName = "TestProperty",
+                        PropertyType = "bool"
+                    }
+                );
+
+                clComposer.AddMethod(new MethodOptions()
+                    {
+                        AccessModifier = AccessModifierTypes.PROTECTED,
+                        ReturnType = "string",
+                        MethodName = "TestMethod",
+                        Parameters = new List<RLParameter> { parameter }
+                    }
+                );
 
                 Console.WriteLine(cuComposer.CurrentNode.NormalizeWhitespace().ToFullString());
             }

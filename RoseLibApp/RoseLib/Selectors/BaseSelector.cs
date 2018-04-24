@@ -37,6 +37,11 @@ namespace RoseLibApp.RoseLib.Selectors
             this.nodes.Push(new SelectedObject(nodes));
         }
 
+        public bool IsAtRoot()
+        {
+            return nodes.Count == 1;
+        }
+
         protected void NextStep(SyntaxNode node)
         {
             if(node == null)
