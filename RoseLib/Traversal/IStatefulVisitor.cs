@@ -120,7 +120,7 @@ namespace RoseLib.Traversal
 
         }
        
-        internal void AfterUpdateStateAdjustment(SyntaxNode oldNode, SyntaxNode newNode)
+        internal void ReplaceAndAdjustState(SyntaxNode oldNode, SyntaxNode newNode)
         {
             if (State.Peek().CurrentNode != oldNode)
             {

@@ -38,7 +38,7 @@ namespace RoseLib.Composers
 
             (Navigator as IStatefulVisitor).PrepareForTreeUpdate();
             var newNamespaceVersion = @namespace.AddMembers(newClass); // Da li bi ovu instancu klase mogao da upotrebiš za selekciju?
-            (Navigator as IStatefulVisitor).AfterUpdateStateAdjustment(@namespace, newNamespaceVersion);
+            (Navigator as IStatefulVisitor).ReplaceAndAdjustState(@namespace, newNamespaceVersion);
 
             (Navigator as NamespaceNavigator)?.SelectClassDeclaration(options.ClassName);
 
