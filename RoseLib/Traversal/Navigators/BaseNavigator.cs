@@ -45,7 +45,6 @@ namespace RoseLib.Traversal.Navigators
                 }
             }
         }
-        CompilationUnitSyntax? IStatefulVisitor.TrackedRoot { get; set; }
 
         public BaseNavigator()
         {

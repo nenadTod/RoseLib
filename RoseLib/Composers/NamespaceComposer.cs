@@ -36,9 +36,8 @@ namespace RoseLib.Composers
             var cu = SyntaxFactory.ParseCompilationUnit(code).NormalizeWhitespace();
             var newClass = cu.DescendantNodes().OfType<ClassDeclarationSyntax>().First();
 
-            (Navigator as IStatefulVisitor).PrepareForTreeUpdate();
             var newNamespaceVersion = @namespace.AddMembers(newClass); // Da li bi ovu instancu klase mogao da upotrebiš za selekciju?
-            (Navigator as IStatefulVisitor).ReplaceAndAdjustState(@namespace, newNamespaceVersion);
+            (Navigator as IStatefulVisitor).ReplaceNodeAndAdjustState(@namespace, newNamespaceVersion);
 
             (Navigator as NamespaceNavigator)?.SelectClassDeclaration(options.ClassName);
 

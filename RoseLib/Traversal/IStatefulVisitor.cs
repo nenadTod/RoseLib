@@ -18,7 +18,6 @@ namespace RoseLib.Traversal
         public Stack<SelectedObject> State { get; protected set; }
         public SyntaxNode? CurrentNode => State.Peek()?.CurrentNode;
         public List<SyntaxNode>? CurrentNodesList => State.Peek()?.CurrentNodesList;
-        public CompilationUnitSyntax? TrackedRoot { get; protected set; }
 
         internal void NextStep(SyntaxNode? node)
         {
@@ -101,12 +100,8 @@ namespace RoseLib.Traversal
             allOldSelectedObjects.Reverse();
             return allOldSelectedObjects;
         }
-
-        // TODO: Prosto, ova metoda bi uvek da ide uz AfterUpdateStateAdjustment
-        // Dve operacije koje moraju jedna uz drugu inače se sve raspada.
-        // Tako da bi možda trebalo napraviti funkciju koja prima operaciju što radi update.
-        // A usput se lepo ta operacija zaokruži parom :) I onda ne bi zaboravio nikad...
-        internal void PrepareForTreeUpdate()
+       
+        internal void ReplaceNodeAndAdjustState(SyntaxNode oldNode, SyntaxNode newNode)
         {
             var root = GetRoot();
 
@@ -116,21 +111,12 @@ namespace RoseLib.Traversal
             }
 
             var nodesToTrack = GetAllSelectedSyntaxNodes();
-            TrackedRoot = root.TrackNodes(nodesToTrack);
+            var TrackedRoot = root.TrackNodes(nodesToTrack);
 
-        }
-       
-        internal void ReplaceAndAdjustState(SyntaxNode oldNode, SyntaxNode newNode)
-        {
             if (State.Peek().CurrentNode != oldNode)
             {
                 throw new InvalidStateException("Updates only possible to the currently selected node");
 
-            }
-
-            if (TrackedRoot == null)
-            {
-                throw new InvalidStateException("Adjustment can only be done after you've called 'PrepareForTreeUpdate'");
             }
 
             if (oldNode.GetType() != newNode.GetType())
@@ -138,21 +124,7 @@ namespace RoseLib.Traversal
                 throw new Exception("Old and new node must be of the same type");
             }
 
-
-            string? customId;
-            SyntaxAnnotation? annotation;
-
-            if (!newNode.HasAnnotations(ANNOTATION))
-            {
-                customId = Guid.NewGuid().ToString();
-                annotation = new SyntaxAnnotation(ANNOTATION, customId)!;
-                newNode = newNode.WithAdditionalAnnotations(annotation);
-            }
-            else
-            {
-                annotation = newNode.GetAnnotations(ANNOTATION).First()!;
-            }
-
+            SyntaxAnnotation? annotation = AnnotateNode(ref newNode);
 
             var trackedOldNode = TrackedRoot.GetCurrentNode(oldNode)!;
 
@@ -161,7 +133,6 @@ namespace RoseLib.Traversal
             var newState = new Stack<SelectedObject>();
 
             List<SelectedObject> allOldSelectedObjects = GetAllSelectedObjects();
-
             foreach (var oldSelectedObject in allOldSelectedObjects)
             {
                 if (oldSelectedObject.CurrentNode != null)
@@ -189,6 +160,25 @@ namespace RoseLib.Traversal
             }
 
             State = newState;
+        }
+
+        SyntaxAnnotation AnnotateNode(ref SyntaxNode newNode)
+        {
+            string? customId;
+            SyntaxAnnotation? annotation;
+
+            if (!newNode.HasAnnotations(ANNOTATION))
+            {
+                customId = Guid.NewGuid().ToString();
+                annotation = new SyntaxAnnotation(ANNOTATION, customId)!;
+                newNode = newNode.WithAdditionalAnnotations(annotation);
+            }
+            else
+            {
+                annotation = newNode.GetAnnotations(ANNOTATION).First()!;
+            }
+
+            return annotation;
         }
     }
 }

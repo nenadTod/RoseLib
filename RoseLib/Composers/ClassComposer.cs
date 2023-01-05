@@ -39,9 +39,8 @@ namespace RoseLib.Composers
 
             var fieldDeclaration = SyntaxFactory.FieldDeclaration(new SyntaxList<AttributeListSyntax> { }, options.ModifiersToTokenList(), declaration);
 
-            Navigator.AsVisitor.PrepareForTreeUpdate();
             var newClassNode = @class.AddMembers(fieldDeclaration);
-            Navigator.AsVisitor.ReplaceAndAdjustState(@class, newClassNode);
+            Navigator.AsVisitor.ReplaceNodeAndAdjustState(@class, newClassNode);
 
             return this;
         }
@@ -67,8 +66,7 @@ namespace RoseLib.Composers
 
             var newFieldDeclaration = SyntaxFactory.FieldDeclaration(new SyntaxList<AttributeListSyntax> { }, options.ModifiersToTokenList(), declaration);
 
-            Navigator.AsVisitor.PrepareForTreeUpdate();
-            Navigator.AsVisitor.ReplaceAndAdjustState(existingFieldDeclaration, newFieldDeclaration);
+            Navigator.AsVisitor.ReplaceNodeAndAdjustState(existingFieldDeclaration, newFieldDeclaration);
 
             return this;
         }
