@@ -1,17 +1,20 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using RoseLib.Composers;
+using RoseLib.ComposersOLD;
 using RoseLib.Model;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection.PortableExecutable;
 using System.Text;
 
 namespace RoseLib.Selectors
 {
     public class BaseSelector<T> where T: IComposer
-    { 
-        protected T Composer { get; set; }
+    {
+        protected string? sourceFilePath;
+
+        protected T? Composer { get; set; }
         private Stack<SelectedObject> nodes = new Stack<SelectedObject>();
 
         public SyntaxNode CurrentNode => nodes.Peek()?.CurrentNode;
@@ -19,6 +22,16 @@ namespace RoseLib.Selectors
 
         protected BaseSelector()
         {
+        }
+        public BaseSelector(string path)
+        {
+            using(var reader = new StreamReader(path))
+            {
+                var code = reader.ReadToEnd();
+                nodes.Push(new SelectedObject(SyntaxFactory.ParseCompilationUnit(code)));
+            }
+
+            this.sourceFilePath = path;
         }
 
         public BaseSelector(StreamReader reader)

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using RoseLib.Validation_Attributes;
 using System.IO;
 using System.Runtime.CompilerServices;
-using RoseLib.Composers;
+using RoseLib.ComposersOLD;
 
 namespace RoseLib.Selectors
 {
@@ -16,6 +16,11 @@ namespace RoseLib.Selectors
 
         protected ClassStructSelector()
         {
+        }
+
+        public ClassStructSelector(string path) : base(path)
+        {
+            // TODO: Only files containing class declaration should be accepted?
         }
 
         public ClassStructSelector(StreamReader reader) : base(reader)

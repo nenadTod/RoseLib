@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RoseLib
+namespace RoseLib.Traversal.Navigators
 {
-    public class JustATest
+    public class MethodNavigator: BaseNavigator
     {
-        public static void Test()
+        public MethodNavigator(BaseNavigator? parent): base(parent)
         {
-            Console.WriteLine("It works :)");
         }
     }
 }

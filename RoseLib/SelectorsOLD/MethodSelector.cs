@@ -1,6 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using RoseLib.Composers;
+using RoseLib.ComposersOLD;
 using RoseLib.Validation_Attributes;
 using System;
 using System.Collections.Generic;
@@ -13,6 +13,10 @@ namespace RoseLib.Selectors
     public class MethodSelector<T> : BaseSelector<T> where T:IComposer
     {
         #region Constructors
+
+        public MethodSelector(string path) : base(path)
+        {
+        }
 
         public MethodSelector(StreamReader reader) : base(reader)
         {

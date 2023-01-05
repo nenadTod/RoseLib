@@ -7,9 +7,9 @@ namespace RoseLib.Model
 {
     public class SelectedObject
     {
-        public SyntaxNode CurrentNode { get; }
+        public SyntaxNode? CurrentNode { get; }
 
-        public List<SyntaxNode> CurrentNodesList { get; }
+        public List<SyntaxNode>? CurrentNodesList { get; }
 
         public SelectedObject(SyntaxNode node)
         {

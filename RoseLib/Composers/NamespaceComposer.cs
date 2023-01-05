@@ -1,114 +1,68 @@
-﻿using RoseLib.Selectors;
+﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Rename;
+using RoseLib.Exceptions;
+using RoseLib.Model;
+using RoseLib.Templates;
+using RoseLib.Traversal;
+using RoseLib.Traversal.Navigators;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.CSharp;
-using RoseLib.Model;
-using RoseLib.Templates;
 
 namespace RoseLib.Composers
 {
-    public class NamespaceComposer : NamespaceSelector<NamespaceComposer>, IComposer
+    public class NamespaceComposer : BaseComposer
     {
-        public NamespaceComposer(NamespaceDeclarationSyntax @namespace, IComposer parent):base(@namespace)
+        public NamespaceComposer(NamespaceNavigator navigator) : base(navigator)
         {
-            Composer = this;
-            ParentComposer = parent;
+        }
+        public NamespaceComposer(NamespaceDeclarationSyntax? namespaceDeclaration, NamespaceNavigator navigator) : base(namespaceDeclaration, navigator)
+        {
         }
 
-        public IComposer ParentComposer { get; set; }
-
-        public List<SyntaxNode> Replace(SyntaxNode oldNode, SyntaxNode newNode, List<SyntaxNode> nodesToTrack)
-        {
-            if (oldNode.GetType() != newNode.GetType())
-            {
-                throw new Exception("Old and new node must be of the same type");
-            }
-
-            var trackedNodes = new List<SyntaxNode>();
-
-            if (nodesToTrack != null)
-            {
-                trackedNodes.AddRange(nodesToTrack);
-            }
-
-            Reset();
-
-            var newRoot = CurrentNode;
-
-            if (ParentComposer != null)
-            {
-                trackedNodes.Add(CurrentNode);
-                trackedNodes = ParentComposer.Replace(oldNode, newNode, trackedNodes);
-                var tempNode = trackedNodes.LastOrDefault();
-
-                if (tempNode != null)
-                {
-                    newRoot = tempNode;
-                    trackedNodes.Remove(newRoot);
-                }
-            }
-            else
-            {
-                if (!(oldNode is NamespaceDeclarationSyntax))
-                {
-                    newRoot = newRoot.ReplaceNode(oldNode, newNode);
-                }
-                else
-                {
-                    newRoot = newNode;
-                }
-            }
-
-            ReplaceHead(newRoot);
-            return trackedNodes;
-        }
-
-        public NamespaceComposer Delete()
-        {
-            var nodeForRemoval = CurrentNode;
-            Reset();
-
-            var @namespace = CurrentNode;
-
-            if (@namespace == nodeForRemoval)
-            {
-                throw new Exception("Root of the composer cannot be deleted. Deletion can be done using parent selector.");
-            }
-            if (nodeForRemoval == null)
-            {
-                throw new Exception("You cannot perform delete operation when the value of the current node is null.");
-
-            }
-
-            var newClass = @namespace.RemoveNode(nodeForRemoval, SyntaxRemoveOptions.KeepExteriorTrivia);
-            Replace(@namespace, newClass, null);
-
-            return this;
-        }
-
+        // TODO: Dodatno razmisliti o selekciji klase nakon kreirana.
         public NamespaceComposer AddClass(ClassOptions options)
         {
-            if (!IsAtRoot())
-            {
-                throw new Exception("The namespace must be selected (which is root to the composer) to add a class to it.");
-            }
+            Navigator.AsVisitor.PopUntil(typeof(NamespaceDeclarationSyntax));
+            var @namespace = (Navigator.AsVisitor.CurrentNode as NamespaceDeclarationSyntax)!;
+
 
             var template = new CreateClass() { Options = options };
             var code = template.TransformText();
             var cu = SyntaxFactory.ParseCompilationUnit(code).NormalizeWhitespace();
             var newClass = cu.DescendantNodes().OfType<ClassDeclarationSyntax>().First();
 
-            var @namespace = CurrentNode as NamespaceDeclarationSyntax;
-            @namespace = @namespace.AddMembers(newClass);
+            (Navigator as IStatefulVisitor).PrepareForTreeUpdate();
+            var newNamespaceVersion = @namespace.AddMembers(newClass); // Da li bi ovu instancu klase mogao da upotrebiš za selekciju?
+            (Navigator as IStatefulVisitor).AfterUpdateStateAdjustment(@namespace, newNamespaceVersion);
 
-            Replace(CurrentNode, @namespace, null);
+            (Navigator as NamespaceNavigator)?.SelectClassDeclaration(options.ClassName);
 
             return this;
+        }
+
+
+        /// <summary>
+        /// Creates a namespace composer positioned at the last selected or added namespace, available at the
+        /// current navigator.
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="InvalidActionForStateException"></exception>
+        public ClassComposer EnterClass()
+        {
+            var @class = Navigator.State.Peek().CurrentNode as ClassDeclarationSyntax;
+            if (@class == null)
+            {
+                throw new InvalidActionForStateException("Entering classes only possible when positioned on a class declaration syntax instance.");
+            }
+
+            CSRTypeNavigator classNavigator = new CSRTypeNavigator(Navigator as BaseNavigator);
+
+            return new ClassComposer(classNavigator);
         }
     }
 }

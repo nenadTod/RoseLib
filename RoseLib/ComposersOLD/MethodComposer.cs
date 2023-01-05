@@ -11,7 +11,7 @@ using System.Reflection.Metadata;
 using RoseLib.Model;
 using RoseLib.Templates;
 
-namespace RoseLib.Composers
+namespace RoseLib.ComposersOLD
 {
     public class MethodComposer : MethodSelector<MethodComposer>, IComposer
     {

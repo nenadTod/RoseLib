@@ -1,6 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using RoseLib.Composers;
+using RoseLib.ComposersOLD;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,6 +13,10 @@ namespace RoseLib.Selectors
     public class NamespaceSelector<T> : BaseSelector<T> where T:IComposer
     {
         protected NamespaceSelector()
+        {
+        }
+
+        public NamespaceSelector(string path) : base(path)
         {
         }
 

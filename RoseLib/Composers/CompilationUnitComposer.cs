@@ -1,132 +1,85 @@
-﻿using RoseLib.Selectors;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.CSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.CodeAnalysis;
-using System.IO;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.CSharp;
+using System.Net.NetworkInformation;
+using RoseLib.Traversal.Navigators;
+using RoseLib.Exceptions;
+using RoseLib.Traversal;
 
 namespace RoseLib.Composers
 {
-    class CompilationUnitComposer : CompilationUnitSelector<CompilationUnitComposer>, IComposer
+    public class CompilationUnitComposer : BaseComposer
     {
-        const string NODE_ANNOTATION_KIND = "RoseLibNewNode";
-        public IComposer ParentComposer { get; set; }
-        
-        public CompilationUnitComposer(StreamReader sr):base(sr)
+        public CompilationUnitComposer(): base(new CompilationUnitNavigator())
         {
-            Composer = this;
         }
 
-        public CompilationUnitComposer()
+        internal CompilationUnitComposer(CompilationUnitNavigator navigator) : base(navigator)
         {
-            Composer = this;
-
-            CompilationUnitSyntax cu = SyntaxFactory.CompilationUnit();
-            SetHead(cu);
         }
 
-        public CompilationUnitComposer AddUsing(string @namespace)
+        public CompilationUnitComposer AddUsingDirectives(params string[] usings)
         {
-            if (!IsAtRoot())
+            Navigator.AsVisitor.PopUntil(typeof(CompilationUnitSyntax));
+            var compilationUnit = (Navigator.AsVisitor.CurrentNode as CompilationUnitSyntax)!;
+
+            if(usings.Length == 0)
             {
-                throw new Exception("You must be positioned at a compilation unit (which is root to the composer) to add a using to it.");
+                return this;
             }
 
-            var cu = CurrentNode as CompilationUnitSyntax;
-            var newCu = cu.AddUsings(SyntaxFactory.UsingDirective(SyntaxFactory.IdentifierName(@namespace)));
-
-            Replace(cu, newCu, null);
-            return this;
-        }
-
-        public CompilationUnitComposer AddNamespace(string @namespace)
-        {
-            var namespaceDeclaration = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.IdentifierName(@namespace));
-
-            if (!IsAtRoot())
+            List<UsingDirectiveSyntax> usingDirectives = new List<UsingDirectiveSyntax>();
+            foreach (var @using in usings)
             {
-                throw new Exception("You must be positioned at a compilation unit (which is root to the composer) to add a namespace to it.");
+                var usingDirective = SyntaxFactory.UsingDirective(SyntaxFactory.IdentifierName(@using));
+                usingDirectives.Add(usingDirective);
             }
-
-            var cu = CurrentNode as CompilationUnitSyntax;
-
-            var newCu = cu.AddMembers(namespaceDeclaration);
-            Replace(cu, newCu, null);
+            CompilationUnitSyntax newCompilationUnit = compilationUnit.AddUsings(usingDirectives.ToArray());
+            Navigator.AsVisitor.SetHead(newCompilationUnit);
 
             return this;
         }
 
-        public CompilationUnitComposer Delete()
+        public CompilationUnitComposer AddNamespace(string namespaceName)
         {
-            var nodeForRemoval = CurrentNode;
-            Reset();
+            Navigator.AsVisitor.PopUntil(typeof(CompilationUnitSyntax));
+            var compilationUnit = (Navigator.AsVisitor.CurrentNode as CompilationUnitSyntax)!;
 
-            var cu = CurrentNode;
-
-            if (cu == nodeForRemoval)
+            if(namespaceName == null)
             {
-                throw new Exception("Root of the composer cannot be deleted. Deletion can be done using parent selector.");
-            }
-            if (nodeForRemoval == null)
-            {
-                throw new Exception("You cannot perform delete operation when the value of the current node is null.");
-
+                throw new ArgumentNullException("Namespace to add cannot be null");
             }
 
-            var newCU = cu.RemoveNode(nodeForRemoval, SyntaxRemoveOptions.KeepExteriorTrivia);
-            Replace(cu, newCU, null);
+            var namespaceDeclaration = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.IdentifierName(namespaceName));
+            CompilationUnitSyntax newCompilationUnit = compilationUnit.AddMembers(namespaceDeclaration);
+
+            Navigator.AsVisitor.SetHead(newCompilationUnit);
+            (Navigator as CompilationUnitNavigator)?.SelectNamespace(namespaceName);
 
             return this;
         }
 
-        public List<SyntaxNode> Replace(SyntaxNode oldNode, SyntaxNode newNode, List<SyntaxNode> nodesToTrack)
+        /// <summary>
+        /// Creates a namespace composer positioned at the last selected or added namespace, available at the
+        /// current navigator.
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="InvalidActionForStateException"></exception>
+        public NamespaceComposer EnterNamespace()
         {
-            if (oldNode.GetType() != newNode.GetType())
+            var @namespace = Navigator.State.Peek().CurrentNode as NamespaceDeclarationSyntax;
+            if(@namespace == null)
             {
-                throw new Exception("Old and new node must be of the same type");
+                throw new InvalidActionForStateException("Entering namespaces only possible when positioned on a namespace declaration syntax instance.");
             }
 
-            var trackedNodes = new List<SyntaxNode>();
+            NamespaceNavigator namespaceNavigator = new NamespaceNavigator(Navigator as BaseNavigator);
 
-            if (nodesToTrack != null)
-            {
-                trackedNodes.AddRange(nodesToTrack);
-            }
-
-            Reset();
-
-            trackedNodes.Add(oldNode);
-            
-            var newRoot = CurrentNode.TrackNodes(trackedNodes);
-            trackedNodes.Remove(oldNode);
-
-            string customId = null;
-            SyntaxAnnotation annotation = null;
-
-            if (!newNode.HasAnnotations(NODE_ANNOTATION_KIND))
-            {
-                customId = Guid.NewGuid().ToString();
-                annotation = new SyntaxAnnotation(NODE_ANNOTATION_KIND, customId);
-                newNode = newNode.WithAdditionalAnnotations(annotation);
-            }
-            else
-            {
-                annotation = newNode.GetAnnotations(NODE_ANNOTATION_KIND).FirstOrDefault();
-                customId = annotation.Data;
-            }
-          
-            newRoot = newRoot.ReplaceNode(newRoot.GetCurrentNode(oldNode), newNode);    
-            var annotatedNode = newRoot.GetAnnotatedNodes(annotation).First();
-            
-            ReplaceHead(newRoot);
-            var currentNodes = newRoot.GetCurrentNodes<SyntaxNode>(trackedNodes).ToList();
-            currentNodes.Insert(0, annotatedNode);
-
-            return currentNodes;
+            return new NamespaceComposer(namespaceNavigator);
         }
     }
 }

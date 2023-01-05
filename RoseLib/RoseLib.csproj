@@ -8,7 +8,34 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ComposersOLD\ClassComposer.cs" />
+    <Compile Remove="ComposersOLD\CompilationUnitComposer.cs" />
+    <Compile Remove="ComposersOLD\IComposer.cs" />
+    <Compile Remove="ComposersOLD\MethodComposer.cs" />
+    <Compile Remove="ComposersOLD\NamespaceComposer.cs" />
+    <Compile Remove="SelectorsOLD\BaseSelector.cs" />
+    <Compile Remove="SelectorsOLD\ClassStructSelector.cs" />
+    <Compile Remove="SelectorsOLD\CompilationUnitSelector.cs" />
+    <Compile Remove="SelectorsOLD\MethodSelector.cs" />
+    <Compile Remove="SelectorsOLD\NamespaceSelector.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="ComposersOLD\ClassComposer.cs" />
+    <None Include="ComposersOLD\CompilationUnitComposer.cs" />
+    <None Include="ComposersOLD\IComposer.cs" />
+    <None Include="ComposersOLD\MethodComposer.cs" />
+    <None Include="ComposersOLD\NamespaceComposer.cs" />
+    <None Include="SelectorsOLD\BaseSelector.cs" />
+    <None Include="SelectorsOLD\ClassStructSelector.cs" />
+    <None Include="SelectorsOLD\CompilationUnitSelector.cs" />
+    <None Include="SelectorsOLD\MethodSelector.cs" />
+    <None Include="SelectorsOLD\NamespaceSelector.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.4.0" />
   </ItemGroup>
 
   <ItemGroup>
