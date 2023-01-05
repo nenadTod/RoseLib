@@ -9,11 +9,26 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="TestFiles\Class1.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="TestFiles\Class1.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
     <PackageReference Include="NUnit" Version="3.13.3" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
     <PackageReference Include="NUnit.Analyzers" Version="3.3.0" />
     <PackageReference Include="coverlet.collector" Version="3.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RoseLib\RoseLib.csproj" />
   </ItemGroup>
 
 </Project>

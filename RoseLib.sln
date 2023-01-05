@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoseLib", "RoseLib\RoseLib.csproj", "{48B048C1-CDA4-4EFD-B2F2-773C99B86904}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoseLib", "RoseLib\RoseLib.csproj", "{48B048C1-CDA4-4EFD-B2F2-773C99B86904}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{B64E8FC3-739C-4123-A2EE-12F234B95DA8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests\Tests.csproj", "{B64E8FC3-739C-4123-A2EE-12F234B95DA8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
