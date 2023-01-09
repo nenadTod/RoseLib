@@ -34,6 +34,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="IronPython" Version="3.4.0" />
+    <PackageReference Include="IronPython.StdLib" Version="3.4.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.4.0" />
   </ItemGroup>
@@ -56,6 +58,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="CSPath\cspath.tx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="CSPath\cspath_to_model.py">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Templates\CreateClass.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>CreateClass.cs</LastGenOutput>
@@ -64,6 +72,12 @@
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>CreateStatements.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="CSPath\Lib\\**\*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

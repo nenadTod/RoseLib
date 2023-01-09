@@ -1,0 +1,19 @@
+CSPath:
+  path+=PathElements
+;
+
+PathElements:
+  RelativeDescend | Descend | Element
+;
+
+RelativeDescend:
+  tokens= /(\/\/)/
+;
+
+Descend:
+  tokens= /(\/)/
+;
+
+Element:
+  name= /[^\/]*/
+;
