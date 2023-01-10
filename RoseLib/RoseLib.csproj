@@ -80,4 +80,13 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup Label="FilesToCopy">
+    <Content Include="RoseLib.targets" PackagePath="build/RoseLib.targets" />
+    <Content Include="lib\*.*" Pack="true" PackagePath="contentFiles\lib">
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+         
+    </Content>
+  </ItemGroup>
+
+
 </Project>

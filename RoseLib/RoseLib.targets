@@ -1,0 +1,8 @@
+﻿<Project>
+  <ItemGroup>
+    <PyFiles Include="$(MSBuildThisFileDirectory)\..\contentFiles\..\*.*" />
+  </ItemGroup>
+  <Target Name="CopyPyFiles" BeforeTargets="Build">
+    <Copy SourceFiles="@(PyFiles)" DestinationFolder="$(TargetDir)lib\" />
+  </Target>
+</Project>

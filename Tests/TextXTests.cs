@@ -72,6 +72,7 @@ model = hello_meta.model_from_str(sentence)
         {
             var scope = CSPathInterpretation.GetScopeForCSPath("//Namespace/Class/Field");
 
+            Assert.NotNull(scope);
             Assert.NotNull(scope.model);
             Assert.AreEqual(6, scope.path_elements_count);
         }
