@@ -84,12 +84,11 @@
     <Content Include="RoseLib.targets" PackagePath="build/RoseLib.targets" />
     <Content Include="lib\*.*" Pack="true" PackagePath="contentFiles\lib">
       <PackageCopyToOutput>true</PackageCopyToOutput>
-         
     </Content>
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="pip3 install -r .\requirements.txt --target=.\CSPath\Lib" />
+    <Exec Command="pip3 install -r .//requirements.txt --target=.//CSPath//Lib" />
   </Target>
 
 
