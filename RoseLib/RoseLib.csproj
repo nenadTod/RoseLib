@@ -88,5 +88,9 @@
     </Content>
   </ItemGroup>
 
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="pip3 install -r .\requirements.txt --target=.\CSPath\Lib" />
+  </Target>
+
 
 </Project>
