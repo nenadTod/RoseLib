@@ -68,7 +68,7 @@ namespace RoseLib.Tests
                 
                 var code = navigator
                     .SelectFieldDeclaration("field1")
-                    .StartComposing()
+                    .StartComposing<ClassComposer>()
                     .UpdateField(new Model.FieldOptions()
                     {
                         FieldName = newFieldName,
@@ -78,6 +78,26 @@ namespace RoseLib.Tests
                 ).GetCode();
 
                 Assert.IsTrue(testRegexF.IsMatch(code));
+            }
+        }
+
+        [Test]
+        public void DeleteField()
+        {
+            var fieldForDeletionName = "field5";
+            Regex testRegexF = new Regex(fieldForDeletionName);
+
+            using (StreamReader reader = new StreamReader(".\\TestFiles\\Class1.cs"))
+            {
+                CompilationUnitNavigator navigator = new CompilationUnitNavigator(reader);
+
+                var code = navigator
+                    .SelectFieldDeclaration(fieldForDeletionName)
+                    .StartComposing<ClassComposer>()
+                    .Delete()
+                    .GetCode();
+
+                Assert.IsFalse(testRegexF.IsMatch(code));
             }
         }
     }

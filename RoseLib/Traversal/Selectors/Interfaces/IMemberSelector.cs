@@ -11,15 +11,7 @@ namespace RoseLib.Traversal.Selectors.Interfaces
     {
         public FieldNavigator ToFieldNavigator()
         {
-            if(this is CSRTypeNavigator)
-            {
-                return new FieldNavigator(this as BaseNavigator);
-            }
-            else
-            {
-                CSRTypeNavigator cSRTypeNavigator = new CSRTypeNavigator(this as BaseNavigator);
-                return new FieldNavigator(cSRTypeNavigator);
-            }
+            return new FieldNavigator(this as BaseNavigator);
         }
 
         public PropertyNavigator ToPropertyNavigator()

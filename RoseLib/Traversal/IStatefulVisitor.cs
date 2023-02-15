@@ -101,6 +101,10 @@ namespace RoseLib.Traversal
             return allOldSelectedObjects;
         }
        
+        // Track all the nodes in the state, to be able to recreate the state based on the new tree version
+        // Annotate the node to be replaced, to be able to find it after replacement (replacement destroys tracking info)
+        // Recreate the state based on track and annotation data
+        // Works even when replacing compilation unit with another compilation unit
         internal void ReplaceNodeAndAdjustState(SyntaxNode oldNode, SyntaxNode newNode)
         {
             var root = GetRoot();
@@ -111,6 +115,7 @@ namespace RoseLib.Traversal
             }
 
             var nodesToTrack = GetAllSelectedSyntaxNodes();
+            // Creates a new tree, keep that in mind.
             var TrackedRoot = root.TrackNodes(nodesToTrack);
 
             if (State.Peek().CurrentNode != oldNode)
@@ -124,10 +129,12 @@ namespace RoseLib.Traversal
                 throw new Exception("Old and new node must be of the same type");
             }
 
+            // Creates a new annotated node, keep that in mind.
             SyntaxAnnotation? annotation = AnnotateNode(ref newNode);
 
             var trackedOldNode = TrackedRoot.GetCurrentNode(oldNode)!;
 
+            // Creates a new tree by replacing, keep that in mind.
             var newRoot = TrackedRoot.ReplaceNode(trackedOldNode, newNode);
 
             var newState = new Stack<SelectedObject>();

@@ -14,14 +14,17 @@ namespace RoseLib.Traversal.Navigators
         {
         }
 
-        public ClassComposer StartComposing()
+        public T StartComposing<T>() where T: BaseComposer
         {
-            if(ParentNavigator == null || ParentNavigator.GetType() != typeof(CSRTypeNavigator))
+            // TODO: Extend for different kinds of possible composers.
+            if(typeof(T).Equals(typeof(ClassComposer)))
             {
-                throw new InvalidNavigatorHierarchyException("Field navigator must have class navigator as a parent.");
+                return (new ClassComposer(this) as T)!;
             }
-
-            return new ClassComposer((ParentNavigator as CSRTypeNavigator)!);
+            else
+            {
+                throw new Exceptions.InvalidCastException();
+            }
         }
     }
 }
