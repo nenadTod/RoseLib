@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RoseLib.Traversal.Extensions
+namespace RoseLib.Traversal
 {
     public static class TypeMemberSelectionExensions
     {

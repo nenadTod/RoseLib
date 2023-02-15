@@ -12,7 +12,6 @@ using static Microsoft.Scripting.Hosting.Shell.ConsoleHostOptions;
 
 namespace RoseLib.Traversal
 {
-    // Enums, Interfaces? 
     public static class TypeSelectionExtensions
     {
         public static CSRTypeNavigator SelectClassDeclaration<T>(this T visitor)
