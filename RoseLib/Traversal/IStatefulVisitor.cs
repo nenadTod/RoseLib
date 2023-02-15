@@ -15,7 +15,7 @@ namespace RoseLib.Traversal
     {
         const string ANNOTATION = "RoseLibAnnotation";
         public FileInfo? SourceFile { get; set; }
-        public Stack<SelectedObject> State { get; protected set; }
+        public Stack<SelectedObject> State { get; internal set; }
         public SyntaxNode? CurrentNode => State.Peek()?.CurrentNode;
         public List<SyntaxNode>? CurrentNodesList => State.Peek()?.CurrentNodesList;
 

@@ -25,6 +25,14 @@ namespace RoseLib.Traversal.Navigators
         {
         }
 
+        internal static CompilationUnitNavigator CreateTempNavigator(IStatefulVisitor visitor)
+        {
+            var navigator = new CompilationUnitNavigator();
+            navigator.AsVisitor.State = visitor.State;
+            return navigator;
+        }
+
+
         NamespaceNavigator INamespaceSelector.ToNamespaceNavigator()
         {
             return new NamespaceNavigator(this);

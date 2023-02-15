@@ -13,8 +13,6 @@ namespace RoseLib.Traversal.Navigators
         {
         }
 
-        // TODO Ovo isprobati :) Defaultna implementacija tu nema smisla, stoga reimplementacija
-        // Samo bi ipak trebalo isprobati je li ovo radi.
         CSRTypeNavigator ICSRTypeSelector.ToCSRTypeNavigator()
         {
             return this;

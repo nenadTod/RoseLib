@@ -9,23 +9,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RoseLib.Exceptions;
+using RoseLib.Traversal;
 
 namespace RoseLib.Composers
 {
     public class ClassComposer: BaseComposer
     {
-        public ClassComposer(BaseNavigator navigator) : base(navigator)
+        public ClassComposer(IStatefulVisitor visitor) : base(visitor)
         {
         }
-        public ClassComposer(ClassDeclarationSyntax? classDeclaration, BaseNavigator navigator) : base(classDeclaration, navigator)
+        public ClassComposer(ClassDeclarationSyntax? classDeclaration, IStatefulVisitor visitor) : base(classDeclaration, visitor)
         {
         }
-
         
         public ClassComposer AddField(FieldOptions options)
         {
-            Navigator.AsVisitor.PopUntil(typeof(ClassDeclarationSyntax));
-            var @class = (Navigator.AsVisitor.CurrentNode as ClassDeclarationSyntax)!;
+            Visitor.PopUntil(typeof(ClassDeclarationSyntax));
+            var @class = (Visitor.CurrentNode as ClassDeclarationSyntax)!;
 
 
             TypeSyntax type = SyntaxFactory.ParseTypeName(options.FieldType);
@@ -40,7 +40,7 @@ namespace RoseLib.Composers
             var fieldDeclaration = SyntaxFactory.FieldDeclaration(new SyntaxList<AttributeListSyntax> { }, options.ModifiersToTokenList(), declaration);
 
             var newClassNode = @class.AddMembers(fieldDeclaration);
-            Navigator.AsVisitor.ReplaceNodeAndAdjustState(@class, newClassNode);
+            Visitor.ReplaceNodeAndAdjustState(@class, newClassNode);
 
             return this;
         }
@@ -48,7 +48,7 @@ namespace RoseLib.Composers
         public ClassComposer UpdateField(FieldOptions options)
         {
             
-            var existingFieldDeclaration = Navigator.AsVisitor.CurrentNode as FieldDeclarationSyntax;
+            var existingFieldDeclaration = Visitor.CurrentNode as FieldDeclarationSyntax;
 
             if(existingFieldDeclaration == null)
             {
@@ -66,7 +66,7 @@ namespace RoseLib.Composers
 
             var newFieldDeclaration = SyntaxFactory.FieldDeclaration(new SyntaxList<AttributeListSyntax> { }, options.ModifiersToTokenList(), declaration);
 
-            Navigator.AsVisitor.ReplaceNodeAndAdjustState(existingFieldDeclaration, newFieldDeclaration);
+            Visitor.ReplaceNodeAndAdjustState(existingFieldDeclaration, newFieldDeclaration);
 
             return this;
         }
@@ -74,13 +74,13 @@ namespace RoseLib.Composers
         public ClassComposer Delete()
         {
 
-            if (Navigator.AsVisitor.CurrentNode != null)
+            if (Visitor.CurrentNode != null)
             {
-                DeleteSingleMember(Navigator.AsVisitor.CurrentNode);
+                DeleteSingleMember(Visitor.CurrentNode);
             }
-            else if(Navigator.AsVisitor.CurrentNodesList != null)
+            else if(Visitor.CurrentNodesList != null)
             {
-                DeleteMultipleMembers(Navigator.AsVisitor.CurrentNodesList);
+                DeleteMultipleMembers(Visitor.CurrentNodesList);
             }
             else
             {
@@ -93,9 +93,9 @@ namespace RoseLib.Composers
 
         private void DeleteSingleMember(SyntaxNode member)
         {
-            Navigator.AsVisitor.State.Pop();
+            Visitor.State.Pop();
 
-            var stateStepBefore = Navigator.AsVisitor.CurrentNode;
+            var stateStepBefore = Visitor.CurrentNode;
             var classParent = member.Parent as ClassDeclarationSyntax;
             if (classParent == null)
             {
@@ -107,12 +107,12 @@ namespace RoseLib.Composers
             }
             if (stateStepBefore != classParent)
             {
-                Navigator.AsVisitor.NextStep(classParent);
+                Visitor.NextStep(classParent);
             }
 
 
             var newClassVersion = classParent!.RemoveNode(member, SyntaxRemoveOptions.KeepNoTrivia);
-            Navigator.AsVisitor.ReplaceNodeAndAdjustState(classParent!, newClassVersion!);
+            Visitor.ReplaceNodeAndAdjustState(classParent!, newClassVersion!);
         }
         private void DeleteMultipleMembers(List<SyntaxNode> members)
         {
@@ -121,9 +121,9 @@ namespace RoseLib.Composers
                 throw new InvalidStateException("List of members in the state is empty");
             }
 
-            Navigator.AsVisitor.State.Pop();
+            Visitor.State.Pop();
 
-            var stateStepBefore = Navigator.AsVisitor.CurrentNode;
+            var stateStepBefore =Visitor.CurrentNode;
 
 
             var classParent = members[0].Parent as ClassDeclarationSyntax;
@@ -147,12 +147,12 @@ namespace RoseLib.Composers
             }
             if (stateStepBefore != classParent)
             {
-                Navigator.AsVisitor.NextStep(classParent);
+                Visitor.NextStep(classParent);
             }
 
 
             var newClassVersion = classParent!.RemoveNodes(members, SyntaxRemoveOptions.KeepNoTrivia);
-            Navigator.AsVisitor.ReplaceNodeAndAdjustState(classParent!, newClassVersion!);
+            Visitor.ReplaceNodeAndAdjustState(classParent!, newClassVersion!);
         }
     }
 }

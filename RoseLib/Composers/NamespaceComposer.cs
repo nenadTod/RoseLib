@@ -17,18 +17,17 @@ namespace RoseLib.Composers
 {
     public class NamespaceComposer : BaseComposer
     {
-        public NamespaceComposer(NamespaceNavigator navigator) : base(navigator)
+        public NamespaceComposer(IStatefulVisitor visitor) : base(visitor)
         {
         }
         public NamespaceComposer(NamespaceDeclarationSyntax? namespaceDeclaration, NamespaceNavigator navigator) : base(namespaceDeclaration, navigator)
         {
         }
 
-        // TODO: Dodatno razmisliti o selekciji klase nakon kreirana.
         public NamespaceComposer AddClass(ClassOptions options)
         {
-            Navigator.AsVisitor.PopUntil(typeof(NamespaceDeclarationSyntax));
-            var @namespace = (Navigator.AsVisitor.CurrentNode as NamespaceDeclarationSyntax)!;
+            Visitor.PopUntil(typeof(NamespaceDeclarationSyntax));
+            var @namespace = (Visitor.CurrentNode as NamespaceDeclarationSyntax)!;
 
 
             var template = new CreateClass() { Options = options };
@@ -36,10 +35,10 @@ namespace RoseLib.Composers
             var cu = SyntaxFactory.ParseCompilationUnit(code).NormalizeWhitespace();
             var newClass = cu.DescendantNodes().OfType<ClassDeclarationSyntax>().First();
 
-            var newNamespaceVersion = @namespace.AddMembers(newClass); // Da li bi ovu instancu klase mogao da upotrebiš za selekciju?
-            (Navigator as IStatefulVisitor).ReplaceNodeAndAdjustState(@namespace, newNamespaceVersion);
+            var newNamespaceVersion = @namespace.AddMembers(newClass); // Should I track this class and select it without a navigator?
+            Visitor.ReplaceNodeAndAdjustState(@namespace, newNamespaceVersion);
 
-            (Navigator as NamespaceNavigator)?.SelectClassDeclaration(options.ClassName);
+            NamespaceNavigator.CreateTempNavigator(Visitor).SelectClassDeclaration(options.ClassName);
 
             return this;
         }
@@ -53,15 +52,13 @@ namespace RoseLib.Composers
         /// <exception cref="InvalidActionForStateException"></exception>
         public ClassComposer EnterClass()
         {
-            var @class = Navigator.State.Peek().CurrentNode as ClassDeclarationSyntax;
+            var @class = Visitor.State.Peek().CurrentNode as ClassDeclarationSyntax;
             if (@class == null)
             {
                 throw new InvalidActionForStateException("Entering classes only possible when positioned on a class declaration syntax instance.");
             }
 
-            CSRTypeNavigator classNavigator = new CSRTypeNavigator(Navigator as BaseNavigator);
-
-            return new ClassComposer(classNavigator);
+            return new ClassComposer(Visitor);
         }
     }
 }

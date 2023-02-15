@@ -3,6 +3,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoseLib.Exceptions;
 using RoseLib.Model;
+using RoseLib.Traversal;
 using RoseLib.Traversal.Navigators;
 using System;
 using System.Collections.Generic;
@@ -15,45 +16,45 @@ namespace RoseLib.Composers
 {
     public abstract class BaseComposer
     {
-        public BaseNavigator Navigator { get; protected set; }
+        public IStatefulVisitor Visitor { get; protected set; }
 
-        protected BaseComposer(BaseNavigator navigator)
+        protected BaseComposer(IStatefulVisitor visitor)
         {
-            if (navigator == null)
+            if (visitor == null)
             {
                 throw new ArgumentNullException("Cannot create a composer without a navigator.");
             }
 
-            Navigator = navigator;
+            Visitor = visitor;
         }
 
-        protected BaseComposer(SyntaxNode? node, BaseNavigator navigator)
+        protected BaseComposer(SyntaxNode? node, IStatefulVisitor visitor)
         {
             if (node == null)
             {
                 throw new ArgumentNullException("Cannot add null as navigator state.");
             }
-            if(navigator == null)
+            if(visitor == null)
             {
                 throw new ArgumentNullException("Cannot create a composer without a navigator.");
             }
 
-            Navigator = navigator;
-            Navigator.State.Push(new SelectedObject(node));
+            Visitor = visitor;
+            Visitor.State.Push(new SelectedObject(node));
         }
 
-        protected BaseComposer(List<SyntaxNode> nodes, BaseNavigator navigator)
+        protected BaseComposer(List<SyntaxNode> nodes, IStatefulVisitor visitor)
         {
             if (nodes == null)
             {
                 throw new ArgumentNullException("Cannot add null as navigator state.");
             }
-            if (navigator == null)
+            if (visitor == null)
             {
                 throw new ArgumentNullException("Cannot create a composer without a navigator.");
             }
-            Navigator = navigator;
-            Navigator.State.Push(new SelectedObject(nodes));
+            Visitor = visitor;
+            Visitor.State.Push(new SelectedObject(nodes));
         }
 
         // TODO, izmesti ovo GetCode, nije mu samo tu mesto. Napravi nekog writer-a ili nešto
@@ -65,7 +66,7 @@ namespace RoseLib.Composers
         /// <returns>syntax tree as a string</returns>
         public string GetCode()
         {
-            var compilationUnit = Navigator.State
+            var compilationUnit = Visitor.State
                .Where(so => so.CurrentNode is CompilationUnitSyntax)
                .Select(so => so.CurrentNode)
                .FirstOrDefault();

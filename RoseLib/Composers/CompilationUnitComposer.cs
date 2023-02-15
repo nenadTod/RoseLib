@@ -18,14 +18,14 @@ namespace RoseLib.Composers
         {
         }
 
-        internal CompilationUnitComposer(CompilationUnitNavigator navigator) : base(navigator)
+        internal CompilationUnitComposer(IStatefulVisitor visitor) : base(visitor)
         {
         }
 
         public CompilationUnitComposer AddUsingDirectives(params string[] usings)
         {
-            Navigator.AsVisitor.PopUntil(typeof(CompilationUnitSyntax));
-            var compilationUnit = (Navigator.AsVisitor.CurrentNode as CompilationUnitSyntax)!;
+            Visitor.PopUntil(typeof(CompilationUnitSyntax));
+            var compilationUnit = (Visitor.CurrentNode as CompilationUnitSyntax)!;
 
             if(usings.Length == 0)
             {
@@ -39,15 +39,15 @@ namespace RoseLib.Composers
                 usingDirectives.Add(usingDirective);
             }
             CompilationUnitSyntax newCompilationUnit = compilationUnit.AddUsings(usingDirectives.ToArray());
-            Navigator.AsVisitor.SetHead(newCompilationUnit);
+            Visitor.SetHead(newCompilationUnit);
 
             return this;
         }
 
         public CompilationUnitComposer AddNamespace(string namespaceName)
         {
-            Navigator.AsVisitor.PopUntil(typeof(CompilationUnitSyntax));
-            var compilationUnit = (Navigator.AsVisitor.CurrentNode as CompilationUnitSyntax)!;
+            Visitor.PopUntil(typeof(CompilationUnitSyntax));
+            var compilationUnit = (Visitor.CurrentNode as CompilationUnitSyntax)!;
 
             if(namespaceName == null)
             {
@@ -57,8 +57,8 @@ namespace RoseLib.Composers
             var namespaceDeclaration = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.IdentifierName(namespaceName));
             CompilationUnitSyntax newCompilationUnit = compilationUnit.AddMembers(namespaceDeclaration);
 
-            Navigator.AsVisitor.SetHead(newCompilationUnit);
-            (Navigator as CompilationUnitNavigator)?.SelectNamespace(namespaceName);
+            Visitor.SetHead(newCompilationUnit);
+            CompilationUnitNavigator.CreateTempNavigator(Visitor).SelectNamespace(namespaceName);
 
             return this;
         }
@@ -71,15 +71,13 @@ namespace RoseLib.Composers
         /// <exception cref="InvalidActionForStateException"></exception>
         public NamespaceComposer EnterNamespace()
         {
-            var @namespace = Navigator.State.Peek().CurrentNode as NamespaceDeclarationSyntax;
+            var @namespace = Visitor.State.Peek().CurrentNode as NamespaceDeclarationSyntax;
             if(@namespace == null)
             {
                 throw new InvalidActionForStateException("Entering namespaces only possible when positioned on a namespace declaration syntax instance.");
             }
 
-            NamespaceNavigator namespaceNavigator = new NamespaceNavigator(Navigator as BaseNavigator);
-
-            return new NamespaceComposer(namespaceNavigator);
+            return new NamespaceComposer(Visitor);
         }
     }
 }

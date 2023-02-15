@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace RoseLib.Traversal
 {
-    public static class MemberSelectionMethods
+    public static class MemberSelectionExtensions
     {
         #region Field selection
         
