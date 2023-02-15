@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace RoseLib.Traversal.Navigators
 {
-    public class NamespaceNavigator : BaseNavigator, INamespaceSelector, ICSRTypeSelector, IMemberSelector
+    public class NamespaceNavigator : BaseNavigator, INamespaceSelector, ITypeSelector, ITypeMemberSelector, ICSRTypeMemberSelector
     {
         private NamespaceNavigator() { }
         internal NamespaceNavigator(BaseNavigator parentNavigator) : base(parentNavigator)

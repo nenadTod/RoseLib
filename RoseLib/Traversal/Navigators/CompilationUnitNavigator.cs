@@ -10,7 +10,7 @@ using RoseLib.Traversal.Selectors.Interfaces;
 
 namespace RoseLib.Traversal.Navigators
 {
-    public class CompilationUnitNavigator : BaseNavigator, INamespaceSelector, ICSRTypeSelector, IMemberSelector
+    public class CompilationUnitNavigator : BaseNavigator, INamespaceSelector, ITypeSelector, ITypeMemberSelector, ICSRTypeMemberSelector
     {
         public CompilationUnitNavigator() : base()
         {

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace RoseLib.Traversal.Selectors.Interfaces
 {
-    public interface IMemberSelector: IBaseSelector
+    public interface ITypeMemberSelector: IBaseSelector
     {
         public FieldNavigator ToFieldNavigator()
         {

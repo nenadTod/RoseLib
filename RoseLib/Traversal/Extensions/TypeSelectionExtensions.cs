@@ -8,6 +8,7 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using static Microsoft.Scripting.Hosting.Shell.ConsoleHostOptions;
 
 namespace RoseLib.Traversal
 {
@@ -15,7 +16,7 @@ namespace RoseLib.Traversal
     public static class TypeSelectionExtensions
     {
         public static CSRTypeNavigator SelectClassDeclaration<T>(this T visitor)
-            where T : ICSRTypeSelector
+            where T : ITypeSelector
         {
             NavigationGuard.CurrentNodeNotNull(visitor.CurrentNode);
             var @class = visitor.CurrentNode?
@@ -28,7 +29,7 @@ namespace RoseLib.Traversal
             return visitor.ToCSRTypeNavigator();
         }
 
-        public static CSRTypeNavigator SelectClassDeclaration<T>(this T visitor, string className) where T: ICSRTypeSelector
+        public static CSRTypeNavigator SelectClassDeclaration<T>(this T visitor, string className) where T: ITypeSelector
         {
             NavigationGuard.CurrentNodeNotNull(visitor.CurrentNode);
             var @class = visitor
@@ -43,7 +44,7 @@ namespace RoseLib.Traversal
             return visitor.ToCSRTypeNavigator();
         }
 
-        public static CSRTypeNavigator SelectClassDeclaration<T>(this T visitor, Regex regex) where T : ICSRTypeSelector
+        public static CSRTypeNavigator SelectClassDeclaration<T>(this T visitor, Regex regex) where T : ITypeSelector
         {
             NavigationGuard.CurrentNodeNotNull(visitor.CurrentNode);
             var @class = visitor
@@ -59,7 +60,7 @@ namespace RoseLib.Traversal
         }
 
 
-        public static ICSRTypeSelector SelectStructDeclaration<T>(this T visitor, string structName) where T: ICSRTypeSelector
+        public static ITypeSelector SelectStructDeclaration<T>(this T visitor, string structName) where T: ITypeSelector
         {
             var @struct = visitor
                 .CurrentNode
@@ -70,22 +71,57 @@ namespace RoseLib.Traversal
                 ?.FirstOrDefault();
 
             visitor.NextStep(@struct);
-            return visitor;
+            return visitor.ToCSRTypeNavigator();
         }
 
-        public static ICSRTypeSelector SelectRecordDeclaration<T>(this T visitor, string recordName) where T : ICSRTypeSelector
+        public static ITypeSelector SelectRecordDeclaration<T>(this T visitor, string recordName) where T : ITypeSelector
         {
-            var @struct = visitor
+            var record = visitor
                 .CurrentNode
                 ?.DescendantNodes()
                 .OfType<RecordDeclarationSyntax>()
-                .Where(st => st.Identifier.ToString() == recordName)
+                .Where(re => re.Identifier.ToString() == recordName)
                 .GetClosestDepthwise()
                 ?.FirstOrDefault();
 
-            visitor.NextStep(@struct);
-            return visitor;
+            visitor.NextStep(record);
+            return visitor.ToCSRTypeNavigator();
         }
 
+        public static ITypeSelector SelectInterfaceDeclaration<T>(this T visitor, string interfaceName) where T : ITypeSelector
+        {
+            var @interface = visitor
+                .CurrentNode
+                ?.DescendantNodes()
+                .OfType<InterfaceDeclarationSyntax>()
+                .Where(ids => ids.Identifier.ToString() == interfaceName)
+                .GetClosestDepthwise()
+                ?.FirstOrDefault();
+
+            visitor.NextStep(@interface);
+            return visitor.ToCSRTypeNavigator();
+        }
+
+        public static ITypeSelector SelectEnumDeclaration<T>(this T visitor, string enumName) where T : ITypeSelector
+        {
+            var @enum = visitor
+                .CurrentNode
+                ?.DescendantNodes()
+                .OfType<EnumDeclarationSyntax>()
+                .Where(eds => eds.Identifier.ToString() == enumName)
+                .GetClosestDepthwise()
+                ?.FirstOrDefault();
+
+            visitor.NextStep(@enum);
+            return visitor.ToCSRTypeNavigator();
+        }
+
+        interface I
+        {
+            string Name { get; }
+
+            public static I operator +(I a) => a;
+
+        }
     }
 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace RoseLib.Traversal.Selectors.Interfaces
 {
-    public interface ICSRTypeSelector: IBaseSelector
+    public interface ITypeSelector: IBaseSelector
     {
         internal CSRTypeNavigator ToCSRTypeNavigator()
         {

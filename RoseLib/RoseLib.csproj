@@ -13,11 +13,6 @@
     <Compile Remove="ComposersOLD\IComposer.cs" />
     <Compile Remove="ComposersOLD\MethodComposer.cs" />
     <Compile Remove="ComposersOLD\NamespaceComposer.cs" />
-    <Compile Remove="SelectorsOLD\BaseSelector.cs" />
-    <Compile Remove="SelectorsOLD\ClassStructSelector.cs" />
-    <Compile Remove="SelectorsOLD\CompilationUnitSelector.cs" />
-    <Compile Remove="SelectorsOLD\MethodSelector.cs" />
-    <Compile Remove="SelectorsOLD\NamespaceSelector.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,11 +21,6 @@
     <None Include="ComposersOLD\IComposer.cs" />
     <None Include="ComposersOLD\MethodComposer.cs" />
     <None Include="ComposersOLD\NamespaceComposer.cs" />
-    <None Include="SelectorsOLD\BaseSelector.cs" />
-    <None Include="SelectorsOLD\ClassStructSelector.cs" />
-    <None Include="SelectorsOLD\CompilationUnitSelector.cs" />
-    <None Include="SelectorsOLD\MethodSelector.cs" />
-    <None Include="SelectorsOLD\NamespaceSelector.cs" />
   </ItemGroup>
 
   <ItemGroup>
