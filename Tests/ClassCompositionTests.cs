@@ -100,5 +100,51 @@ namespace RoseLib.Tests
                 Assert.IsFalse(testRegexF.IsMatch(code));
             }
         }
+
+        [Test]
+        public void AddingAttributes()
+        {
+            var attribute1Name = "Serializable";
+            Regex testRegexA1 = new Regex(attribute1Name);
+
+            var attribute2Name = "TestAttribute";
+            Regex testRegexA2 = new Regex(attribute2Name);
+            var attribute2Argument1 = "FakeEnum.Member1";
+            Regex testRegexA2A1 = new Regex(attribute2Argument1);
+            var attribute2Argument2 = "FakeEnum.Member2";
+            Regex testRegexA2A2 = new Regex(attribute2Argument2);
+
+
+
+
+            using (StreamReader reader = new StreamReader(".\\TestFiles\\Class1.cs"))
+            {
+                CompilationUnitNavigator navigator = new CompilationUnitNavigator(reader);
+
+                var code = navigator
+                    .SelectClassDeclaration("Class1")
+                    .StartComposing<ClassComposer>()
+                    .SetClassAttributes(
+                        new List<Model.Attribute>() 
+                        { 
+                            new Model.Attribute { Name = attribute1Name },
+                            new Model.Attribute 
+                            { 
+                                Name = attribute2Name,
+                                AttributeArgumentList = new List<string>
+                                {
+                                    attribute2Argument1,
+                                    attribute2Argument2
+                                }
+                            }
+                        })
+                    .GetCode();
+
+                Assert.IsTrue(testRegexA1.IsMatch(code));
+                Assert.IsTrue(testRegexA2.IsMatch(code));
+                Assert.IsTrue(testRegexA2A1.IsMatch(code));
+                Assert.IsTrue(testRegexA2A2.IsMatch(code));
+            }
+        }
     }
 }

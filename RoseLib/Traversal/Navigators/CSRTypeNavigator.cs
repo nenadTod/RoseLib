@@ -1,4 +1,5 @@
-﻿using RoseLib.Traversal.Selectors.Interfaces;
+﻿using RoseLib.Composers;
+using RoseLib.Traversal.Selectors.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,19 @@ namespace RoseLib.Traversal.Navigators
         CSRTypeNavigator ITypeSelector.ToCSRTypeNavigator()
         {
             return this;
+        }
+
+        public T StartComposing<T>() where T : BaseComposer
+        {
+            // TODO: Extend for different kinds of possible composers.
+            if (typeof(T).Equals(typeof(ClassComposer)))
+            {
+                return (new ClassComposer(this) as T)!;
+            }
+            else
+            {
+                throw new Exceptions.InvalidCastException();
+            }
         }
 
     }

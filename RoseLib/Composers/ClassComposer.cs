@@ -13,6 +13,8 @@ using RoseLib.Traversal;
 
 namespace RoseLib.Composers
 {
+
+    [Serializable]
     public class ClassComposer: BaseComposer
     {
         public ClassComposer(IStatefulVisitor visitor) : base(visitor)
@@ -21,7 +23,35 @@ namespace RoseLib.Composers
         public ClassComposer(ClassDeclarationSyntax? classDeclaration, IStatefulVisitor visitor) : base(classDeclaration, visitor)
         {
         }
-        
+
+        public ClassComposer SetClassAttributes(List<Model.Attribute> modelAttributeList)
+        {
+            List<AttributeSyntax> attributeSyntaxList = new List<AttributeSyntax>();
+            foreach (var attribute in modelAttributeList)
+            {
+                AttributeArgumentListSyntax? attributeArgumentListSyntax = null;
+                if (attribute.AttributeArgumentsAsString != null)
+                {
+                    var parameterToBePassed = attribute.AttributeArgumentsAsString;
+                    attributeArgumentListSyntax = SyntaxFactory.ParseAttributeArgumentList(parameterToBePassed, 0, CSharpParseOptions.Default, false);
+                }
+
+                var attributeSyntax = SyntaxFactory.Attribute(SyntaxFactory.ParseName(attribute.Name), attributeArgumentListSyntax);
+                attributeSyntaxList.Add(attributeSyntax);
+            }
+            
+            var attributeList = SyntaxFactory.AttributeList(new SeparatedSyntaxList<AttributeSyntax>().AddRange(attributeSyntaxList));
+
+            Visitor.PopUntil(typeof(ClassDeclarationSyntax));
+            var @class = (Visitor.CurrentNode as ClassDeclarationSyntax)!;
+
+            
+            var newClassNode = @class.AddAttributeLists(attributeList);
+            Visitor.ReplaceNodeAndAdjustState(@class, newClassNode);
+
+            return this;
+        }
+
         public ClassComposer AddField(FieldOptions options)
         {
             Visitor.PopUntil(typeof(ClassDeclarationSyntax));
