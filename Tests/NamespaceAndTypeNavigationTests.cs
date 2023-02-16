@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+﻿using IronPython.Compiler.Ast;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoseLib.Composers;
 using RoseLib.Traversal;
 using RoseLib.Traversal.Navigators;
@@ -85,6 +86,47 @@ namespace RoseLib.Tests
                     .FirstOrDefault();
 
                 Assert.NotNull(variableDeclaratorWithName);
+            }
+        }
+
+        [Test]
+        public void SelectEnumByName()
+        {
+            var foundEnumName = "Enum1";
+            Regex testRegexE = new Regex(foundEnumName);
+
+            using (StreamReader reader = new StreamReader(".\\TestFiles\\Enum1.cs"))
+            {
+                CompilationUnitNavigator navigator = new CompilationUnitNavigator(reader);
+                navigator.SelectEnumDeclaration(foundEnumName);
+
+                var selection = navigator.State.Peek();
+                var enumDeclaration = selection.CurrentNode as EnumDeclarationSyntax;
+
+                Assert.NotNull(enumDeclaration);
+                Assert.IsTrue(testRegexE.IsMatch(enumDeclaration.Identifier.Text));
+            }
+        }
+
+        [Test]
+        public void SelectEnumAndEnumMemberByName()
+        {
+            var foundEnumName = "Enum1";
+            var foundEnumMemberName = "blue";
+            Regex testRegexEM = new Regex(foundEnumMemberName);
+
+            using (StreamReader reader = new StreamReader(".\\TestFiles\\Enum1.cs"))
+            {
+                CompilationUnitNavigator navigator = new CompilationUnitNavigator(reader);
+                navigator
+                    .SelectEnumDeclaration(foundEnumName)
+                    .SelectEnumMemberDeclaration(foundEnumMemberName);
+
+                var selection = navigator.State.Peek();
+                var enumMemberDeclaration = selection.CurrentNode as EnumMemberDeclarationSyntax;
+
+                Assert.NotNull(enumMemberDeclaration);
+                Assert.IsTrue(testRegexEM.IsMatch(enumMemberDeclaration.Identifier.Text));
             }
         }
     }

@@ -59,7 +59,7 @@ namespace RoseLib.Traversal
         }
 
 
-        public static ITypeSelector SelectStructDeclaration<T>(this T visitor, string structName) where T: ITypeSelector
+        public static CSRTypeNavigator SelectStructDeclaration<T>(this T visitor, string structName) where T: ITypeSelector
         {
             var @struct = visitor
                 .CurrentNode
@@ -73,7 +73,7 @@ namespace RoseLib.Traversal
             return visitor.ToCSRTypeNavigator();
         }
 
-        public static ITypeSelector SelectRecordDeclaration<T>(this T visitor, string recordName) where T : ITypeSelector
+        public static CSRTypeNavigator SelectRecordDeclaration<T>(this T visitor, string recordName) where T : ITypeSelector
         {
             var record = visitor
                 .CurrentNode
@@ -87,7 +87,7 @@ namespace RoseLib.Traversal
             return visitor.ToCSRTypeNavigator();
         }
 
-        public static ITypeSelector SelectInterfaceDeclaration<T>(this T visitor, string interfaceName) where T : ITypeSelector
+        public static TypeNavigator SelectInterfaceDeclaration<T>(this T visitor, string interfaceName) where T : ITypeSelector
         {
             var @interface = visitor
                 .CurrentNode
@@ -98,10 +98,10 @@ namespace RoseLib.Traversal
                 ?.FirstOrDefault();
 
             visitor.NextStep(@interface);
-            return visitor.ToCSRTypeNavigator();
+            return visitor.ToTypeNavigator();
         }
 
-        public static ITypeSelector SelectEnumDeclaration<T>(this T visitor, string enumName) where T : ITypeSelector
+        public static EnumNavigator SelectEnumDeclaration<T>(this T visitor, string enumName) where T : ITypeSelector
         {
             var @enum = visitor
                 .CurrentNode
@@ -112,15 +112,7 @@ namespace RoseLib.Traversal
                 ?.FirstOrDefault();
 
             visitor.NextStep(@enum);
-            return visitor.ToCSRTypeNavigator();
-        }
-
-        interface I
-        {
-            string Name { get; }
-
-            public static I operator +(I a) => a;
-
+            return visitor.ToEnumNavigator();
         }
     }
 }

@@ -13,5 +13,16 @@ namespace RoseLib.Traversal.Selectors.Interfaces
         {
             return new CSRTypeNavigator(this as BaseNavigator);
         }
+
+        internal TypeNavigator ToTypeNavigator()
+        {
+            return new TypeNavigator(this as BaseNavigator);
+        }
+
+        internal EnumNavigator ToEnumNavigator()
+        {
+            return new EnumNavigator(this as BaseNavigator);
+        }
+
     }
 }

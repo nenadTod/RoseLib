@@ -10,10 +10,14 @@
 
   <ItemGroup>
     <Compile Remove="TestFiles\Class1.cs" />
+    <Compile Remove="TestFiles\Enum1.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="TestFiles\Class1.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TestFiles\Enum1.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
