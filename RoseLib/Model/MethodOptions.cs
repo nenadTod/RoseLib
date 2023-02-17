@@ -9,9 +9,9 @@ namespace RoseLib.Model
 {
     public class MethodOptions : AccessModifierOptions
     {
-        public string MethodName { get; set; }
+        public string MethodName { get; set; } = "";
 
-        public string ReturnType { get; set; }
-        public List<RLParameter> Parameters { get; set; }
+        public string ReturnType { get; set; } = "";
+        public List<RLParameter> Parameters { get; set; } = new List<RLParameter>();
     }
 }

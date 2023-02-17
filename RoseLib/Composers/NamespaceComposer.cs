@@ -38,7 +38,8 @@ namespace RoseLib.Composers
             var newNamespaceVersion = @namespace.AddMembers(newClass); // Should I track this class and select it without a navigator?
             Visitor.ReplaceNodeAndAdjustState(@namespace, newNamespaceVersion);
 
-            NamespaceNavigator.CreateTempNavigator(Visitor).SelectClassDeclaration(options.ClassName);
+            BaseNavigator.CreateTempNavigator<NamespaceNavigator>(Visitor)
+                .SelectClassDeclaration(options.ClassName);
 
             return this;
         }

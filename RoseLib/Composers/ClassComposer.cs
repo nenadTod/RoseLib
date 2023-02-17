@@ -57,7 +57,6 @@ namespace RoseLib.Composers
             Visitor.PopUntil(typeof(ClassDeclarationSyntax));
             var @class = (Visitor.CurrentNode as ClassDeclarationSyntax)!;
 
-
             TypeSyntax type = SyntaxFactory.ParseTypeName(options.FieldType);
             var declaration = SyntaxFactory.VariableDeclaration(type,
                     SyntaxFactory.SeparatedList(new[]
@@ -71,6 +70,67 @@ namespace RoseLib.Composers
 
             var newClassNode = @class.AddMembers(fieldDeclaration);
             Visitor.ReplaceNodeAndAdjustState(@class, newClassNode);
+
+            var navigator = BaseNavigator.CreateTempNavigator<CSRTypeNavigator>(Visitor);
+            navigator.SelectFieldDeclaration(options.FieldName);
+
+            return this;
+        }
+
+        public ClassComposer AddMethod(MethodOptions options)
+        {
+            Visitor.PopUntil(typeof(ClassDeclarationSyntax));
+            var @class = (Visitor.CurrentNode as ClassDeclarationSyntax)!;
+
+            TypeSyntax returnType = SyntaxFactory.ParseTypeName(options.ReturnType);
+            var method = SyntaxFactory.MethodDeclaration(returnType, options.MethodName).WithModifiers(options.ModifiersToTokenList());
+
+            var @params = SyntaxFactory.ParameterList();
+            foreach (var param in options.Parameters)
+            {
+                var type = SyntaxFactory.IdentifierName(param.Type);
+                var name = SyntaxFactory.Identifier(param.Name);
+                var paramSyntax = SyntaxFactory
+                    .Parameter(new SyntaxList<AttributeListSyntax>(), SyntaxFactory.TokenList(), type, name, null);
+                @params = @params.AddParameters(paramSyntax);
+            }
+            @params = @params.NormalizeWhitespace();
+            method = method.WithParameterList(@params);
+
+            method = method.WithBody(SyntaxFactory.Block());
+
+            var newClassNode = @class.AddMembers(method);
+            Visitor.ReplaceNodeAndAdjustState(@class, newClassNode);
+
+            var navigator = BaseNavigator.CreateTempNavigator<CSRTypeNavigator>(Visitor);
+            navigator.SelectMethodDeclaration(options.MethodName);
+
+            return this;
+        }
+
+        public ClassComposer AddProperty(PropertyOptions options)
+        {
+            Visitor.PopUntil(typeof(ClassDeclarationSyntax));
+            var @class = (Visitor.CurrentNode as ClassDeclarationSyntax)!;
+
+            PropertyDeclarationSyntax @property = SyntaxFactory
+                .PropertyDeclaration(SyntaxFactory.ParseTypeName(options.PropertyType), options.PropertyName)
+                .WithModifiers(options.ModifiersToTokenList());
+
+            @property = @property.AddAccessorListAccessors(
+                SyntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
+                    .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken)
+                    ));
+            @property = @property.AddAccessorListAccessors(
+                SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
+                .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken)
+                ));
+
+            var newClassNode = @class.AddMembers(@property);
+            Visitor.ReplaceNodeAndAdjustState(@class, newClassNode);
+
+            var navigator = BaseNavigator.CreateTempNavigator<CSRTypeNavigator>(Visitor);
+            navigator.SelectPropertyDeclaration(options.PropertyName);
 
             return this;
         }

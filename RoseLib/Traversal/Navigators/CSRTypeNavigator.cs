@@ -10,6 +10,7 @@ namespace RoseLib.Traversal.Navigators
 {
     public class CSRTypeNavigator: BaseNavigator, ITypeSelector, ITypeMemberSelector, ICSRTypeMemberSelector
     {
+        public CSRTypeNavigator() { } 
         internal CSRTypeNavigator(BaseNavigator? parentNavigator): base(parentNavigator)
         {
         }

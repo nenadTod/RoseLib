@@ -9,15 +9,9 @@ namespace RoseLib.Traversal.Navigators
 {
     public class NamespaceNavigator : BaseNavigator, INamespaceSelector, ITypeSelector, ITypeMemberSelector, ICSRTypeMemberSelector
     {
-        private NamespaceNavigator() { }
+        public NamespaceNavigator() { }
         internal NamespaceNavigator(BaseNavigator parentNavigator) : base(parentNavigator)
         {
-        }
-        internal static NamespaceNavigator CreateTempNavigator(IStatefulVisitor visitor)
-        {
-            var navigator = new NamespaceNavigator();
-            navigator.AsVisitor.State = visitor.State;
-            return navigator;
         }
 
         NamespaceNavigator INamespaceSelector.ToNamespaceNavigator()

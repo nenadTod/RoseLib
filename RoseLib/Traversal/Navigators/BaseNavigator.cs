@@ -46,7 +46,7 @@ namespace RoseLib.Traversal.Navigators
             }
         }
 
-        public BaseNavigator()
+        protected BaseNavigator()
         {
         }
 
@@ -71,6 +71,13 @@ namespace RoseLib.Traversal.Navigators
         {
             var code = reader.ReadToEnd();
             State.Push(new SelectedObject(SyntaxFactory.ParseCompilationUnit(code)));
+        }
+
+        internal static T CreateTempNavigator<T>(IStatefulVisitor visitor) where T : BaseNavigator, new()
+        {
+            var navigator = new T();
+            navigator.AsVisitor.State = visitor.State;
+            return navigator;
         }
     }
 }

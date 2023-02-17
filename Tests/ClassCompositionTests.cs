@@ -11,7 +11,7 @@ namespace RoseLib.Tests
     public class ClassCompositionTests
     {
         [Test]
-        public void ClassWithAField()
+        public void ClassWithAFieldPropertyAndMethod()
         {
             var newNamespace = "RoseLib.Tests";
             Regex testRegexNS = new Regex(newNamespace);
@@ -24,6 +24,12 @@ namespace RoseLib.Tests
 
             var newFieldName = "newField";
             Regex testRegexF = new Regex(newFieldName);
+
+            var newPropertyName = "NewProperty";
+            Regex testRegexP = new Regex(newPropertyName);
+
+            var newMethodName = "NewMethod";
+            Regex testRegexM = new Regex(newMethodName);
 
             CompilationUnitComposer composer = new CompilationUnitComposer();
             composer
@@ -42,6 +48,17 @@ namespace RoseLib.Tests
                     AccessModifier = Enums.AccessModifierTypes.PRIVATE,
                     FieldType = "string",
                     FieldName = newFieldName
+                })
+                .AddProperty(new Model.PropertyOptions
+                {
+                    AccessModifier = Enums.AccessModifierTypes.PUBLIC,
+                    PropertyName = newPropertyName,
+                    PropertyType= "string",
+                })
+                .AddMethod(new Model.MethodOptions {
+                    AccessModifier= Enums.AccessModifierTypes.PUBLIC,
+                    MethodName = newMethodName,
+                    ReturnType = "string",
                 });
 
             var code = composer.GetCode();
@@ -49,6 +66,8 @@ namespace RoseLib.Tests
             Assert.IsTrue(testRegexU.IsMatch(code));
             Assert.IsTrue(testRegexC.IsMatch(code));
             Assert.IsTrue(testRegexF.IsMatch(code));
+            Assert.IsTrue(testRegexP.IsMatch(code));
+            Assert.IsTrue(testRegexM.IsMatch(code));
         }
 
 
