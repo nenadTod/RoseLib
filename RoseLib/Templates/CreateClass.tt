@@ -5,7 +5,10 @@
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="RoseLib.Model" #>
 
-<#= Options.ModifiersToString() #> <# if(Options.IsStatic) {#> static <# } #> <# if(Options.IsPartial) {#> partial <# } #> class <#= Options.ClassName #> {
+<# foreach(var attribute in Options.Attributes) { #>
+[attribute.Name<# if(attribute.AttributeArgumentsAsString != null) { #> <#= attribute.AttributeArgumentsAsString #> <# } #>]
+<# } #>
+<#= Options.ModifiersToString() #> <# if(Options.IsStatic) {#> static <# } #> <# if(Options.IsAbstract) {#> abstract <# } #> <# if(Options.IsPartial) {#> partial <# } #> class <#= Options.ClassName #> <# if(Options.BaseTypes != null && Options.BaseTypes.Count > 0) { #> : <#= string.Join(", ", Options.BaseTypes) #> <# } #>  {
 }
 
 <#+ 

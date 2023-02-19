@@ -42,7 +42,22 @@ namespace RoseLib.Tests
                 )
                 .AddNamespace(newNamespace)
                 .EnterNamespace()
-                .AddClass(new Model.ClassOptions { ClassName = newClass })
+                .AddClass(new Model.ClassOptions {  
+                    AccessModifier = Enums.AccessModifierTypes.PUBLIC,
+                    ClassName = newClass,
+                    BaseTypes = new List<string>() { "object", $"IEquatable<{newClass}>" }, 
+                    Attributes = new List<Model.Attribute> { 
+                        new Model.Attribute(){ Name = "Serializable"},
+                        new Model.Attribute()
+                        {
+                            Name = "DllImport",
+                            AttributeArgumentList = new List<string>
+                            {
+                                "user32.dll", "SetLastError=false", "ExactSpelling=false"
+                            }
+                        }
+                    }
+                })
                 .EnterClass()
                 .AddField(new Model.FieldOptions { 
                     AccessModifier = Enums.AccessModifierTypes.PRIVATE,

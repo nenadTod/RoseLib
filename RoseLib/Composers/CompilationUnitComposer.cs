@@ -22,7 +22,7 @@ namespace RoseLib.Composers
         {
         }
 
-        public static new bool CanProcessCurrentNode(IStatefulVisitor statefulVisitor)
+        public static new bool CanProcessCurrentSelection(IStatefulVisitor statefulVisitor)
         {
             return GenericCanProcessCurrentSelectionCheck(statefulVisitor, typeof(CompilationUnitSyntax), SupporedScope.IMMEDIATE_OR_PARENT);
         }

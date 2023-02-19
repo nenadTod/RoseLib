@@ -32,50 +32,119 @@ namespace RoseLib.Templates
             this.Write("\r\n");
             
             #line 8 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\CreateClass.tt"
+ foreach(var attribute in Options.Attributes) { 
+            
+            #line default
+            #line hidden
+            this.Write("[attribute.Name");
+            
+            #line 9 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\CreateClass.tt"
+ if(attribute.AttributeArgumentsAsString != null) { 
+            
+            #line default
+            #line hidden
+            this.Write(" ");
+            
+            #line 9 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\CreateClass.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(attribute.AttributeArgumentsAsString));
+            
+            #line default
+            #line hidden
+            this.Write(" ");
+            
+            #line 9 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\CreateClass.tt"
+ } 
+            
+            #line default
+            #line hidden
+            this.Write("]\r\n");
+            
+            #line 10 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\CreateClass.tt"
+ } 
+            
+            #line default
+            #line hidden
+            
+            #line 11 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\CreateClass.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Options.ModifiersToString()));
             
             #line default
             #line hidden
             this.Write(" ");
             
-            #line 8 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\CreateClass.tt"
+            #line 11 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\CreateClass.tt"
  if(Options.IsStatic) {
             
             #line default
             #line hidden
             this.Write(" static ");
             
-            #line 8 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\CreateClass.tt"
+            #line 11 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\CreateClass.tt"
  } 
             
             #line default
             #line hidden
             this.Write(" ");
             
-            #line 8 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\CreateClass.tt"
+            #line 11 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\CreateClass.tt"
+ if(Options.IsAbstract) {
+            
+            #line default
+            #line hidden
+            this.Write(" abstract ");
+            
+            #line 11 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\CreateClass.tt"
+ } 
+            
+            #line default
+            #line hidden
+            this.Write(" ");
+            
+            #line 11 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\CreateClass.tt"
  if(Options.IsPartial) {
             
             #line default
             #line hidden
             this.Write(" partial ");
             
-            #line 8 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\CreateClass.tt"
+            #line 11 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\CreateClass.tt"
  } 
             
             #line default
             #line hidden
             this.Write(" class ");
             
-            #line 8 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\CreateClass.tt"
+            #line 11 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\CreateClass.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Options.ClassName));
             
             #line default
             #line hidden
-            this.Write(" {\r\n}\r\n\r\n");
+            this.Write(" ");
+            
+            #line 11 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\CreateClass.tt"
+ if(Options.BaseTypes != null && Options.BaseTypes.Count > 0) { 
+            
+            #line default
+            #line hidden
+            this.Write(" : ");
+            
+            #line 11 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\CreateClass.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(string.Join(", ", Options.BaseTypes)));
+            
+            #line default
+            #line hidden
+            this.Write(" ");
+            
+            #line 11 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\CreateClass.tt"
+ } 
+            
+            #line default
+            #line hidden
+            this.Write("  {\r\n}\r\n\r\n");
             return this.GenerationEnvironment.ToString();
         }
         
-        #line 11 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\CreateClass.tt"
+        #line 14 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\CreateClass.tt"
  
 	public ClassOptions Options {get; set;}
 

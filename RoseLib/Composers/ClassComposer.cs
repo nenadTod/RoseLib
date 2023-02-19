@@ -15,7 +15,7 @@ namespace RoseLib.Composers
 {
 
     [Serializable]
-    public class ClassComposer: BaseComposer
+    public class ClassComposer: TypeComposer
     {
         public ClassComposer(IStatefulVisitor visitor) : base(visitor)
         {
