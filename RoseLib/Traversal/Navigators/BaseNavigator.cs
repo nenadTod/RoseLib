@@ -84,7 +84,7 @@ namespace RoseLib.Traversal.Navigators
         public T StartComposing<T>() where T : BaseComposer
         {
             // TODO: Extend for different kinds of possible composers.
-            if (typeof(T).Equals(typeof(ClassComposer)) && ClassComposer.CanProcessCurrentNode(this))
+            if (typeof(T).Equals(typeof(ClassComposer)) && ClassComposer.CanProcessCurrentSelection(this))
             {
                 return (new ClassComposer(this) as T)!;
             }

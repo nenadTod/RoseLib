@@ -24,6 +24,11 @@ namespace RoseLib.Composers
         {
         }
 
+        public static new bool CanProcessCurrentNode(IStatefulVisitor statefulVisitor)
+        {
+            return GenericCanProcessCurrentSelectionCheck(statefulVisitor, typeof(NamespaceDeclarationSyntax), SupporedScope.IMMEDIATE_OR_PARENT);
+        }
+
         public NamespaceComposer AddClass(ClassOptions options)
         {
             Visitor.PopUntil(typeof(NamespaceDeclarationSyntax));

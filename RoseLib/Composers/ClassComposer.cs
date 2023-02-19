@@ -24,9 +24,9 @@ namespace RoseLib.Composers
         {
         }
 
-        public static new bool CanProcessCurrentNode(IStatefulVisitor statefulVisitor)
+        public static new bool CanProcessCurrentSelection(IStatefulVisitor statefulVisitor)
         {
-            return GenericCanProcessCurrentNodeCheck(statefulVisitor, typeof(ClassDeclarationSyntax), SupporedScope.IMMEDIATE_OR_PARENT);
+            return GenericCanProcessCurrentSelectionCheck(statefulVisitor, typeof(ClassDeclarationSyntax), SupporedScope.IMMEDIATE_OR_PARENT);
         }
 
         public ClassComposer SetClassAttributes(List<Model.Attribute> modelAttributeList)
@@ -168,86 +168,8 @@ namespace RoseLib.Composers
 
         public ClassComposer Delete()
         {
-
-            if (Visitor.CurrentNode != null)
-            {
-                DeleteSingleMember(Visitor.CurrentNode);
-            }
-            else if(Visitor.CurrentNodesList != null)
-            {
-                DeleteMultipleMembers(Visitor.CurrentNodesList);
-            }
-            else
-            {
-                throw new InvalidStateException("Nothing in the state, nothing to delete");
-            }
-
-
+            base.DeleteForParentType(typeof(ClassDeclarationSyntax));
             return this;
-        }
-
-        private void DeleteSingleMember(SyntaxNode member)
-        {
-            Visitor.State.Pop();
-
-            var stateStepBefore = Visitor.CurrentNode;
-            var classParent = member.Parent as ClassDeclarationSyntax;
-            if (classParent == null)
-            {
-                throw new InvalidActionForStateException("Cannot delete a member when not in a class.");
-            }
-            if (stateStepBefore == null)
-            {
-                throw new InvalidStateException("For some reason, only selected member was in the state");
-            }
-            if (stateStepBefore != classParent)
-            {
-                Visitor.NextStep(classParent);
-            }
-
-
-            var newClassVersion = classParent!.RemoveNode(member, SyntaxRemoveOptions.KeepNoTrivia);
-            Visitor.ReplaceNodeAndAdjustState(classParent!, newClassVersion!);
-        }
-        private void DeleteMultipleMembers(List<SyntaxNode> members)
-        {
-            if(members == null || members.Count == 0)
-            {
-                throw new InvalidStateException("List of members in the state is empty");
-            }
-
-            Visitor.State.Pop();
-
-            var stateStepBefore =Visitor.CurrentNode;
-
-
-            var classParent = members[0].Parent as ClassDeclarationSyntax;
-            
-            if (classParent == null)
-            {
-                throw new InvalidActionForStateException("Cannot delete a member when not in a class.");
-            }
-
-            foreach (var member in members)
-            {
-                if(member.Parent != classParent)
-                {
-                    throw new InvalidStateException("For some reason, not all members have the same parent");
-                }
-            }
-
-            if (stateStepBefore == null)
-            {
-                throw new InvalidStateException("For some reason, only selected field was in the state");
-            }
-            if (stateStepBefore != classParent)
-            {
-                Visitor.NextStep(classParent);
-            }
-
-
-            var newClassVersion = classParent!.RemoveNodes(members, SyntaxRemoveOptions.KeepNoTrivia);
-            Visitor.ReplaceNodeAndAdjustState(classParent!, newClassVersion!);
         }
     }
 }
