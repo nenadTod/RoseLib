@@ -24,6 +24,32 @@ namespace RoseLib.Composers
         {
         }
 
+        public static new bool CanProcessCurrentNode(IStatefulVisitor statefulVisitor)
+        {
+            SyntaxNode testNode;
+            if(statefulVisitor.CurrentNode != null)
+            {
+                testNode = statefulVisitor.CurrentNode;
+            }
+            else if(statefulVisitor.CurrentNodesList != null && statefulVisitor.CurrentNodesList.Count > 0)
+            {
+                testNode = statefulVisitor.CurrentNodesList[0];
+            }
+            else
+            {
+                throw new InvalidStateException("No selected nodes in the state!");
+            }
+
+            if(testNode is ClassDeclarationSyntax || testNode.Parent is ClassDeclarationSyntax)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public ClassComposer SetClassAttributes(List<Model.Attribute> modelAttributeList)
         {
             List<AttributeSyntax> attributeSyntaxList = new List<AttributeSyntax>();

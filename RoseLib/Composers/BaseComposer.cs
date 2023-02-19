@@ -57,8 +57,6 @@ namespace RoseLib.Composers
             Visitor.State.Push(new SelectedObject(nodes));
         }
 
-        // TODO, izmesti ovo GetCode, nije mu samo tu mesto. Napravi nekog writer-a ili nešto
-
         /// <summary>
         /// Generates a textual representation of a syntax tree.
         /// Does not alter the state of the composer.
@@ -79,6 +77,11 @@ namespace RoseLib.Composers
             return compilationUnit
                 .NormalizeWhitespace()
                 .ToFullString();
+        }
+
+        public static bool CanProcessCurrentNode(IStatefulVisitor statefulVisitor)
+        {
+            return false;
         }
     }
 }

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using RoseLib.Composers;
 using RoseLib.Traversal.Selectors.Interfaces;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using RoseLib.Exceptions;
 
 namespace RoseLib.Traversal.Navigators
 {
@@ -79,5 +80,17 @@ namespace RoseLib.Traversal.Navigators
             navigator.AsVisitor.State = visitor.State;
             return navigator;
         }
+
+        public T StartComposing<T>() where T : BaseComposer
+        {
+            // TODO: Extend for different kinds of possible composers.
+            if (typeof(T).Equals(typeof(ClassComposer)) && ClassComposer.CanProcessCurrentNode(this))
+            {
+                return (new ClassComposer(this) as T)!;
+            }
+
+            throw new InvalidActionForStateException("The provided composer type cannot process the state.");
+        }
+
     }
 }
