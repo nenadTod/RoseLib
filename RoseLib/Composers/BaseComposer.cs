@@ -83,5 +83,44 @@ namespace RoseLib.Composers
         {
             return false;
         }
+
+        protected static bool GenericCanProcessCurrentNodeCheck(IStatefulVisitor statefulVisitor, Type supportedSyntaxNodeType, SupporedScope scope)
+        {
+            SyntaxNode testNode;
+            if (statefulVisitor.CurrentNode != null)
+            {
+                testNode = statefulVisitor.CurrentNode;
+            }
+            else if (statefulVisitor.CurrentNodesList != null && statefulVisitor.CurrentNodesList.Count > 0)
+            {
+                testNode = statefulVisitor.CurrentNodesList[0];
+            }
+            else
+            {
+                throw new InvalidStateException("No selected nodes in the state!");
+            }
+
+            var testNodeType = testNode.GetType();
+            if (testNodeType == supportedSyntaxNodeType)
+            {
+                return true;
+            }
+            else if (scope == SupporedScope.IMMEDIATE_OR_PARENT && testNode.Parent != null)
+            {
+                var parentNodeType = testNode.Parent.GetType();
+                if(parentNodeType == supportedSyntaxNodeType)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        protected enum SupporedScope
+        {
+            IMMEDIATE,
+            IMMEDIATE_OR_PARENT
+        }
     }
 }
