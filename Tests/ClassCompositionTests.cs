@@ -221,5 +221,44 @@ namespace RoseLib.Tests
                 Assert.IsTrue(testRegexA2A2.IsMatch(code));
             }
         }
+
+        [Test]
+        public void ClassWithAnInnerClass()
+        {
+            var newNamespace = "RoseLib.Tests";
+            Regex testRegexNS = new Regex(newNamespace);
+
+            var newUsing = "System";
+            Regex testRegexU = new Regex(newUsing);
+
+            var newClass = "TestClass";
+            Regex testRegexC = new Regex(newClass);
+
+            var newInnerClass = "TestInnerClass";
+            Regex testRegexIC = new Regex(newInnerClass);
+
+            CompilationUnitComposer composer = new CompilationUnitComposer();
+            composer
+                .AddUsingDirectives(
+                    "System"
+                )
+                .AddNamespace(newNamespace)
+                .EnterNamespace()
+                .AddClass(new Model.ClassProperties
+                {
+                    ClassName = newClass
+                })
+                .EnterClass()
+                .AddClass(new Model.ClassProperties
+                {
+                    ClassName = newInnerClass
+                });
+
+            var code = composer.GetCode();
+            Assert.IsTrue(testRegexNS.IsMatch(code));
+            Assert.IsTrue(testRegexU.IsMatch(code));
+            Assert.IsTrue(testRegexC.IsMatch(code));
+            Assert.IsTrue(testRegexIC.IsMatch(code));
+        }
     }
 }

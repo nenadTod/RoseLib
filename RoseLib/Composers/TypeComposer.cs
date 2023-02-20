@@ -1,0 +1,83 @@
+﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.CSharp;
+using RoseLib.Model;
+using RoseLib.Traversal;
+using RoseLib.Traversal.Navigators;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace RoseLib.Composers
+{
+    public abstract class TypeComposer : TypeContainerComposer
+    {
+        public TypeComposer(IStatefulVisitor visitor) : base(visitor)
+        {
+        }
+
+        public abstract TypeComposer AddMethod(MethodProperties options);
+
+        public virtual TypeComposer AddMethodToType<T>(MethodProperties options) where T : TypeDeclarationSyntax
+        {
+            Visitor.PopUntil(typeof(T));
+            var typeNode = (Visitor.CurrentNode as T)!;
+
+            TypeSyntax returnType = SyntaxFactory.ParseTypeName(options.ReturnType);
+            var method = SyntaxFactory.MethodDeclaration(returnType, options.MethodName).WithModifiers(options.ModifiersToTokenList());
+
+            var @params = SyntaxFactory.ParameterList();
+            foreach (var param in options.Parameters)
+            {
+                var type = SyntaxFactory.IdentifierName(param.Type);
+                var name = SyntaxFactory.Identifier(param.Name);
+                var paramSyntax = SyntaxFactory
+                    .Parameter(new SyntaxList<AttributeListSyntax>(), SyntaxFactory.TokenList(), type, name, null);
+                @params = @params.AddParameters(paramSyntax);
+            }
+            @params = @params.NormalizeWhitespace();
+            method = method.WithParameterList(@params);
+
+            method = method.WithBody(SyntaxFactory.Block());
+
+            var newTypeNodeVersion = typeNode.AddMembers(method);
+            Visitor.ReplaceNodeAndAdjustState(typeNode, newTypeNodeVersion);
+
+            var navigator = BaseNavigator.CreateTempNavigator<CSRTypeNavigator>(Visitor);
+            navigator.SelectMethodDeclaration(options.MethodName);
+
+            return this;
+        }
+
+        public abstract TypeComposer AddProperty(PropertyProperties options);
+
+        public virtual TypeComposer AddPropertyToType<T>(PropertyProperties options) where T: TypeDeclarationSyntax
+        {
+            Visitor.PopUntil(typeof(T));
+            var typeNode = (Visitor.CurrentNode as T)!;
+
+            PropertyDeclarationSyntax @property = SyntaxFactory
+                .PropertyDeclaration(SyntaxFactory.ParseTypeName(options.PropertyType), options.PropertyName)
+                .WithModifiers(options.ModifiersToTokenList());
+
+            @property = @property.AddAccessorListAccessors(
+                SyntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
+                    .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken)
+                    ));
+            @property = @property.AddAccessorListAccessors(
+                SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
+                .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken)
+                ));
+
+            var newTypeNodeVersion = typeNode.AddMembers(@property);
+            Visitor.ReplaceNodeAndAdjustState(typeNode, newTypeNodeVersion);
+
+            var navigator = BaseNavigator.CreateTempNavigator<CSRTypeNavigator>(Visitor);
+            navigator.SelectPropertyDeclaration(options.PropertyName);
+
+            return this;
+        }
+    }
+}

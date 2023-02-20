@@ -15,18 +15,34 @@ namespace RoseLib.Composers
 {
 
     [Serializable]
-    public class ClassComposer: TypeContainerComposer
+    public class ClassComposer: CSRTypeComposer
     {
         public ClassComposer(IStatefulVisitor visitor) : base(visitor)
-        {
-        }
-        public ClassComposer(ClassDeclarationSyntax? classDeclaration, IStatefulVisitor visitor) : base(classDeclaration, visitor)
         {
         }
 
         public static new bool CanProcessCurrentSelection(IStatefulVisitor statefulVisitor)
         {
             return GenericCanProcessCurrentSelectionCheck(statefulVisitor, typeof(ClassDeclarationSyntax), SupporedScope.IMMEDIATE_OR_PARENT);
+        }
+
+        public override ClassComposer AddField(FieldProperties options)
+        {
+            return (base.AddField(options) as ClassComposer)!;
+        }
+
+        public override ClassComposer AddProperty(PropertyProperties options)
+        {
+            return (base.AddPropertyToType<ClassDeclarationSyntax>(options) as ClassComposer)!;
+        }
+        public override ClassComposer AddMethod(MethodProperties options)
+        {
+            return (base.AddMethodToType<ClassDeclarationSyntax>(options) as ClassComposer)!;
+        }
+
+        public override ClassComposer AddClass(ClassProperties options)
+        {
+            return (base.AddClassToType<ClassDeclarationSyntax>(options) as ClassComposer)!;
         }
 
         public ClassComposer SetClassAttributes(List<Model.AttributeProperties> modelAttributeList)
@@ -44,101 +60,19 @@ namespace RoseLib.Composers
                 var attributeSyntax = SyntaxFactory.Attribute(SyntaxFactory.ParseName(attribute.Name), attributeArgumentListSyntax);
                 attributeSyntaxList.Add(attributeSyntax);
             }
-            
+
             var attributeList = SyntaxFactory.AttributeList(new SeparatedSyntaxList<AttributeSyntax>().AddRange(attributeSyntaxList));
 
             Visitor.PopUntil(typeof(ClassDeclarationSyntax));
             var @class = (Visitor.CurrentNode as ClassDeclarationSyntax)!;
 
-            
+
             var newClassNode = @class.AddAttributeLists(attributeList);
             Visitor.ReplaceNodeAndAdjustState(@class, newClassNode);
 
             return this;
         }
 
-        public ClassComposer AddField(FieldProperties options)
-        {
-            Visitor.PopUntil(typeof(ClassDeclarationSyntax));
-            var @class = (Visitor.CurrentNode as ClassDeclarationSyntax)!;
-
-            TypeSyntax type = SyntaxFactory.ParseTypeName(options.FieldType);
-            var declaration = SyntaxFactory.VariableDeclaration(type,
-                    SyntaxFactory.SeparatedList(new[]
-                        {
-                            SyntaxFactory.VariableDeclarator(SyntaxFactory.Identifier(options.FieldName))
-                        }
-                    )
-                );
-
-            var fieldDeclaration = SyntaxFactory.FieldDeclaration(new SyntaxList<AttributeListSyntax> { }, options.ModifiersToTokenList(), declaration);
-
-            var newClassNode = @class.AddMembers(fieldDeclaration);
-            Visitor.ReplaceNodeAndAdjustState(@class, newClassNode);
-
-            var navigator = BaseNavigator.CreateTempNavigator<CSRTypeNavigator>(Visitor);
-            navigator.SelectFieldDeclaration(options.FieldName);
-
-            return this;
-        }
-
-        public ClassComposer AddMethod(MethodProperties options)
-        {
-            Visitor.PopUntil(typeof(ClassDeclarationSyntax));
-            var @class = (Visitor.CurrentNode as ClassDeclarationSyntax)!;
-
-            TypeSyntax returnType = SyntaxFactory.ParseTypeName(options.ReturnType);
-            var method = SyntaxFactory.MethodDeclaration(returnType, options.MethodName).WithModifiers(options.ModifiersToTokenList());
-
-            var @params = SyntaxFactory.ParameterList();
-            foreach (var param in options.Parameters)
-            {
-                var type = SyntaxFactory.IdentifierName(param.Type);
-                var name = SyntaxFactory.Identifier(param.Name);
-                var paramSyntax = SyntaxFactory
-                    .Parameter(new SyntaxList<AttributeListSyntax>(), SyntaxFactory.TokenList(), type, name, null);
-                @params = @params.AddParameters(paramSyntax);
-            }
-            @params = @params.NormalizeWhitespace();
-            method = method.WithParameterList(@params);
-
-            method = method.WithBody(SyntaxFactory.Block());
-
-            var newClassNode = @class.AddMembers(method);
-            Visitor.ReplaceNodeAndAdjustState(@class, newClassNode);
-
-            var navigator = BaseNavigator.CreateTempNavigator<CSRTypeNavigator>(Visitor);
-            navigator.SelectMethodDeclaration(options.MethodName);
-
-            return this;
-        }
-
-        public ClassComposer AddProperty(PropertyProperties options)
-        {
-            Visitor.PopUntil(typeof(ClassDeclarationSyntax));
-            var @class = (Visitor.CurrentNode as ClassDeclarationSyntax)!;
-
-            PropertyDeclarationSyntax @property = SyntaxFactory
-                .PropertyDeclaration(SyntaxFactory.ParseTypeName(options.PropertyType), options.PropertyName)
-                .WithModifiers(options.ModifiersToTokenList());
-
-            @property = @property.AddAccessorListAccessors(
-                SyntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
-                    .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken)
-                    ));
-            @property = @property.AddAccessorListAccessors(
-                SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
-                .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken)
-                ));
-
-            var newClassNode = @class.AddMembers(@property);
-            Visitor.ReplaceNodeAndAdjustState(@class, newClassNode);
-
-            var navigator = BaseNavigator.CreateTempNavigator<CSRTypeNavigator>(Visitor);
-            navigator.SelectPropertyDeclaration(options.PropertyName);
-
-            return this;
-        }
 
         public ClassComposer UpdateField(FieldProperties options)
         {

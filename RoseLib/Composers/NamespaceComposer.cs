@@ -20,10 +20,7 @@ namespace RoseLib.Composers
         public NamespaceComposer(IStatefulVisitor visitor) : base(visitor)
         {
         }
-        public NamespaceComposer(NamespaceDeclarationSyntax? namespaceDeclaration, IStatefulVisitor visitor) : base(namespaceDeclaration, visitor)
-        {
-        }
-
+   
         public static new bool CanProcessCurrentSelection(IStatefulVisitor statefulVisitor)
         {
             return GenericCanProcessCurrentSelectionCheck(statefulVisitor, typeof(NamespaceDeclarationSyntax), SupporedScope.IMMEDIATE_OR_PARENT);
@@ -31,7 +28,22 @@ namespace RoseLib.Composers
 
         public override NamespaceComposer AddClass(ClassProperties options)
         {
-            return (base.AddClass(options) as NamespaceComposer)!;
+            Visitor.PopUntil(typeof(NamespaceDeclarationSyntax));
+            var @namespace = (Visitor.CurrentNode as NamespaceDeclarationSyntax)!;
+
+
+            var template = new CreateClass() { Options = options };
+            var code = template.TransformText();
+            var cu = SyntaxFactory.ParseCompilationUnit(code).NormalizeWhitespace();
+            var newClass = cu.DescendantNodes().OfType<ClassDeclarationSyntax>().First();
+
+            var newNamespaceVersion = @namespace.AddMembers(newClass); // Should I track this class and select it without a navigator?
+            Visitor.ReplaceNodeAndAdjustState(@namespace, newNamespaceVersion);
+
+            BaseNavigator.CreateTempNavigator<NamespaceNavigator>(Visitor)
+                .SelectClassDeclaration(options.ClassName);
+
+            return this;
         }
 
     }

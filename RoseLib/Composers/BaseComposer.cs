@@ -28,21 +28,6 @@ namespace RoseLib.Composers
             Visitor = visitor;
         }
 
-        protected BaseComposer(SyntaxNode? node, IStatefulVisitor visitor)
-        {
-            if (node == null)
-            {
-                throw new ArgumentNullException("Cannot add null as navigator state.");
-            }
-            if(visitor == null)
-            {
-                throw new ArgumentNullException("Cannot create a composer without a navigator.");
-            }
-
-            Visitor = visitor;
-            Visitor.State.Push(new SelectedObject(node));
-        }
-
         protected BaseComposer(List<SyntaxNode> nodes, IStatefulVisitor visitor)
         {
             if (nodes == null)

@@ -20,14 +20,11 @@ namespace RoseLib.Composers
         {
         }
 
-        public TypeContainerComposer(SyntaxNode? namespaceDeclaration, IStatefulVisitor visitor) : base(namespaceDeclaration, visitor)
+        public abstract TypeContainerComposer AddClass(ClassProperties options);
+        protected virtual TypeContainerComposer AddClassToType<T>(ClassProperties options) where T : TypeDeclarationSyntax
         {
-        }
-
-        public virtual TypeContainerComposer AddClass(ClassProperties options)
-        {
-            Visitor.PopUntil(typeof(NamespaceDeclarationSyntax));
-            var @namespace = (Visitor.CurrentNode as NamespaceDeclarationSyntax)!;
+            Visitor.PopUntil(typeof(T));
+            var typeNode = (Visitor.CurrentNode as T)!;
 
 
             var template = new CreateClass() { Options = options };
@@ -35,8 +32,8 @@ namespace RoseLib.Composers
             var cu = SyntaxFactory.ParseCompilationUnit(code).NormalizeWhitespace();
             var newClass = cu.DescendantNodes().OfType<ClassDeclarationSyntax>().First();
 
-            var newNamespaceVersion = @namespace.AddMembers(newClass); // Should I track this class and select it without a navigator?
-            Visitor.ReplaceNodeAndAdjustState(@namespace, newNamespaceVersion);
+            var newTypeNodeVersion = typeNode.AddMembers(newClass); // Should I track this class and select it without a navigator?
+            Visitor.ReplaceNodeAndAdjustState(typeNode, newTypeNodeVersion);
 
             BaseNavigator.CreateTempNavigator<NamespaceNavigator>(Visitor)
                 .SelectClassDeclaration(options.ClassName);
