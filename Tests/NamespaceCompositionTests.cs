@@ -34,7 +34,7 @@ namespace RoseLib.Tests
                 )
                 .AddNamespace(newNamespace)
                 .EnterNamespace()
-                .AddClass(new Model.ClassOptions { ClassName = newClass });
+                .AddClass(new Model.ClassProperties { ClassName = newClass });
 
             var code = composer.GetCode();
             Assert.IsTrue(testRegexNS.IsMatch(code));
@@ -74,8 +74,8 @@ namespace RoseLib.Tests
                 )
                 .AddNamespace(newNamespace)
                 .EnterNamespace()
-                .AddClass(new Model.ClassOptions { ClassName = newClass1 })
-                .AddClass(new Model.ClassOptions { ClassName = newClass2 });
+                .AddClass(new Model.ClassProperties { ClassName = newClass1 })
+                .AddClass(new Model.ClassProperties { ClassName = newClass2 });
 
             var code = composer.GetCode();
             Assert.IsTrue(testRegexNS.IsMatch(code));

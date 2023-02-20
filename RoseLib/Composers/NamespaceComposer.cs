@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace RoseLib.Composers
 {
-    public class NamespaceComposer : TypeComposer
+    public class NamespaceComposer : TypeContainerComposer
     {
         public NamespaceComposer(IStatefulVisitor visitor) : base(visitor)
         {
@@ -29,7 +29,7 @@ namespace RoseLib.Composers
             return GenericCanProcessCurrentSelectionCheck(statefulVisitor, typeof(NamespaceDeclarationSyntax), SupporedScope.IMMEDIATE_OR_PARENT);
         }
 
-        public override NamespaceComposer AddClass(ClassOptions options)
+        public override NamespaceComposer AddClass(ClassProperties options)
         {
             return (base.AddClass(options) as NamespaceComposer)!;
         }

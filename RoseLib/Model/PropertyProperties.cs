@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RoseLib.Model
 {
-    public class PropertyOptions : AccessModifierOptions
+    public class PropertyProperties : AccessModifierProperties
     {
         public string PropertyName { get; set; }
         public string PropertyType { get; set; }

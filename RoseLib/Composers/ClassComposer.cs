@@ -15,7 +15,7 @@ namespace RoseLib.Composers
 {
 
     [Serializable]
-    public class ClassComposer: TypeComposer
+    public class ClassComposer: TypeContainerComposer
     {
         public ClassComposer(IStatefulVisitor visitor) : base(visitor)
         {
@@ -29,7 +29,7 @@ namespace RoseLib.Composers
             return GenericCanProcessCurrentSelectionCheck(statefulVisitor, typeof(ClassDeclarationSyntax), SupporedScope.IMMEDIATE_OR_PARENT);
         }
 
-        public ClassComposer SetClassAttributes(List<Model.Attribute> modelAttributeList)
+        public ClassComposer SetClassAttributes(List<Model.AttributeProperties> modelAttributeList)
         {
             List<AttributeSyntax> attributeSyntaxList = new List<AttributeSyntax>();
             foreach (var attribute in modelAttributeList)
@@ -57,7 +57,7 @@ namespace RoseLib.Composers
             return this;
         }
 
-        public ClassComposer AddField(FieldOptions options)
+        public ClassComposer AddField(FieldProperties options)
         {
             Visitor.PopUntil(typeof(ClassDeclarationSyntax));
             var @class = (Visitor.CurrentNode as ClassDeclarationSyntax)!;
@@ -82,7 +82,7 @@ namespace RoseLib.Composers
             return this;
         }
 
-        public ClassComposer AddMethod(MethodOptions options)
+        public ClassComposer AddMethod(MethodProperties options)
         {
             Visitor.PopUntil(typeof(ClassDeclarationSyntax));
             var @class = (Visitor.CurrentNode as ClassDeclarationSyntax)!;
@@ -113,7 +113,7 @@ namespace RoseLib.Composers
             return this;
         }
 
-        public ClassComposer AddProperty(PropertyOptions options)
+        public ClassComposer AddProperty(PropertyProperties options)
         {
             Visitor.PopUntil(typeof(ClassDeclarationSyntax));
             var @class = (Visitor.CurrentNode as ClassDeclarationSyntax)!;
@@ -140,7 +140,7 @@ namespace RoseLib.Composers
             return this;
         }
 
-        public ClassComposer UpdateField(FieldOptions options)
+        public ClassComposer UpdateField(FieldProperties options)
         {
             
             var existingFieldDeclaration = Visitor.CurrentNode as FieldDeclarationSyntax;

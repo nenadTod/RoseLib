@@ -14,17 +14,17 @@ using Microsoft.CodeAnalysis;
 
 namespace RoseLib.Composers
 {
-    public abstract class TypeComposer : BaseComposer
+    public abstract class TypeContainerComposer : BaseComposer
     {
-        protected TypeComposer(IStatefulVisitor visitor) : base(visitor)
+        protected TypeContainerComposer(IStatefulVisitor visitor) : base(visitor)
         {
         }
 
-        public TypeComposer(SyntaxNode? namespaceDeclaration, IStatefulVisitor visitor) : base(namespaceDeclaration, visitor)
+        public TypeContainerComposer(SyntaxNode? namespaceDeclaration, IStatefulVisitor visitor) : base(namespaceDeclaration, visitor)
         {
         }
 
-        public virtual TypeComposer AddClass(ClassOptions options)
+        public virtual TypeContainerComposer AddClass(ClassProperties options)
         {
             Visitor.PopUntil(typeof(NamespaceDeclarationSyntax));
             var @namespace = (Visitor.CurrentNode as NamespaceDeclarationSyntax)!;

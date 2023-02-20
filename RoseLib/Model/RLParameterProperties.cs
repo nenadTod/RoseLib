@@ -6,18 +6,18 @@ using System.Threading.Tasks;
 
 namespace RoseLib.Model
 {
-    public class RLParameter
+    public class RLParameterProperties
     {
         public string Name { get; set; }
         public string Type { get; set; }
         public object DefaultValue { get; set; }
 
-        public RLParameter()
+        public RLParameterProperties()
         {
 
         }
 
-        public RLParameter(string name, string type)
+        public RLParameterProperties(string name, string type)
         {
             Name = name;
             Type = type;

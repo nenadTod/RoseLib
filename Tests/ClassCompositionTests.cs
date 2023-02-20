@@ -42,35 +42,22 @@ namespace RoseLib.Tests
                 )
                 .AddNamespace(newNamespace)
                 .EnterNamespace()
-                .AddClass(new Model.ClassOptions {  
-                    AccessModifier = Enums.AccessModifierTypes.PUBLIC,
-                    ClassName = newClass,
-                    BaseTypes = new List<string>() { "object", $"IEquatable<{newClass}>" }, 
-                    Attributes = new List<Model.Attribute> { 
-                        new Model.Attribute(){ Name = "Serializable"},
-                        new Model.Attribute()
-                        {
-                            Name = "DllImport",
-                            AttributeArgumentList = new List<string>
-                            {
-                                "user32.dll", "SetLastError=false", "ExactSpelling=false"
-                            }
-                        }
-                    }
+                .AddClass(new Model.ClassProperties {  
+                    ClassName = newClass
                 })
                 .EnterClass()
-                .AddField(new Model.FieldOptions { 
+                .AddField(new Model.FieldProperties { 
                     AccessModifier = Enums.AccessModifierTypes.PRIVATE,
                     FieldType = "string",
                     FieldName = newFieldName
                 })
-                .AddProperty(new Model.PropertyOptions
+                .AddProperty(new Model.PropertyProperties
                 {
                     AccessModifier = Enums.AccessModifierTypes.PUBLIC,
                     PropertyName = newPropertyName,
                     PropertyType= "string",
                 })
-                .AddMethod(new Model.MethodOptions {
+                .AddMethod(new Model.MethodProperties {
                     AccessModifier= Enums.AccessModifierTypes.PUBLIC,
                     MethodName = newMethodName,
                     ReturnType = "string",
@@ -83,6 +70,60 @@ namespace RoseLib.Tests
             Assert.IsTrue(testRegexF.IsMatch(code));
             Assert.IsTrue(testRegexP.IsMatch(code));
             Assert.IsTrue(testRegexM.IsMatch(code));
+        }
+
+        [Test]
+        public void PublicClassWithAttributesAndBaseList()
+        {
+            var newNamespace = "RoseLib.Tests";
+            Regex testRegexNS = new Regex(newNamespace);
+
+            var newClass = "TestClass";
+            Regex testRegexC = new Regex(newClass);
+
+            var testRegexPublic = new Regex("public");
+
+            var baseType1 = "object";
+            var baseType2 = $"IEquatable<{newClass}>";
+            var testRegexBaseTypes = new Regex($": {baseType1}, {baseType2}");
+
+            var attribute1 = "Serializable";
+            var attribute2 = "DllImport";
+            var testRegexAttribute1 = new Regex($"[{attribute1}]");
+            var testRegexAttribute2 = new Regex($"[{attribute2}(]");
+
+            CompilationUnitComposer composer = new CompilationUnitComposer();
+            composer
+                .AddUsingDirectives(
+                    "System"
+                )
+                .AddNamespace(newNamespace)
+                .EnterNamespace()
+                .AddClass(new Model.ClassProperties
+                {
+                    AccessModifier = Enums.AccessModifierTypes.PUBLIC,
+                    ClassName = newClass,
+                    BaseTypes = new List<string>() { baseType1, baseType2 },
+                    Attributes = new List<Model.AttributeProperties> {
+                        new Model.AttributeProperties(){ Name = attribute1},
+                        new Model.AttributeProperties()
+                        {
+                            Name = attribute2,
+                            AttributeArgumentList = new List<string>
+                            {
+                                "user32.dll", "SetLastError=false", "ExactSpelling=false"
+                            }
+                        }
+                    }
+                });
+
+            var code = composer.GetCode();
+            Assert.IsTrue(testRegexNS.IsMatch(code));
+            Assert.IsTrue(testRegexC.IsMatch(code));
+            Assert.IsTrue(testRegexPublic.IsMatch(code));
+            Assert.IsTrue(testRegexBaseTypes.IsMatch(code));
+            Assert.IsTrue(testRegexAttribute1.IsMatch(code));
+            Assert.IsTrue(testRegexAttribute2.IsMatch(code));
         }
 
 
@@ -103,7 +144,7 @@ namespace RoseLib.Tests
                 var code = navigator
                     .SelectFieldDeclaration("field1")
                     .StartComposing<ClassComposer>()
-                    .UpdateField(new Model.FieldOptions()
+                    .UpdateField(new Model.FieldProperties()
                     {
                         FieldName = newFieldName,
                         FieldType = newFieldType,
@@ -159,10 +200,10 @@ namespace RoseLib.Tests
                     .SelectClassDeclaration("Class1")
                     .StartComposing<ClassComposer>()
                     .SetClassAttributes(
-                        new List<Model.Attribute>() 
+                        new List<Model.AttributeProperties>() 
                         { 
-                            new Model.Attribute { Name = attribute1Name },
-                            new Model.Attribute 
+                            new Model.AttributeProperties { Name = attribute1Name },
+                            new Model.AttributeProperties 
                             { 
                                 Name = attribute2Name,
                                 AttributeArgumentList = new List<string>

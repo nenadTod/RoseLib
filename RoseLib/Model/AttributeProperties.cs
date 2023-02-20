@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RoseLib.Model
 {
-    public class Attribute
+    public class AttributeProperties
     {
         public string Name { get; set; } = "";
         public List<string>? AttributeArgumentList { get; set; }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace RoseLib.Model
 {
-    public class AccessModifierOptions
+    public class AccessModifierProperties
     {
         public AccessModifierTypes AccessModifier { get; set; }
 

@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace RoseLib.Model
 {
-    public class MethodOptions : AccessModifierOptions
+    public class MethodProperties : AccessModifierProperties
     {
         public string MethodName { get; set; } = "";
 
         public string ReturnType { get; set; } = "";
-        public List<RLParameter> Parameters { get; set; } = new List<RLParameter>();
+        public List<RLParameterProperties> Parameters { get; set; } = new List<RLParameterProperties>();
     }
 }
