@@ -28,22 +28,12 @@ namespace RoseLib.Composers
 
         public override NamespaceComposer AddClass(ClassProperties options)
         {
-            Visitor.PopUntil(typeof(NamespaceDeclarationSyntax));
-            var @namespace = (Visitor.CurrentNode as NamespaceDeclarationSyntax)!;
+            return (this.AddClass<NamespaceDeclarationSyntax>(options) as NamespaceComposer)!;
+        }
 
-
-            var template = new CreateClass() { Options = options };
-            var code = template.TransformText();
-            var cu = SyntaxFactory.ParseCompilationUnit(code).NormalizeWhitespace();
-            var newClass = cu.DescendantNodes().OfType<ClassDeclarationSyntax>().First();
-
-            var newNamespaceVersion = @namespace.AddMembers(newClass); // Should I track this class and select it without a navigator?
-            Visitor.ReplaceNodeAndAdjustState(@namespace, newNamespaceVersion);
-
-            BaseNavigator.CreateTempNavigator<NamespaceNavigator>(Visitor)
-                .SelectClassDeclaration(options.ClassName);
-
-            return this;
+        public override NamespaceComposer AddInterface(InterfaceProperties properties)
+        {
+            return (base.AddInterface<NamespaceDeclarationSyntax>(properties) as NamespaceComposer)!;
         }
 
     }

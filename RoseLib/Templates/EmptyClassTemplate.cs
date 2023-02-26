@@ -12,15 +12,16 @@ namespace RoseLib.Templates
     using System.Linq;
     using System.Text;
     using System.Collections.Generic;
+    using RoseLib.Model;
     using System;
     
     /// <summary>
     /// Class to produce the template output
     /// </summary>
     
-    #line 1 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\CreateStatements.tt"
+    #line 1 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\EmptyClassTemplate.tt"
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "17.0.0.0")]
-    public partial class CreateStatements : CreateStatementsBase
+    public partial class EmptyClassTemplate : EmptyClassTemplateBase
     {
 #line hidden
         /// <summary>
@@ -28,34 +29,124 @@ namespace RoseLib.Templates
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("public void Method()\r\n{\r\n\t");
+            this.Write("\r\n");
             
-            #line 8 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\CreateStatements.tt"
-foreach(string st in statements){
-            
-            #line default
-            #line hidden
-            this.Write("\t");
-            
-            #line 9 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\CreateStatements.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(st));
+            #line 8 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\EmptyClassTemplate.tt"
+ foreach(var attribute in Properties.Attributes) { 
             
             #line default
             #line hidden
-            this.Write("\r\n\t");
+            this.Write("[attribute.Name");
             
-            #line 10 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\CreateStatements.tt"
-}
+            #line 9 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\EmptyClassTemplate.tt"
+ if(attribute.AttributeArgumentsAsString != null) { 
             
             #line default
             #line hidden
-            this.Write("}\r\n");
+            this.Write(" ");
+            
+            #line 9 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\EmptyClassTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(attribute.AttributeArgumentsAsString));
+            
+            #line default
+            #line hidden
+            this.Write(" ");
+            
+            #line 9 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\EmptyClassTemplate.tt"
+ } 
+            
+            #line default
+            #line hidden
+            this.Write("]\r\n");
+            
+            #line 10 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\EmptyClassTemplate.tt"
+ } 
+            
+            #line default
+            #line hidden
+            
+            #line 11 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\EmptyClassTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Properties.ModifiersToString()));
+            
+            #line default
+            #line hidden
+            this.Write(" ");
+            
+            #line 11 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\EmptyClassTemplate.tt"
+ if(Properties.IsStatic) {
+            
+            #line default
+            #line hidden
+            this.Write(" static ");
+            
+            #line 11 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\EmptyClassTemplate.tt"
+ } 
+            
+            #line default
+            #line hidden
+            this.Write(" ");
+            
+            #line 11 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\EmptyClassTemplate.tt"
+ if(Properties.IsAbstract) {
+            
+            #line default
+            #line hidden
+            this.Write(" abstract ");
+            
+            #line 11 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\EmptyClassTemplate.tt"
+ } 
+            
+            #line default
+            #line hidden
+            this.Write(" ");
+            
+            #line 11 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\EmptyClassTemplate.tt"
+ if(Properties.IsPartial) {
+            
+            #line default
+            #line hidden
+            this.Write(" partial ");
+            
+            #line 11 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\EmptyClassTemplate.tt"
+ } 
+            
+            #line default
+            #line hidden
+            this.Write(" class ");
+            
+            #line 11 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\EmptyClassTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Properties.ClassName));
+            
+            #line default
+            #line hidden
+            this.Write(" ");
+            
+            #line 11 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\EmptyClassTemplate.tt"
+ if(Properties.BaseTypes != null && Properties.BaseTypes.Count > 0) { 
+            
+            #line default
+            #line hidden
+            this.Write(" : ");
+            
+            #line 11 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\EmptyClassTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(string.Join(", ", Properties.BaseTypes)));
+            
+            #line default
+            #line hidden
+            this.Write(" ");
+            
+            #line 11 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\EmptyClassTemplate.tt"
+ } 
+            
+            #line default
+            #line hidden
+            this.Write("  {\r\n}\r\n\r\n");
             return this.GenerationEnvironment.ToString();
         }
         
-        #line 12 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\CreateStatements.tt"
+        #line 14 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\EmptyClassTemplate.tt"
  
-	public List<string> statements {get; set;}
+	public ClassProperties Properties {get; set;}
 
         
         #line default
@@ -69,7 +160,7 @@ foreach(string st in statements){
     /// Base class for this transformation
     /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "17.0.0.0")]
-    public class CreateStatementsBase
+    public class EmptyClassTemplateBase
     {
         #region Fields
         private global::System.Text.StringBuilder generationEnvironmentField;

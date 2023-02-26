@@ -35,15 +35,20 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Templates\CreateClass.cs">
+    <Compile Update="Templates\EmptyClassTemplate.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>CreateClass.tt</DependentUpon>
+      <DependentUpon>EmptyClassTemplate.tt</DependentUpon>
     </Compile>
-    <Compile Update="Templates\CreateStatements.cs">
+    <Compile Update="Templates\EmptyInterfaceTemplate.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>CreateStatements.tt</DependentUpon>
+      <DependentUpon>EmptyInterfaceTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Templates\StatementsTemplate.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>StatementsTemplate.tt</DependentUpon>
     </Compile>
   </ItemGroup>
 
@@ -54,13 +59,17 @@
     <None Update="CSPath\cspath_to_model.py">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Templates\CreateClass.tt">
+    <None Update="Templates\EmptyClassTemplate.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
-      <LastGenOutput>CreateClass.cs</LastGenOutput>
+      <LastGenOutput>EmptyClassTemplate.cs</LastGenOutput>
     </None>
-    <None Update="Templates\CreateStatements.tt">
+    <None Update="Templates\EmptyInterfaceTemplate.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
-      <LastGenOutput>CreateStatements.cs</LastGenOutput>
+      <LastGenOutput>EmptyInterfaceTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="Templates\StatementsTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>StatementsTemplate.cs</LastGenOutput>
     </None>
   </ItemGroup>
 
@@ -75,10 +84,6 @@
     <Content Include="lib\*.*" Pack="true" PackagePath="contentFiles\lib">
       <PackageCopyToOutput>true</PackageCopyToOutput>
     </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Composers\NewFolder\" />
   </ItemGroup>
 
   <!--

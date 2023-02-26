@@ -42,7 +42,12 @@ namespace RoseLib.Composers
 
         public override ClassComposer AddClass(ClassProperties options)
         {
-            return (base.AddClassToType<ClassDeclarationSyntax>(options) as ClassComposer)!;
+            return (base.AddClass<ClassDeclarationSyntax>(options) as ClassComposer)!;
+        }
+
+        public override ClassComposer AddInterface(InterfaceProperties properties)
+        {
+            return (base.AddInterface<ClassDeclarationSyntax>(properties) as ClassComposer)!;
         }
 
         public ClassComposer SetClassAttributes(List<Model.AttributeProperties> modelAttributeList)
