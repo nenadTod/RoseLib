@@ -127,7 +127,7 @@ namespace RoseLib.Tests
         }
 
         [Test]
-        public void AddingFieldBeneathNotherOne()
+        public void AddingFieldBeneathAnotherOne()
         {
             var referenceFieldName = "field2";
             Regex testRegexRF = new Regex(referenceFieldName);
@@ -159,6 +159,41 @@ namespace RoseLib.Tests
                 Assert.IsTrue(testRegexRF.IsMatch(codeParts[0]));
             }
         }
+
+        [Test]
+        public void AddingPropertyBeneathAnotherMember()
+        {
+            var referenceFieldName = "field2";
+            Regex testRegexRF = new Regex(referenceFieldName);
+
+            var newPropertyName = "NewProperty";
+            Regex testRegexP = new Regex(newPropertyName);
+
+            var newPropertyType = "string";
+            var newPropertyAccessModifier = Enums.AccessModifierTypes.PUBLIC;
+
+
+            using (StreamReader reader = new StreamReader(".\\TestFiles\\Class1.cs"))
+            {
+                CompilationUnitNavigator navigator = new CompilationUnitNavigator(reader);
+
+                var code = navigator
+                    .SelectFieldDeclaration(referenceFieldName)
+                    .StartComposing<ClassComposer>()
+                    .AddProperty(new Model.PropertyProperties()
+                    {
+                        PropertyName = newPropertyName,
+                        PropertyType = newPropertyType,
+                        AccessModifier = newPropertyAccessModifier
+                    })
+                    .GetCode();
+
+                Assert.IsTrue(testRegexP.IsMatch(code));
+                var codeParts = testRegexP.Split(code);
+                Assert.IsTrue(testRegexRF.IsMatch(codeParts[0]));
+            }
+        }
+
 
         [Test]
         public void UpdateField()

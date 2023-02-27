@@ -46,52 +46,5 @@ namespace RoseLib.Composers
 
             return this;
         }
-
-        protected (T enclosingNode, MemberDeclarationSyntax? referenceNode) PopToEnclosingNodeOfType<T>() where T: TypeDeclarationSyntax
-        {
-            var enclosingNode = Visitor.CurrentNode!.GetType() == typeof(T) ?
-            (T)Visitor.CurrentNode : (T)Visitor.CurrentNode.Parent!;
-            var isAtBase = enclosingNode == Visitor.CurrentNode;
-            var referenceNode = isAtBase ? null : Visitor.CurrentNode as MemberDeclarationSyntax;
-
-            // If not at base
-            if (!isAtBase)
-            {
-                // Pop the reference node
-                Visitor.State.Pop();
-                // If still not at base (Because, some other selection...)
-                if(enclosingNode != Visitor.State.Peek().CurrentNode)
-                {
-                    // Set base as current node
-                    Visitor.NextStep(enclosingNode);
-                }
-            }
-
-            return (enclosingNode, referenceNode);
-        }
-
-        protected SyntaxNode AddMemberToCurrentNode(MemberDeclarationSyntax member, MemberDeclarationSyntax? referenceNode = null)
-        {
-            SyntaxNode newEnclosingNode;
-            var dynamicNode = (Visitor.CurrentNode as dynamic)!;
-            if (referenceNode == null)
-            {
-                newEnclosingNode = dynamicNode.AddMembers(member);
-            }
-            else
-            {
-                var currentSelection = referenceNode!;
-                var currentMembers = (SyntaxList<MemberDeclarationSyntax>)dynamicNode.Members;
-                var indexOfSelected = currentMembers.IndexOf(currentSelection);
-                if(indexOfSelected != -1)
-                {
-                    throw new InvalidStateException("For some reason, reference node not found in members.");
-                }
-                var updatedMembers = currentMembers.Insert(indexOfSelected+1, member);
-                newEnclosingNode = dynamicNode.WithMembers(updatedMembers);
-            }
-
-            return newEnclosingNode;
-        }
     }
 }
