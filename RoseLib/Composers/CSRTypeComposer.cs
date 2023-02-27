@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RoseLib.Guards;
+using RoseLib.Exceptions;
 
 namespace RoseLib.Composers
 {
@@ -82,6 +83,10 @@ namespace RoseLib.Composers
                 var currentSelection = referenceNode!;
                 var currentMembers = (SyntaxList<MemberDeclarationSyntax>)dynamicNode.Members;
                 var indexOfSelected = currentMembers.IndexOf(currentSelection);
+                if(indexOfSelected != -1)
+                {
+                    throw new InvalidStateException("For some reason, reference node not found in members.");
+                }
                 var updatedMembers = currentMembers.Insert(indexOfSelected+1, member);
                 newEnclosingNode = dynamicNode.WithMembers(updatedMembers);
             }
