@@ -6,13 +6,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace RoseLib
+namespace RoseLib.Guards
 {
     public static class NavigationGuard
     {
         public static void CurrentNodeNotNull(SyntaxNode? node)
         {
-            if(node == null)
+            if (node == null)
             {
                 throw new Exception("Current composer state is not valid: current node is null");
             }
@@ -33,6 +33,6 @@ namespace RoseLib
                 throw new Exception("Passed name to search by must not be null");
             }
         }
-        
+
     }
 }

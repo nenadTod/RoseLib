@@ -33,7 +33,7 @@ namespace RoseLib.Composers
         /// <typeparam name="T">Descendant of MemberDeclarationSyntax, but should also have AddMembers method</typeparam>
         /// <param name="options">Desired class options</param>
         /// <returns>this</returns>
-        protected virtual TypeContainerComposer AddClass<T>(ClassProperties options) where T : MemberDeclarationSyntax
+        protected virtual TypeContainerComposer AddClassToNodeOfType<T>(ClassProperties options) where T : MemberDeclarationSyntax
         {
             Visitor.PopUntil(typeof(T));
             var typeNode = (Visitor.CurrentNode as dynamic)!;
@@ -77,7 +77,7 @@ namespace RoseLib.Composers
         /// <typeparam name="T">Descendant of MemberDeclarationSyntax, but should also have AddMembers method</typeparam>
         /// <param name="properties">Desired interface properties</param>
         /// <returns>this</returns>
-        protected virtual TypeContainerComposer AddInterface<T>(InterfaceProperties properties) where T : MemberDeclarationSyntax
+        protected virtual TypeContainerComposer AddInterfaceToNodeOfType<T>(InterfaceProperties properties) where T : MemberDeclarationSyntax
         {
             Visitor.PopUntil(typeof(T));
             var typeNode = (Visitor.CurrentNode as dynamic)!;

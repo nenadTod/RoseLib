@@ -1,4 +1,5 @@
 ﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using RoseLib.Guards;
 using RoseLib.Traversal.Navigators;
 using RoseLib.Traversal.Selectors.Interfaces;
 using System;

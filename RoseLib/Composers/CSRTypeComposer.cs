@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RoseLib.Guards;
 
 namespace RoseLib.Composers
 {
@@ -18,10 +19,11 @@ namespace RoseLib.Composers
         {
         }
 
-        public virtual CSRTypeComposer AddField(FieldProperties options)
+        public abstract CSRTypeComposer AddField(FieldProperties options);
+
+        protected CSRTypeComposer AddFieldToNodeOfType<T>(FieldProperties options) where T : TypeDeclarationSyntax
         {
-            Visitor.PopUntil(typeof(ClassDeclarationSyntax));
-            var @class = (Visitor.CurrentNode as ClassDeclarationSyntax)!;
+            CompositionGuard.ImmediateOrParentOfNodeIs(Visitor.CurrentNode, typeof(T));
 
             TypeSyntax type = SyntaxFactory.ParseTypeName(options.FieldType);
             var declaration = SyntaxFactory.VariableDeclaration(type,
@@ -32,15 +34,59 @@ namespace RoseLib.Composers
                     )
                 );
 
-            var fieldDeclaration = SyntaxFactory.FieldDeclaration(new SyntaxList<AttributeListSyntax> { }, options.ModifiersToTokenList(), declaration);
+            var fieldDeclaration = SyntaxFactory.FieldDeclaration(new SyntaxList<AttributeListSyntax> { }, options.ModifiersToTokenList(), declaration).NormalizeWhitespace();
 
-            var newClassNode = @class.AddMembers(fieldDeclaration);
-            Visitor.ReplaceNodeAndAdjustState(@class, newClassNode);
+            var earn = PopToEnclosingNodeOfType<T>();
+            var newEnclosingNode = AddMemberToCurrentNode(fieldDeclaration, earn.referenceNode);
 
+            Visitor.ReplaceNodeAndAdjustState(earn.enclosingNode, newEnclosingNode);
             var navigator = BaseNavigator.CreateTempNavigator<CSRTypeNavigator>(Visitor);
             navigator.SelectFieldDeclaration(options.FieldName);
 
             return this;
+        }
+
+        protected (T enclosingNode, MemberDeclarationSyntax? referenceNode) PopToEnclosingNodeOfType<T>() where T: TypeDeclarationSyntax
+        {
+            var enclosingNode = Visitor.CurrentNode!.GetType() == typeof(T) ?
+            (T)Visitor.CurrentNode : (T)Visitor.CurrentNode.Parent!;
+            var isAtBase = enclosingNode == Visitor.CurrentNode;
+            var referenceNode = isAtBase ? null : Visitor.CurrentNode as MemberDeclarationSyntax;
+
+            // If not at base
+            if (!isAtBase)
+            {
+                // Pop the reference node
+                Visitor.State.Pop();
+                // If still not at base (Because, some other selection...)
+                if(enclosingNode != Visitor.State.Peek().CurrentNode)
+                {
+                    // Set base as current node
+                    Visitor.NextStep(enclosingNode);
+                }
+            }
+
+            return (enclosingNode, referenceNode);
+        }
+
+        protected SyntaxNode AddMemberToCurrentNode(MemberDeclarationSyntax member, MemberDeclarationSyntax? referenceNode = null)
+        {
+            SyntaxNode newEnclosingNode;
+            var dynamicNode = (Visitor.CurrentNode as dynamic)!;
+            if (referenceNode == null)
+            {
+                newEnclosingNode = dynamicNode.AddMembers(member);
+            }
+            else
+            {
+                var currentSelection = referenceNode!;
+                var currentMembers = (SyntaxList<MemberDeclarationSyntax>)dynamicNode.Members;
+                var indexOfSelected = currentMembers.IndexOf(currentSelection);
+                var updatedMembers = currentMembers.Insert(indexOfSelected+1, member);
+                newEnclosingNode = dynamicNode.WithMembers(updatedMembers);
+            }
+
+            return newEnclosingNode;
         }
     }
 }

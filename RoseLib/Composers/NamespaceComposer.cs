@@ -28,12 +28,12 @@ namespace RoseLib.Composers
 
         public override NamespaceComposer AddClass(ClassProperties options)
         {
-            return (this.AddClass<NamespaceDeclarationSyntax>(options) as NamespaceComposer)!;
+            return (base.AddClassToNodeOfType<NamespaceDeclarationSyntax>(options) as NamespaceComposer)!;
         }
 
         public override NamespaceComposer AddInterface(InterfaceProperties properties)
         {
-            return (base.AddInterface<NamespaceDeclarationSyntax>(properties) as NamespaceComposer)!;
+            return (base.AddInterfaceToNodeOfType<NamespaceDeclarationSyntax>(properties) as NamespaceComposer)!;
         }
 
     }

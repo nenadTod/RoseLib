@@ -8,7 +8,7 @@ namespace RoseLib.Model
 {
     public class FieldProperties: AccessModifierProperties
     {
-        public string FieldName { get; set; }
-        public string FieldType { get; set; }
+        public string FieldName { get; set; } = "";
+        public string FieldType { get; set; } = "";
     }
 }

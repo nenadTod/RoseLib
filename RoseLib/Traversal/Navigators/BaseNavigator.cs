@@ -81,6 +81,13 @@ namespace RoseLib.Traversal.Navigators
             return navigator;
         }
 
+        internal static T CreateTempNavigator<T>(SyntaxNode node) where T : BaseNavigator, new()
+        {
+            var navigator = new T();
+            navigator.State.Push(new SelectedObject(node));
+            return navigator;
+        }
+
         public T StartComposing<T>() where T : BaseComposer
         {
             // TODO: Extend for different kinds of possible composers.

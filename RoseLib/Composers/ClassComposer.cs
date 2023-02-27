@@ -28,7 +28,7 @@ namespace RoseLib.Composers
 
         public override ClassComposer AddField(FieldProperties options)
         {
-            return (base.AddField(options) as ClassComposer)!;
+            return (base.AddFieldToNodeOfType<ClassDeclarationSyntax>(options) as ClassComposer)!;
         }
 
         public override ClassComposer AddProperty(PropertyProperties options)
@@ -42,12 +42,12 @@ namespace RoseLib.Composers
 
         public override ClassComposer AddClass(ClassProperties options)
         {
-            return (base.AddClass<ClassDeclarationSyntax>(options) as ClassComposer)!;
+            return (base.AddClassToNodeOfType<ClassDeclarationSyntax>(options) as ClassComposer)!;
         }
 
         public override ClassComposer AddInterface(InterfaceProperties properties)
         {
-            return (base.AddInterface<ClassDeclarationSyntax>(properties) as ClassComposer)!;
+            return (base.AddInterfaceToNodeOfType<ClassDeclarationSyntax>(properties) as ClassComposer)!;
         }
 
         public ClassComposer SetClassAttributes(List<Model.AttributeProperties> modelAttributeList)
