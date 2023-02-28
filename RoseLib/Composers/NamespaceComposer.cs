@@ -20,10 +20,14 @@ namespace RoseLib.Composers
         public NamespaceComposer(IStatefulVisitor visitor) : base(visitor)
         {
         }
-   
+        protected override void PrepareStateAndSetStatePivotIndex()
+        {
+            GenericPrepareStateAndSetStatePivotIndex(typeof(NamespaceDeclarationSyntax), SupportedScope.IMMEDIATE_OR_PARENT);
+        }
+
         public static new bool CanProcessCurrentSelection(IStatefulVisitor statefulVisitor)
         {
-            return GenericCanProcessCurrentSelectionCheck(statefulVisitor, typeof(NamespaceDeclarationSyntax), SupporedScope.IMMEDIATE_OR_PARENT);
+            return GenericCanProcessCurrentSelectionCheck(statefulVisitor, typeof(NamespaceDeclarationSyntax), SupportedScope.IMMEDIATE_OR_PARENT);
         }
 
         public override NamespaceComposer AddClass(ClassProperties options)

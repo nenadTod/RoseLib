@@ -22,9 +22,14 @@ namespace RoseLib.Composers
         {
         }
 
+        protected override void PrepareStateAndSetStatePivotIndex()
+        {
+            GenericPrepareStateAndSetStatePivotIndex(typeof(CompilationUnitSyntax), SupportedScope.IMMEDIATE_OR_PARENT);
+        }
+
         public static new bool CanProcessCurrentSelection(IStatefulVisitor statefulVisitor)
         {
-            return GenericCanProcessCurrentSelectionCheck(statefulVisitor, typeof(CompilationUnitSyntax), SupporedScope.IMMEDIATE_OR_PARENT);
+            return GenericCanProcessCurrentSelectionCheck(statefulVisitor, typeof(CompilationUnitSyntax), SupportedScope.IMMEDIATE_OR_PARENT);
         }
 
         public CompilationUnitComposer AddUsingDirectives(params string[] usings)

@@ -17,6 +17,7 @@ namespace RoseLib.Composers
     public abstract class BaseComposer
     {
         public IStatefulVisitor Visitor { get; protected set; }
+        public int? StatePivotIndex { get; protected set; } = -1;
 
         protected BaseComposer(IStatefulVisitor visitor)
         {
@@ -26,28 +27,56 @@ namespace RoseLib.Composers
             }
 
             Visitor = visitor;
-        }
 
-        protected BaseComposer(List<SyntaxNode> nodes, IStatefulVisitor visitor)
+            PrepareStateAndSetStatePivotIndex();
+        }
+        
+        protected abstract void PrepareStateAndSetStatePivotIndex();
+        
+        protected void GenericPrepareStateAndSetStatePivotIndex(Type pivotType, SupportedScope scope)
         {
-            if (nodes == null)
+            var isListSelected = false;
+            SyntaxNode testNode;
+            if (Visitor.CurrentNode != null)
             {
-                throw new ArgumentNullException("Cannot add null as navigator state.");
+                testNode = Visitor.CurrentNode;
             }
-            if (visitor == null)
+            else if (Visitor.CurrentNodesList != null && Visitor.CurrentNodesList.Count > 0)
             {
-                throw new ArgumentNullException("Cannot create a composer without a navigator.");
+                testNode = Visitor.CurrentNodesList[0];
+                isListSelected = true;
             }
-            Visitor = visitor;
-            Visitor.State.Push(new SelectedObject(nodes));
-        }
+            else
+            {
+                throw new InvalidStateException("No selected nodes in the state!");
+            }
 
+            var testNodeType = testNode.GetType();
+            if (testNodeType == pivotType && !isListSelected)
+            {
+                StatePivotIndex = Visitor.State.Count() - 1; // Head
+            }
+            else if (scope == SupportedScope.IMMEDIATE_OR_PARENT && testNode.Parent != null)
+            {
+                var parentNodeType = testNode.Parent.GetType();
+                if (parentNodeType == pivotType)
+                {
+                    var indexOfParent = Visitor.GetIndexOfSelectedNode(testNode.Parent);
+                    if (indexOfParent == -1)
+                    {
+                        Visitor.InsertBeforeHead(testNode.Parent);
+                        StatePivotIndex = Visitor.State.Count() - 2; // Behind the head
+                    }
+                }
+            }
+        }
+        
         public static bool CanProcessCurrentSelection(IStatefulVisitor statefulVisitor)
         {
             return false;
         }
 
-        protected static bool GenericCanProcessCurrentSelectionCheck(IStatefulVisitor statefulVisitor, Type supportedSyntaxNodeType, SupporedScope scope)
+        protected static bool GenericCanProcessCurrentSelectionCheck(IStatefulVisitor statefulVisitor, Type supportedSyntaxNodeType, SupportedScope scope)
         {
             SyntaxNode testNode;
             if (statefulVisitor.CurrentNode != null)
@@ -68,7 +97,7 @@ namespace RoseLib.Composers
             {
                 return true;
             }
-            else if (scope == SupporedScope.IMMEDIATE_OR_PARENT && testNode.Parent != null)
+            else if (scope == SupportedScope.IMMEDIATE_OR_PARENT && testNode.Parent != null)
             {
                 var parentNodeType = testNode.Parent.GetType();
                 if(parentNodeType == supportedSyntaxNodeType)
@@ -80,22 +109,22 @@ namespace RoseLib.Composers
             return false;
         }
 
-        protected enum SupporedScope
+        protected enum SupportedScope
         {
             IMMEDIATE,
             IMMEDIATE_OR_PARENT
         }
 
-        protected void DeleteForParentType(Type supportedParentType)
+        protected void DeleteForParentNodeOfType<T>()
         {
 
             if (Visitor.CurrentNode != null)
             {
-                DeleteSingleMember(supportedParentType);
+                DeleteSingleMember<T>();
             }
             else if (Visitor.CurrentNodesList != null)
             {
-                DeleteMultipleMembers(supportedParentType);
+                DeleteMultipleMembers<T>();
             }
             else
             {
@@ -103,7 +132,7 @@ namespace RoseLib.Composers
             }
         }
 
-        private void DeleteSingleMember(Type supportedParentType)
+        private void DeleteSingleMember<T>()
         {
             SyntaxNode forDeletion = Visitor.CurrentNode!;
             Visitor.State.Pop();
@@ -114,9 +143,9 @@ namespace RoseLib.Composers
             {
                 throw new InvalidActionForStateException("Syntax node to be deleted does not have a parent.");
             }
-            if (parent.GetType() != supportedParentType)
+            if (parent.GetType() != typeof(T))
             {
-                throw new InvalidActionForStateException($"Cannot delete a member when parent is not of a {supportedParentType} type.");
+                throw new InvalidActionForStateException($"Cannot delete a member when parent is not of a {typeof(T)} type.");
             }
             if (stateStepBefore == null)
             {
@@ -133,7 +162,7 @@ namespace RoseLib.Composers
             var newParentVersion = parent!.RemoveNode(forDeletion, SyntaxRemoveOptions.KeepNoTrivia);
             Visitor.ReplaceNodeAndAdjustState(parent!, newParentVersion!);
         }
-        private void DeleteMultipleMembers(Type supportedParentType)
+        private void DeleteMultipleMembers<T>()
         {
             List<SyntaxNode> members = Visitor.CurrentNodesList!;
             if (members == null || members.Count == 0)
@@ -152,9 +181,9 @@ namespace RoseLib.Composers
             {
                 throw new InvalidActionForStateException("Syntax node to be deleted does not have a parent.");
             }
-            if (parent.GetType() != supportedParentType)
+            if (parent.GetType() != typeof(T))
             {
-                throw new InvalidActionForStateException($"Cannot delete a member when parent is not of a {supportedParentType} type.");
+                throw new InvalidActionForStateException($"Cannot delete a member when parent is not of a {typeof(T)} type.");
             }
             foreach (var member in members)
             {

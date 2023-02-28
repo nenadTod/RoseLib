@@ -19,6 +19,30 @@ namespace RoseLib.Traversal
         public SyntaxNode? CurrentNode => State.Peek()?.CurrentNode;
         public List<SyntaxNode>? CurrentNodesList => State.Peek()?.CurrentNodesList;
 
+        internal int GetIndexOfSelectedNode(SyntaxNode node)
+        {
+            var asList = State.ToList();
+            for (int i = 0; i < asList.Count; i++)
+            {
+                if (asList[i].CurrentNode != null && asList[i].CurrentNode == node)
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        internal void InsertBeforeHead(SyntaxNode node)
+        {
+            if (node == null)
+            {
+                throw new InvalidOperationException($"{GetType()}: Selection failed!");
+            }
+            var head = State.Pop();
+            NextStep(node);
+            NextStep(head);
+        }
+
         internal void NextStep(SyntaxNode? node)
         {
             if (node == null)
@@ -37,6 +61,16 @@ namespace RoseLib.Traversal
             }
 
             State.Push(new SelectedObject(nodes));
+        }
+
+        internal void NextStep(SelectedObject? selectedObject)
+        {
+            if (selectedObject == null)
+            {
+                throw new InvalidOperationException($"{GetType()}: Selection failed!");
+            }
+
+            State.Push(selectedObject);
         }
 
         internal void SetHead(SyntaxNode node)

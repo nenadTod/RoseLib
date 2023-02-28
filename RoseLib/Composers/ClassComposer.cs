@@ -23,7 +23,11 @@ namespace RoseLib.Composers
 
         public static new bool CanProcessCurrentSelection(IStatefulVisitor statefulVisitor)
         {
-            return GenericCanProcessCurrentSelectionCheck(statefulVisitor, typeof(ClassDeclarationSyntax), SupporedScope.IMMEDIATE_OR_PARENT);
+            return GenericCanProcessCurrentSelectionCheck(statefulVisitor, typeof(ClassDeclarationSyntax), SupportedScope.IMMEDIATE_OR_PARENT);
+        }
+        protected override void PrepareStateAndSetStatePivotIndex()
+        {
+            GenericPrepareStateAndSetStatePivotIndex(typeof(ClassDeclarationSyntax), SupportedScope.IMMEDIATE_OR_PARENT);
         }
 
         public override ClassComposer AddField(FieldProperties options)
@@ -107,7 +111,7 @@ namespace RoseLib.Composers
 
         public ClassComposer Delete()
         {
-            base.DeleteForParentType(typeof(ClassDeclarationSyntax));
+            base.DeleteForParentNodeOfType<ClassDeclarationSyntax>();
             return this;
         }
     }
