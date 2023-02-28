@@ -37,10 +37,10 @@ namespace RoseLib.Composers
 
             var fieldDeclaration = SyntaxFactory.FieldDeclaration(new SyntaxList<AttributeListSyntax> { }, options.ModifiersToTokenList(), declaration).NormalizeWhitespace();
 
-            var earn = PopToEnclosingNodeOfType<T>();
-            var newEnclosingNode = AddMemberToCurrentNode(fieldDeclaration, earn.referenceNode);
+            var referenceNode = TryGetReferenceAndPopToPivot();
+            var newEnclosingNode = AddMemberToCurrentNode(fieldDeclaration, referenceNode);
 
-            Visitor.ReplaceNodeAndAdjustState(earn.enclosingNode, newEnclosingNode);
+            Visitor.ReplaceNodeAndAdjustState(Visitor.CurrentNode!, newEnclosingNode);
             var navigator = BaseNavigator.CreateTempNavigator<CSRTypeNavigator>(Visitor);
             navigator.SelectFieldDeclaration(options.FieldName);
 

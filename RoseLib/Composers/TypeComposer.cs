@@ -43,9 +43,9 @@ namespace RoseLib.Composers
 
             method = method.WithBody(SyntaxFactory.Block());
 
-            var earn = PopToEnclosingNodeOfType<T>();
-            var newEnclosingNode = AddMemberToCurrentNode(method, earn.referenceNode);
-            Visitor.ReplaceNodeAndAdjustState(earn.enclosingNode, newEnclosingNode);
+            var referenceNode = TryGetReferenceAndPopToPivot();
+            var newEnclosingNode = AddMemberToCurrentNode(method, referenceNode);
+            Visitor.ReplaceNodeAndAdjustState(Visitor.CurrentNode!, newEnclosingNode);
 
             var navigator = BaseNavigator.CreateTempNavigator<CSRTypeNavigator>(Visitor);
             navigator.SelectMethodDeclaration(options.MethodName);
@@ -72,9 +72,9 @@ namespace RoseLib.Composers
                 .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken)
                 ));
 
-            var earn = PopToEnclosingNodeOfType<T>();
-            var newEnclosingNode = AddMemberToCurrentNode(@property, earn.referenceNode);
-            Visitor.ReplaceNodeAndAdjustState(earn.enclosingNode, newEnclosingNode);
+            var referenceNode = TryGetReferenceAndPopToPivot();
+            var newEnclosingNode = AddMemberToCurrentNode(@property, referenceNode);
+            Visitor.ReplaceNodeAndAdjustState(Visitor.CurrentNode!, newEnclosingNode);
 
             var navigator = BaseNavigator.CreateTempNavigator<CSRTypeNavigator>(Visitor);
             navigator.SelectPropertyDeclaration(options.PropertyName);
@@ -82,27 +82,14 @@ namespace RoseLib.Composers
             return this;
         }
 
-        protected (T enclosingNode, MemberDeclarationSyntax? referenceNode) PopToEnclosingNodeOfType<T>() where T : TypeDeclarationSyntax
+        protected MemberDeclarationSyntax? TryGetReferenceAndPopToPivot()
         {
-            var enclosingNode = Visitor.CurrentNode!.GetType() == typeof(T) ?
-            (T)Visitor.CurrentNode : (T)Visitor.CurrentNode.Parent!;
+            var enclosingNode = Visitor.GetNodeAtIndex((int)StatePivotIndex!);
             var isAtBase = enclosingNode == Visitor.CurrentNode;
             var referenceNode = isAtBase ? null : Visitor.CurrentNode as MemberDeclarationSyntax;
 
-            // If not at base
-            if (!isAtBase)
-            {
-                // Pop the reference node
-                Visitor.State.Pop();
-                // If still not at base (Because, some other selection...)
-                if (enclosingNode != Visitor.State.Peek().CurrentNode)
-                {
-                    // Set base as current node
-                    Visitor.NextStep(enclosingNode);
-                }
-            }
-
-            return (enclosingNode, referenceNode);
+            Visitor.PopToIndex((int)StatePivotIndex);
+            return referenceNode;
         }
 
         protected SyntaxNode AddMemberToCurrentNode(MemberDeclarationSyntax member, MemberDeclarationSyntax? referenceNode = null)

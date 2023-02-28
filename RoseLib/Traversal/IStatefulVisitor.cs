@@ -19,12 +19,36 @@ namespace RoseLib.Traversal
         public SyntaxNode? CurrentNode => State.Peek()?.CurrentNode;
         public List<SyntaxNode>? CurrentNodesList => State.Peek()?.CurrentNodesList;
 
+        internal void PopToIndex(int index)
+        {
+            if(index > State.Count + 1)
+            {
+                throw new InvalidStateException("The provided index is larger than total number of elements");
+            }
+            while(State.Count > index + 1)
+            {
+                State.Pop();
+            }
+        }
+
+        internal SyntaxNode? GetNodeAtIndex(int index)
+        {
+            if (index > State.Count + 1)
+            {
+                throw new InvalidStateException("The provided index is larger than total number of elements");
+            }
+            var stateAsList = State.ToList();
+            stateAsList.Reverse();
+            return stateAsList.ElementAtOrDefault(index)?.CurrentNode;
+        }
         internal int GetIndexOfSelectedNode(SyntaxNode node)
         {
-            var asList = State.ToList();
-            for (int i = 0; i < asList.Count; i++)
+            var stateAsList = State.ToList();
+            stateAsList.Reverse();
+
+            for (int i = 0; i < stateAsList.Count; i++)
             {
-                if (asList[i].CurrentNode != null && asList[i].CurrentNode == node)
+                if (stateAsList[i].CurrentNode != null && stateAsList[i].CurrentNode == node)
                 {
                     return i;
                 }

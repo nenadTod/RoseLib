@@ -25,9 +25,9 @@ namespace RoseLib.Tests
                     .StartComposing<ClassComposer>();
 
                 var head = classComposer.Visitor.State.Pop();
-                Assert.True(head.CurrentNode.GetType() == typeof(FieldDeclarationSyntax));
+                Assert.True(head.CurrentNode?.GetType() == typeof(FieldDeclarationSyntax));
                 var behindTheHead = classComposer.Visitor.State.Pop();
-                Assert.True(behindTheHead.CurrentNode.GetType() == typeof(ClassDeclarationSyntax));
+                Assert.True(behindTheHead.CurrentNode?.GetType() == typeof(ClassDeclarationSyntax));
                 Assert.That(classComposer.StatePivotIndex, Is.EqualTo(1));
             }
         }
@@ -46,7 +46,7 @@ namespace RoseLib.Tests
                     .StartComposing<ClassComposer>();
 
                 var head = classComposer.Visitor.State.Pop();
-                Assert.True(head.CurrentNode.GetType() == typeof(ClassDeclarationSyntax));
+                Assert.True(head.CurrentNode?.GetType() == typeof(ClassDeclarationSyntax));
                 Assert.That(classComposer.StatePivotIndex, Is.EqualTo(1));
             }
         }
