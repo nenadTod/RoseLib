@@ -39,6 +39,5 @@ namespace RoseLib.Composers
         {
             return (base.AddInterfaceToNodeOfType<NamespaceDeclarationSyntax>(properties) as NamespaceComposer)!;
         }
-
     }
 }

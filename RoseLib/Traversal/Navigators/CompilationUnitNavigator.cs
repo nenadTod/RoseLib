@@ -17,6 +17,12 @@ namespace RoseLib.Traversal.Navigators
             CompilationUnitSyntax cu = SyntaxFactory.CompilationUnit();
             AsVisitor.SetHead(cu);
         }
+
+        public CompilationUnitNavigator(CompilationUnitSyntax compilationUnitSyntax) : base()
+        {
+            AsVisitor.SetHead(compilationUnitSyntax);
+        }
+
         public CompilationUnitNavigator(string path) : base(path)
         {
         }

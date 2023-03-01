@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
+using RoseLib.Guards;
 
 namespace RoseLib.Composers
 {
@@ -35,17 +36,17 @@ namespace RoseLib.Composers
         /// <returns>this</returns>
         protected virtual TypeContainerComposer AddClassToNodeOfType<T>(ClassProperties options) where T : MemberDeclarationSyntax
         {
-            Visitor.PopUntil(typeof(T));
-            var typeNode = (Visitor.CurrentNode as dynamic)!;
-
+            CompositionGuard.ImmediateOrParentOfNodeIs(Visitor.CurrentNode, typeof(T));
 
             var template = new EmptyClassTemplate() { Properties = options };
             var code = template.TransformText();
             var cu = SyntaxFactory.ParseCompilationUnit(code).NormalizeWhitespace();
             var newClass = cu.DescendantNodes().OfType<ClassDeclarationSyntax>().First();
 
-            var newTypeNodeVersion = typeNode.AddMembers(newClass); // Should I track this class and select it without a navigator?
-            Visitor.ReplaceNodeAndAdjustState(typeNode, newTypeNodeVersion);
+
+            var referenceNode = TryGetReferenceAndPopToPivot();
+            var newEnclosingNode = AddMemberToCurrentNode(newClass, referenceNode);
+            Visitor.ReplaceNodeAndAdjustState(Visitor.CurrentNode!, newEnclosingNode);
 
             BaseNavigator.CreateTempNavigator<NamespaceNavigator>(Visitor)
                 .SelectClassDeclaration(options.ClassName);
@@ -79,22 +80,55 @@ namespace RoseLib.Composers
         /// <returns>this</returns>
         protected virtual TypeContainerComposer AddInterfaceToNodeOfType<T>(InterfaceProperties properties) where T : MemberDeclarationSyntax
         {
-            Visitor.PopUntil(typeof(T));
-            var typeNode = (Visitor.CurrentNode as dynamic)!;
-
+            CompositionGuard.ImmediateOrParentOfNodeIs(Visitor.CurrentNode, typeof(T));
 
             var template = new EmptyInterfaceTemplate() { Properties = properties };
             var code = template.TransformText();
             var cu = SyntaxFactory.ParseCompilationUnit(code).NormalizeWhitespace();
             var newInterface = cu.DescendantNodes().OfType<InterfaceDeclarationSyntax>().First();
 
-            var newTypeNodeVersion = typeNode.AddMembers(newInterface); // Should I track this interface and select it without a navigator?
-            Visitor.ReplaceNodeAndAdjustState(typeNode, newTypeNodeVersion);
+            var referenceNode = TryGetReferenceAndPopToPivot();
+            var newEnclosingNode = AddMemberToCurrentNode(newInterface, referenceNode);
+            Visitor.ReplaceNodeAndAdjustState(Visitor.CurrentNode!, newEnclosingNode);
 
             BaseNavigator.CreateTempNavigator<NamespaceNavigator>(Visitor)
                 .SelectInterfaceDeclaration(properties.InterfaceName);
 
             return this;
+        }
+
+        protected MemberDeclarationSyntax? TryGetReferenceAndPopToPivot()
+        {
+            var enclosingNode = Visitor.GetNodeAtIndex((int)StatePivotIndex!);
+            var isAtBase = enclosingNode == Visitor.CurrentNode;
+            var referenceNode = isAtBase ? null : Visitor.CurrentNode as MemberDeclarationSyntax;
+
+            Visitor.PopToIndex((int)StatePivotIndex);
+            return referenceNode;
+        }
+
+        protected SyntaxNode AddMemberToCurrentNode(MemberDeclarationSyntax member, MemberDeclarationSyntax? referenceNode = null)
+        {
+            SyntaxNode newEnclosingNode;
+            var dynamicNode = (Visitor.CurrentNode as dynamic)!;
+            if (referenceNode == null)
+            {
+                newEnclosingNode = dynamicNode.AddMembers(member);
+            }
+            else
+            {
+                var currentSelection = referenceNode!;
+                var currentMembers = (SyntaxList<MemberDeclarationSyntax>)dynamicNode.Members;
+                var indexOfSelected = currentMembers.IndexOf(currentSelection);
+                if (indexOfSelected == -1)
+                {
+                    throw new InvalidStateException("For some reason, reference node not found in members.");
+                }
+                var updatedMembers = currentMembers.Insert(indexOfSelected + 1, member);
+                newEnclosingNode = dynamicNode.WithMembers(updatedMembers);
+            }
+
+            return newEnclosingNode;
         }
     }
 }

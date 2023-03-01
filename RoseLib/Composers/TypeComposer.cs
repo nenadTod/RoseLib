@@ -82,38 +82,6 @@ namespace RoseLib.Composers
             return this;
         }
 
-        protected MemberDeclarationSyntax? TryGetReferenceAndPopToPivot()
-        {
-            var enclosingNode = Visitor.GetNodeAtIndex((int)StatePivotIndex!);
-            var isAtBase = enclosingNode == Visitor.CurrentNode;
-            var referenceNode = isAtBase ? null : Visitor.CurrentNode as MemberDeclarationSyntax;
-
-            Visitor.PopToIndex((int)StatePivotIndex);
-            return referenceNode;
-        }
-
-        protected SyntaxNode AddMemberToCurrentNode(MemberDeclarationSyntax member, MemberDeclarationSyntax? referenceNode = null)
-        {
-            SyntaxNode newEnclosingNode;
-            var dynamicNode = (Visitor.CurrentNode as dynamic)!;
-            if (referenceNode == null)
-            {
-                newEnclosingNode = dynamicNode.AddMembers(member);
-            }
-            else
-            {
-                var currentSelection = referenceNode!;
-                var currentMembers = (SyntaxList<MemberDeclarationSyntax>)dynamicNode.Members;
-                var indexOfSelected = currentMembers.IndexOf(currentSelection);
-                if (indexOfSelected == -1)
-                {
-                    throw new InvalidStateException("For some reason, reference node not found in members.");
-                }
-                var updatedMembers = currentMembers.Insert(indexOfSelected + 1, member);
-                newEnclosingNode = dynamicNode.WithMembers(updatedMembers);
-            }
-
-            return newEnclosingNode;
-        }
+        
     }
 }

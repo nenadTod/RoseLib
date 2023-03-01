@@ -209,6 +209,12 @@ namespace RoseLib.Composers
             Visitor.ReplaceNodeAndAdjustState(parent!, newParentVersion!);
         }
 
+        public CompilationUnitNavigator StartNavigating()
+        {
+            Visitor.PopUntil(typeof(CompilationUnitSyntax));
+            return new CompilationUnitNavigator((Visitor.CurrentNode as CompilationUnitSyntax)!);
+        }
+
         /// <summary>
         /// Generates a textual representation of a syntax tree.
         /// Does not alter the state of the composer.
