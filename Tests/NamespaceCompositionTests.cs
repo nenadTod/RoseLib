@@ -83,5 +83,26 @@ namespace RoseLib.Tests
             Assert.IsTrue(testRegexC1.IsMatch(code));
             Assert.IsTrue(testRegexC2.IsMatch(code));
         }
+
+        [Test]
+        public void DeletingAnInterface()
+        {
+            var @interface = "Interface1";
+            Regex testRegexI = new Regex(@interface);
+
+            using (StreamReader reader = new StreamReader(".\\TestFiles\\Interface1.cs"))
+            {
+                CompilationUnitNavigator navigator = new CompilationUnitNavigator(reader);
+
+                var code = navigator
+                    .SelectInterfaceDeclaration(@interface)
+                    .StartComposing<NamespaceComposer>()
+                    .Delete()
+                    .GetCode();
+
+                Assert.IsFalse(testRegexI.IsMatch(code));
+
+            }
+        }
     }
 }

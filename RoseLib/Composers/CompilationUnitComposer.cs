@@ -89,5 +89,10 @@ namespace RoseLib.Composers
 
             return new NamespaceComposer(Visitor);
         }
+        public CompilationUnitComposer Delete()
+        {
+            base.DeleteForParentNodeOfType<CompilationUnitSyntax>();
+            return this;
+        }
     }
 }

@@ -97,14 +97,31 @@ namespace RoseLib.Composers
             return this;
         }
 
+        public InterfaceComposer EnterInterface()
+        {
+            var @interface = Visitor.State.Peek().CurrentNode as InterfaceDeclarationSyntax;
+            if (@interface == null)
+            {
+                throw new InvalidActionForStateException("Entering interfaces only possible when positioned on an interface declaration syntax instance.");
+            }
+
+            return new InterfaceComposer(Visitor);
+        }
+
+
         protected MemberDeclarationSyntax? TryGetReferenceAndPopToPivot()
         {
             var enclosingNode = Visitor.GetNodeAtIndex((int)StatePivotIndex!);
             var isAtBase = enclosingNode == Visitor.CurrentNode;
             var referenceNode = isAtBase ? null : Visitor.CurrentNode as MemberDeclarationSyntax;
 
-            Visitor.PopToIndex((int)StatePivotIndex);
+            PopToPivot();
             return referenceNode;
+        }
+
+        protected void PopToPivot()
+        {
+            Visitor.PopToIndex((int)StatePivotIndex!);
         }
 
         protected SyntaxNode AddMemberToCurrentNode(MemberDeclarationSyntax member, MemberDeclarationSyntax? referenceNode = null)

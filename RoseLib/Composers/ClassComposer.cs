@@ -54,35 +54,6 @@ namespace RoseLib.Composers
             return (base.AddInterfaceToNodeOfType<ClassDeclarationSyntax>(properties) as ClassComposer)!;
         }
 
-        public ClassComposer SetClassAttributes(List<Model.AttributeProperties> modelAttributeList)
-        {
-            List<AttributeSyntax> attributeSyntaxList = new List<AttributeSyntax>();
-            foreach (var attribute in modelAttributeList)
-            {
-                AttributeArgumentListSyntax? attributeArgumentListSyntax = null;
-                if (attribute.AttributeArgumentsAsString != null)
-                {
-                    var parameterToBePassed = attribute.AttributeArgumentsAsString;
-                    attributeArgumentListSyntax = SyntaxFactory.ParseAttributeArgumentList(parameterToBePassed, 0, CSharpParseOptions.Default, false);
-                }
-
-                var attributeSyntax = SyntaxFactory.Attribute(SyntaxFactory.ParseName(attribute.Name), attributeArgumentListSyntax);
-                attributeSyntaxList.Add(attributeSyntax);
-            }
-
-            var attributeList = SyntaxFactory.AttributeList(new SeparatedSyntaxList<AttributeSyntax>().AddRange(attributeSyntaxList));
-
-            Visitor.PopUntil(typeof(ClassDeclarationSyntax));
-            var @class = (Visitor.CurrentNode as ClassDeclarationSyntax)!;
-
-
-            var newClassNode = @class.AddAttributeLists(attributeList);
-            Visitor.ReplaceNodeAndAdjustState(@class, newClassNode);
-
-            return this;
-        }
-
-
         public ClassComposer UpdateField(FieldProperties options)
         {
             

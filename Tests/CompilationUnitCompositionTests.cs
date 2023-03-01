@@ -65,5 +65,25 @@ namespace RoseLib.Tests
                 }
             }
         }
+
+        [Test]
+        public void DeletingANamespace()
+        {
+            var @namespace = "Tests.TestFiles";
+            Regex testRegexN = new Regex(@namespace);
+
+            using (StreamReader reader = new StreamReader(".\\TestFiles\\Interface1.cs"))
+            {
+                CompilationUnitNavigator navigator = new CompilationUnitNavigator(reader);
+
+                var code = navigator
+                    .SelectNamespace(@namespace)
+                    .StartComposing<CompilationUnitComposer>()
+                    .Delete()
+                    .GetCode();
+
+                Assert.IsFalse(testRegexN.IsMatch(code));
+            }
+        }
     }
 }

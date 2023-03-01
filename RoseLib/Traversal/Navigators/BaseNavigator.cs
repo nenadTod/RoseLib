@@ -91,9 +91,21 @@ namespace RoseLib.Traversal.Navigators
         public T StartComposing<T>() where T : BaseComposer
         {
             // TODO: Extend for different kinds of possible composers.
+            if (typeof(T).Equals(typeof(CompilationUnitComposer)) && CompilationUnitComposer.CanProcessCurrentSelection(this))
+            {
+                return (new CompilationUnitComposer(this) as T)!;
+            }
+            if (typeof(T).Equals(typeof(NamespaceComposer)) && NamespaceComposer.CanProcessCurrentSelection(this))
+            {
+                return (new NamespaceComposer(this) as T)!;
+            }
             if (typeof(T).Equals(typeof(ClassComposer)) && ClassComposer.CanProcessCurrentSelection(this))
             {
                 return (new ClassComposer(this) as T)!;
+            }
+            if (typeof(T).Equals(typeof(InterfaceComposer)) && InterfaceComposer.CanProcessCurrentSelection(this))
+            {
+                return (new InterfaceComposer(this) as T)!;
             }
 
             throw new InvalidActionForStateException("The provided composer type cannot process the state.");

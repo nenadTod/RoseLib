@@ -82,6 +82,32 @@ namespace RoseLib.Composers
             return this;
         }
 
-        
+        public TypeComposer SetAttributes(List<Model.AttributeProperties> modelAttributeList)
+        {
+            List<AttributeSyntax> attributeSyntaxList = new List<AttributeSyntax>();
+            foreach (var attribute in modelAttributeList)
+            {
+                AttributeArgumentListSyntax? attributeArgumentListSyntax = null;
+                if (attribute.AttributeArgumentsAsString != null)
+                {
+                    var parameterToBePassed = attribute.AttributeArgumentsAsString;
+                    attributeArgumentListSyntax = SyntaxFactory.ParseAttributeArgumentList(parameterToBePassed, 0, CSharpParseOptions.Default, false);
+                }
+
+                var attributeSyntax = SyntaxFactory.Attribute(SyntaxFactory.ParseName(attribute.Name), attributeArgumentListSyntax);
+                attributeSyntaxList.Add(attributeSyntax);
+            }
+
+            var attributeList = SyntaxFactory.AttributeList(new SeparatedSyntaxList<AttributeSyntax>().AddRange(attributeSyntaxList));
+
+            PopToPivot();
+            var typeNode = (Visitor.CurrentNode as TypeDeclarationSyntax)!;
+
+
+            var newTypeNode = typeNode.AddAttributeLists(attributeList);
+            Visitor.ReplaceNodeAndAdjustState(typeNode, newTypeNode);
+
+            return this;
+        }
     }
 }

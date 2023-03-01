@@ -71,7 +71,7 @@ namespace RoseLib.Composers
             }
         }
         
-        public static bool CanProcessCurrentSelection(IStatefulVisitor statefulVisitor)
+        internal static bool CanProcessCurrentSelection(IStatefulVisitor statefulVisitor)
         {
             return false;
         }

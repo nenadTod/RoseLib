@@ -245,7 +245,7 @@ namespace RoseLib.Tests
         }
 
         [Test]
-        public void AddingAttributes()
+        public void SettingAttributes()
         {
             var attribute1Name = "Serializable";
             Regex testRegexA1 = new Regex(attribute1Name);
@@ -267,7 +267,7 @@ namespace RoseLib.Tests
                 var code = navigator
                     .SelectClassDeclaration("Class1")
                     .StartComposing<ClassComposer>()
-                    .SetClassAttributes(
+                    .SetAttributes(
                         new List<Model.AttributeProperties>() 
                         { 
                             new Model.AttributeProperties { Name = attribute1Name },

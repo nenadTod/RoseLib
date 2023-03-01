@@ -39,5 +39,10 @@ namespace RoseLib.Composers
         {
             return (base.AddInterfaceToNodeOfType<NamespaceDeclarationSyntax>(properties) as NamespaceComposer)!;
         }
+        public NamespaceComposer Delete()
+        {
+            base.DeleteForParentNodeOfType<NamespaceDeclarationSyntax>();
+            return this;
+        }
     }
 }
