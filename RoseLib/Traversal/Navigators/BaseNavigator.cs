@@ -88,24 +88,24 @@ namespace RoseLib.Traversal.Navigators
             return navigator;
         }
 
-        public T StartComposing<T>() where T : BaseComposer
+        public T StartComposing<T>(bool pivotOnParent = false) where T : BaseComposer
         {
             // TODO: Extend for different kinds of possible composers.
-            if (typeof(T).Equals(typeof(CompilationUnitComposer)) && CompilationUnitComposer.CanProcessCurrentSelection(this))
+            if (typeof(T).Equals(typeof(CompilationUnitComposer)) && CompilationUnitComposer.CanProcessCurrentSelection(this, pivotOnParent))
             {
-                return (new CompilationUnitComposer(this) as T)!;
+                return (new CompilationUnitComposer(this, pivotOnParent) as T)!;
             }
-            if (typeof(T).Equals(typeof(NamespaceComposer)) && NamespaceComposer.CanProcessCurrentSelection(this))
+            if (typeof(T).Equals(typeof(NamespaceComposer)) && NamespaceComposer.CanProcessCurrentSelection(this, pivotOnParent))
             {
-                return (new NamespaceComposer(this) as T)!;
+                return (new NamespaceComposer(this, pivotOnParent) as T)!;
             }
-            if (typeof(T).Equals(typeof(ClassComposer)) && ClassComposer.CanProcessCurrentSelection(this))
+            if (typeof(T).Equals(typeof(ClassComposer)) && ClassComposer.CanProcessCurrentSelection(this, pivotOnParent))
             {
-                return (new ClassComposer(this) as T)!;
+                return (new ClassComposer(this, pivotOnParent) as T)!;
             }
-            if (typeof(T).Equals(typeof(InterfaceComposer)) && InterfaceComposer.CanProcessCurrentSelection(this))
+            if (typeof(T).Equals(typeof(InterfaceComposer)) && InterfaceComposer.CanProcessCurrentSelection(this, pivotOnParent))
             {
-                return (new InterfaceComposer(this) as T)!;
+                return (new InterfaceComposer(this, pivotOnParent) as T)!;
             }
 
             throw new InvalidActionForStateException("The provided composer type cannot process the state.");

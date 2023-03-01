@@ -8,9 +8,9 @@ namespace RoseLib.Model
 {
     public class RLParameterProperties
     {
-        public string Name { get; set; }
-        public string Type { get; set; }
-        public object DefaultValue { get; set; }
+        public string Name { get; set; } = "";
+        public string Type { get; set; } = "";
+        public object? DefaultValue { get; set; } = null;
 
         public RLParameterProperties()
         {

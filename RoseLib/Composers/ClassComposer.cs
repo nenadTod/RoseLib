@@ -17,17 +17,32 @@ namespace RoseLib.Composers
     [Serializable]
     public class ClassComposer: CSRTypeComposer
     {
-        public ClassComposer(IStatefulVisitor visitor) : base(visitor)
+        internal ClassComposer(IStatefulVisitor visitor, bool pivotOnParent = false) : base(visitor, pivotOnParent)
         {
         }
 
-        public static new bool CanProcessCurrentSelection(IStatefulVisitor statefulVisitor)
+        public static new bool CanProcessCurrentSelection(IStatefulVisitor statefulVisitor, bool pivotOnParent)
         {
-            return GenericCanProcessCurrentSelectionCheck(statefulVisitor, typeof(ClassDeclarationSyntax), SupportedScope.IMMEDIATE_OR_PARENT);
+            if(!pivotOnParent) 
+            {
+                return GenericCanProcessCurrentSelectionCheck(statefulVisitor, typeof(ClassDeclarationSyntax), SupportedScope.IMMEDIATE_OR_PARENT);
+            }
+            else
+            {
+                return GenericCanProcessCurrentSelectionParentCheck(statefulVisitor, typeof(ClassDeclarationSyntax));
+            }
         }
-        protected override void PrepareStateAndSetStatePivotIndex()
+
+        protected override void PrepareStateAndSetStatePivot(bool pivotOnParent)
         {
-            GenericPrepareStateAndSetStatePivotIndex(typeof(ClassDeclarationSyntax), SupportedScope.IMMEDIATE_OR_PARENT);
+            if (!pivotOnParent)
+            {
+                GenericPrepareStateAndSetStatePivot(typeof(ClassDeclarationSyntax), SupportedScope.IMMEDIATE_OR_PARENT);
+            }
+            else
+            {
+                GenericPrepareStateAndSetParentAsStatePivot(typeof(ClassDeclarationSyntax));
+            }
         }
 
         public override ClassComposer AddField(FieldProperties options)

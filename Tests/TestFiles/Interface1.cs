@@ -8,5 +8,8 @@ namespace Tests.TestFiles
 {
     internal interface Interface1
     {
+        internal interface INestedInterface1
+        {
+        }
     }
 }

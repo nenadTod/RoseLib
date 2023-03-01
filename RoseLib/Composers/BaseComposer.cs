@@ -19,7 +19,7 @@ namespace RoseLib.Composers
         public IStatefulVisitor Visitor { get; protected set; }
         public int? StatePivotIndex { get; protected set; } = -1;
 
-        protected BaseComposer(IStatefulVisitor visitor)
+        protected BaseComposer(IStatefulVisitor visitor, bool pivotOnParent)
         {
             if (visitor == null)
             {
@@ -28,12 +28,12 @@ namespace RoseLib.Composers
 
             Visitor = visitor;
 
-            PrepareStateAndSetStatePivotIndex();
+            PrepareStateAndSetStatePivot(pivotOnParent);
         }
         
-        protected abstract void PrepareStateAndSetStatePivotIndex();
+        protected abstract void PrepareStateAndSetStatePivot(bool pivotOnParent);
         
-        protected void GenericPrepareStateAndSetStatePivotIndex(Type pivotType, SupportedScope scope)
+        protected void GenericPrepareStateAndSetStatePivot(Type pivotType, SupportedScope scope)
         {
             var isListSelected = false;
             SyntaxNode testNode;
@@ -65,13 +65,46 @@ namespace RoseLib.Composers
                     if (indexOfParent == -1)
                     {
                         Visitor.InsertBeforeHead(testNode.Parent);
-                        StatePivotIndex = Visitor.State.Count() - 2; // Behind the head
                     }
+                    StatePivotIndex = Visitor.State.Count() - 2; // Behind the head
                 }
             }
         }
-        
-        internal static bool CanProcessCurrentSelection(IStatefulVisitor statefulVisitor)
+
+        protected void GenericPrepareStateAndSetParentAsStatePivot(Type pivotType)
+        {
+            SyntaxNode childNode;
+            if (Visitor.CurrentNode != null)
+            {
+                childNode = Visitor.CurrentNode;
+            }
+            else if (Visitor.CurrentNodesList != null && Visitor.CurrentNodesList.Count > 0)
+            {
+                childNode = Visitor.CurrentNodesList[0];
+            }
+            else
+            {
+                throw new InvalidStateException("No selected nodes in the state!");
+            }
+
+            var testNode = childNode.Parent!;
+            var testNodeType = testNode.GetType();
+            if (testNodeType == pivotType)
+            {
+                var indexOfParent = Visitor.GetIndexOfSelectedNode(testNode);
+                if (indexOfParent == -1)
+                {
+                    Visitor.InsertBeforeHead(testNode);
+                }
+                StatePivotIndex = Visitor.State.Count() - 2; // Behind the head
+            }
+            else
+            {
+                throw new InvalidStateException($"Can't set parent as pivot if it is not of {pivotType}");
+            }
+        }
+
+        internal static bool CanProcessCurrentSelection(IStatefulVisitor statefulVisitor, bool pivotOnParent)
         {
             return false;
         }
@@ -109,10 +142,35 @@ namespace RoseLib.Composers
             return false;
         }
 
+        protected static bool GenericCanProcessCurrentSelectionParentCheck(IStatefulVisitor statefulVisitor, Type supportedSyntaxNodeType)
+        {
+            SyntaxNode childNode;
+            if (statefulVisitor.CurrentNode != null)
+            {
+                childNode = statefulVisitor.CurrentNode;
+            }
+            else if (statefulVisitor.CurrentNodesList != null && statefulVisitor.CurrentNodesList.Count > 0)
+            {
+                childNode = statefulVisitor.CurrentNodesList[0];
+            }
+            else
+            {
+                throw new InvalidStateException("No selected nodes in the state!");
+            }
+
+            var testNode = childNode.Parent!;
+            var testNodeType = testNode.GetType();
+            if (testNodeType == supportedSyntaxNodeType)
+            {
+                return true;
+            }
+
+            return false;
+        }
         protected enum SupportedScope
         {
             IMMEDIATE,
-            IMMEDIATE_OR_PARENT
+            IMMEDIATE_OR_PARENT,
         }
 
         protected void DeleteForParentNodeOfType<T>()

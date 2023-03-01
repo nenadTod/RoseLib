@@ -14,22 +14,36 @@ namespace RoseLib.Composers
 {
     public class CompilationUnitComposer : BaseComposer
     {
-        public CompilationUnitComposer(): base(new CompilationUnitNavigator())
+        public CompilationUnitComposer(): base(new CompilationUnitNavigator(), false)
         {
         }
 
-        internal CompilationUnitComposer(IStatefulVisitor visitor) : base(visitor)
+        internal CompilationUnitComposer(IStatefulVisitor visitor, bool pivotOnParent = false) : base(visitor, pivotOnParent)
         {
         }
 
-        protected override void PrepareStateAndSetStatePivotIndex()
+        protected override void PrepareStateAndSetStatePivot(bool pivotOnParent)
         {
-            GenericPrepareStateAndSetStatePivotIndex(typeof(CompilationUnitSyntax), SupportedScope.IMMEDIATE_OR_PARENT);
+            if (!pivotOnParent)
+            {
+                GenericPrepareStateAndSetStatePivot(typeof(CompilationUnitSyntax), SupportedScope.IMMEDIATE_OR_PARENT);
+            }
+            else
+            {
+                GenericPrepareStateAndSetParentAsStatePivot(typeof(CompilationUnitSyntax));
+            }
         }
 
-        public static new bool CanProcessCurrentSelection(IStatefulVisitor statefulVisitor)
+        public static new bool CanProcessCurrentSelection(IStatefulVisitor statefulVisitor, bool pivotOnParent)
         {
-            return GenericCanProcessCurrentSelectionCheck(statefulVisitor, typeof(CompilationUnitSyntax), SupportedScope.IMMEDIATE_OR_PARENT);
+            if (!pivotOnParent)
+            {
+                return GenericCanProcessCurrentSelectionCheck(statefulVisitor, typeof(CompilationUnitSyntax), SupportedScope.IMMEDIATE_OR_PARENT);
+            }
+            else
+            {
+                return GenericCanProcessCurrentSelectionParentCheck(statefulVisitor, typeof(CompilationUnitSyntax));
+            }
         }
 
         public CompilationUnitComposer AddUsingDirectives(params string[] usings)

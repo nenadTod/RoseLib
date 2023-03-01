@@ -11,17 +11,32 @@ namespace RoseLib.Composers
 {
     public class InterfaceComposer: TypeComposer
     {
-        public InterfaceComposer(IStatefulVisitor visitor) : base(visitor)
+        internal InterfaceComposer(IStatefulVisitor visitor, bool pivotOnParent = false) : base(visitor, pivotOnParent)
         {
         }
 
-        public static new bool CanProcessCurrentSelection(IStatefulVisitor statefulVisitor)
+        public static new bool CanProcessCurrentSelection(IStatefulVisitor statefulVisitor, bool pivotOnParent)
         {
-            return GenericCanProcessCurrentSelectionCheck(statefulVisitor, typeof(InterfaceDeclarationSyntax), SupportedScope.IMMEDIATE_OR_PARENT);
+            if (!pivotOnParent)
+            {
+                return GenericCanProcessCurrentSelectionCheck(statefulVisitor, typeof(InterfaceDeclarationSyntax), SupportedScope.IMMEDIATE_OR_PARENT);
+            }
+            else
+            {
+                return GenericCanProcessCurrentSelectionParentCheck(statefulVisitor, typeof(InterfaceDeclarationSyntax));
+            }
         }
-        protected override void PrepareStateAndSetStatePivotIndex()
+
+        protected override void PrepareStateAndSetStatePivot(bool pivotOnParent)
         {
-            GenericPrepareStateAndSetStatePivotIndex(typeof(InterfaceDeclarationSyntax), SupportedScope.IMMEDIATE_OR_PARENT);
+            if(!pivotOnParent)
+            {
+                GenericPrepareStateAndSetStatePivot(typeof(InterfaceDeclarationSyntax), SupportedScope.IMMEDIATE_OR_PARENT);
+            }
+            else
+            {
+                GenericPrepareStateAndSetParentAsStatePivot(typeof(InterfaceDeclarationSyntax));
+            }
         }
 
         public override InterfaceComposer AddProperty(PropertyProperties options)

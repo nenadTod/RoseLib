@@ -16,7 +16,7 @@ namespace RoseLib.Composers
 {
     public abstract class CSRTypeComposer : TypeComposer
     {
-        public CSRTypeComposer(IStatefulVisitor visitor) : base(visitor)
+        internal CSRTypeComposer(IStatefulVisitor visitor, bool pivotOnParent) : base(visitor, pivotOnParent)
         {
         }
 

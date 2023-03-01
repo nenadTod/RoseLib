@@ -17,7 +17,7 @@ namespace RoseLib.Composers
 {
     public abstract class TypeContainerComposer : BaseComposer
     {
-        protected TypeContainerComposer(IStatefulVisitor visitor) : base(visitor)
+        protected TypeContainerComposer(IStatefulVisitor visitor, bool pivotOnParent) : base(visitor, pivotOnParent)
         {
         }
 

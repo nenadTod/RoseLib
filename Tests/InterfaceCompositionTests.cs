@@ -254,5 +254,25 @@ namespace RoseLib.Tests
             }
         }
 
+        [Test]
+        public void DeletingNestedInterface()
+        {
+            var nestedInterface1 = "INestedInterface1";
+            Regex testRegexNI1 = new Regex(nestedInterface1);
+
+            using (StreamReader reader = new StreamReader(".\\TestFiles\\Interface1.cs"))
+            {
+                CompilationUnitNavigator navigator = new CompilationUnitNavigator(reader);
+
+                var code = navigator
+                    .SelectInterfaceDeclaration(nestedInterface1)
+                    .StartComposing<InterfaceComposer>(pivotOnParent: true)
+                    .Delete()
+                    .GetCode();
+
+                Assert.IsFalse(testRegexNI1.IsMatch(code));
+            }
+        }
+
     }
 }
