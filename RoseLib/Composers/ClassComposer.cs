@@ -59,16 +59,6 @@ namespace RoseLib.Composers
             return (base.AddMethodToType<ClassDeclarationSyntax>(options) as ClassComposer)!;
         }
 
-        public override ClassComposer AddClass(ClassProperties options)
-        {
-            return (base.AddClassToNodeOfType<ClassDeclarationSyntax>(options) as ClassComposer)!;
-        }
-
-        public override ClassComposer AddInterface(InterfaceProperties properties)
-        {
-            return (base.AddInterfaceToNodeOfType<ClassDeclarationSyntax>(properties) as ClassComposer)!;
-        }
-
         public ClassComposer UpdateField(FieldProperties options)
         {
             

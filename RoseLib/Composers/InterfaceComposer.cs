@@ -48,16 +48,6 @@ namespace RoseLib.Composers
             return (base.AddMethodToType<InterfaceDeclarationSyntax>(options) as InterfaceComposer)!;
         }
 
-        public override InterfaceComposer AddClass(ClassProperties options)
-        {
-            return (base.AddClassToNodeOfType<InterfaceDeclarationSyntax>(options) as InterfaceComposer)!;
-        }
-
-        public override InterfaceComposer AddInterface(InterfaceProperties properties)
-        {
-            return (base.AddInterfaceToNodeOfType<InterfaceDeclarationSyntax>(properties) as InterfaceComposer)!;
-        }
-
         public InterfaceComposer Delete()
         {
             base.DeleteForParentNodeOfType<InterfaceDeclarationSyntax>();

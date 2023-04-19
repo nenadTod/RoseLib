@@ -14,7 +14,7 @@ using RoseLib.Guards;
 
 namespace RoseLib.Composers
 {
-    public abstract class TypeComposer : TypeContainerComposer
+    public abstract class TypeComposer : MemberComposer
     {
         internal TypeComposer(IStatefulVisitor visitor, bool pivotOnParent) : base(visitor, pivotOnParent)
         {
@@ -108,6 +108,30 @@ namespace RoseLib.Composers
             Visitor.ReplaceNodeAndAdjustState(typeNode, newTypeNode);
 
             return this;
+        }
+
+        protected SyntaxNode AddMemberToCurrentNode(MemberDeclarationSyntax member, MemberDeclarationSyntax? referenceNode = null)
+        {
+            SyntaxNode newEnclosingNode;
+            var typeNode = (Visitor.CurrentNode as TypeDeclarationSyntax)!;
+            if (referenceNode == null)
+            {
+                newEnclosingNode = typeNode.AddMembers(member);
+            }
+            else
+            {
+                var currentSelection = referenceNode!;
+                var currentMembers = typeNode.Members;
+                var indexOfSelected = currentMembers.IndexOf(currentSelection);
+                if (indexOfSelected == -1)
+                {
+                    throw new InvalidStateException("For some reason, reference node not found in members.");
+                }
+                var updatedMembers = currentMembers.Insert(indexOfSelected + 1, member);
+                newEnclosingNode = typeNode.WithMembers(updatedMembers);
+            }
+
+            return newEnclosingNode;
         }
     }
 }

@@ -14,16 +14,6 @@ namespace RoseLib.Traversal.Selectors.Interfaces
             return new FieldNavigator(this as BaseNavigator);
         }
 
-        public PropertyNavigator ToPropertyNavigator()
-        {
-            return new PropertyNavigator(this as BaseNavigator);
-        }
-
-        public MethodNavigator ToMethodNavigator()
-        {
-            return new MethodNavigator(this as BaseNavigator);
-        }
-
         public ConstructorNavigator ToConstructorNavigator()
         {
             return new ConstructorNavigator(this as BaseNavigator);
@@ -38,12 +28,5 @@ namespace RoseLib.Traversal.Selectors.Interfaces
         {
             return new ConversionOperatorNavigator(this as BaseNavigator);
         }
-
-        public OperatorNavigator ToOperatorNavigator()
-        {
-            return new OperatorNavigator(this as BaseNavigator);
-        }
-
-
     }
 }

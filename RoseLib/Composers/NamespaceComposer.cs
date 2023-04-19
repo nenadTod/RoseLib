@@ -1,21 +1,16 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Rename;
 using RoseLib.Exceptions;
+using RoseLib.Guards;
 using RoseLib.Model;
 using RoseLib.Templates;
 using RoseLib.Traversal;
 using RoseLib.Traversal.Navigators;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RoseLib.Composers
 {
-    public class NamespaceComposer : TypeContainerComposer
+    public class NamespaceComposer : MemberComposer
     {
         internal NamespaceComposer(IStatefulVisitor visitor, bool pivotOnParent = false) : base(visitor, pivotOnParent)
         {
@@ -43,19 +38,94 @@ namespace RoseLib.Composers
             }
         }
 
-        public override NamespaceComposer AddClass(ClassProperties options)
+        public NamespaceComposer AddClass(ClassProperties options)
         {
-            return (base.AddClassToNodeOfType<NamespaceDeclarationSyntax>(options) as NamespaceComposer)!;
+            CompositionGuard.ImmediateOrParentOfNodeIs(Visitor.CurrentNode, typeof(NamespaceDeclarationSyntax));
+
+            var template = new EmptyClassTemplate() { Properties = options };
+            var code = template.TransformText();
+            var cu = SyntaxFactory.ParseCompilationUnit(code).NormalizeWhitespace();
+            var newClass = cu.DescendantNodes().OfType<ClassDeclarationSyntax>().First();
+
+
+            var referenceNode = TryGetReferenceAndPopToPivot();
+            var newEnclosingNode = AddMemberToCurrentNode(newClass, referenceNode);
+            Visitor.ReplaceNodeAndAdjustState(Visitor.CurrentNode!, newEnclosingNode);
+
+            BaseNavigator.CreateTempNavigator<NamespaceNavigator>(Visitor)
+                .SelectClassDeclaration(options.ClassName);
+
+            return this;
         }
 
-        public override NamespaceComposer AddInterface(InterfaceProperties properties)
+        public ClassComposer EnterClass()
         {
-            return (base.AddInterfaceToNodeOfType<NamespaceDeclarationSyntax>(properties) as NamespaceComposer)!;
+            var @class = Visitor.State.Peek().CurrentNode as ClassDeclarationSyntax;
+            if (@class == null)
+            {
+                throw new InvalidActionForStateException("Entering classes only possible when positioned on a class declaration syntax instance.");
+            }
+
+            return new ClassComposer(Visitor);
         }
+
+        public NamespaceComposer AddInterface(InterfaceProperties properties)
+        {
+            CompositionGuard.ImmediateOrParentOfNodeIs(Visitor.CurrentNode, typeof(NamespaceDeclarationSyntax));
+
+            var template = new EmptyInterfaceTemplate() { Properties = properties };
+            var code = template.TransformText();
+            var cu = SyntaxFactory.ParseCompilationUnit(code).NormalizeWhitespace();
+            var newInterface = cu.DescendantNodes().OfType<InterfaceDeclarationSyntax>().First();
+
+            var referenceNode = TryGetReferenceAndPopToPivot();
+            var newEnclosingNode = AddMemberToCurrentNode(newInterface, referenceNode);
+            Visitor.ReplaceNodeAndAdjustState(Visitor.CurrentNode!, newEnclosingNode);
+
+            BaseNavigator.CreateTempNavigator<NamespaceNavigator>(Visitor)
+                .SelectInterfaceDeclaration(properties.InterfaceName);
+
+            return this;
+        }
+        public InterfaceComposer EnterInterface()
+        {
+            var @interface = Visitor.State.Peek().CurrentNode as InterfaceDeclarationSyntax;
+            if (@interface == null)
+            {
+                throw new InvalidActionForStateException("Entering interfaces only possible when positioned on an interface declaration syntax instance.");
+            }
+
+            return new InterfaceComposer(Visitor);
+        }
+
         public NamespaceComposer Delete()
         {
             base.DeleteForParentNodeOfType<NamespaceDeclarationSyntax>();
             return this;
+        }
+
+        protected SyntaxNode AddMemberToCurrentNode(MemberDeclarationSyntax member, MemberDeclarationSyntax? referenceNode = null)
+        {
+            SyntaxNode newEnclosingNode;
+            var @namespace = (Visitor.CurrentNode as NamespaceDeclarationSyntax)!;
+            if (referenceNode == null)
+            {
+                newEnclosingNode = @namespace.AddMembers(member);
+            }
+            else
+            {
+                var currentSelection = referenceNode!;
+                var currentMembers = @namespace.Members;
+                var indexOfSelected = currentMembers.IndexOf(currentSelection);
+                if (indexOfSelected == -1)
+                {
+                    throw new InvalidStateException("For some reason, reference node not found in members.");
+                }
+                var updatedMembers = currentMembers.Insert(indexOfSelected + 1, member);
+                newEnclosingNode = @namespace.WithMembers(updatedMembers);
+            }
+
+            return newEnclosingNode;
         }
     }
 }
