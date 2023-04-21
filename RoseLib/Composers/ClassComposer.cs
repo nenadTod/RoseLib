@@ -10,6 +10,8 @@ using System.Text;
 using System.Threading.Tasks;
 using RoseLib.Exceptions;
 using RoseLib.Traversal;
+using RoseLib.Enums;
+using RoseLib.Guards;
 
 namespace RoseLib.Composers
 {
@@ -21,6 +23,7 @@ namespace RoseLib.Composers
         {
         }
 
+        #region Transition methods
         public static new bool CanProcessCurrentSelection(IStatefulVisitor statefulVisitor, bool pivotOnParent)
         {
             if(!pivotOnParent) 
@@ -44,7 +47,9 @@ namespace RoseLib.Composers
                 GenericPrepareStateAndSetParentAsStatePivot(typeof(ClassDeclarationSyntax));
             }
         }
+        #endregion
 
+        #region Addition methods
         public override ClassComposer AddField(FieldProperties options)
         {
             return (base.AddFieldToNodeOfType<ClassDeclarationSyntax>(options) as ClassComposer)!;
@@ -57,6 +62,127 @@ namespace RoseLib.Composers
         public override ClassComposer AddMethod(MethodProperties options)
         {
             return (base.AddMethodToType<ClassDeclarationSyntax>(options) as ClassComposer)!;
+        }
+        #endregion
+
+        #region Class change methods
+        public ClassComposer Rename(string newName)
+        {
+            CompositionGuard.ImmediateNodeIs(Visitor.CurrentNode, typeof(ClassDeclarationSyntax));
+
+            var identifier = SyntaxFactory.Identifier(newName);
+            var renamedClass = (Visitor.CurrentNode as ClassDeclarationSyntax)!.WithIdentifier(identifier);
+            var withAdjustedConstructors = RenameConstuctors(renamedClass, identifier) as ClassDeclarationSyntax;
+            Visitor.ReplaceNodeAndAdjustState(Visitor.CurrentNode!, withAdjustedConstructors!);
+
+            return this;
+        }
+        private SyntaxNode RenameConstuctors(SyntaxNode @class, SyntaxToken identifier)
+        {
+            // TODO: Rely on selector methods to find all the constructors.
+            var constructorCount = @class.DescendantNodes().OfType<ConstructorDeclarationSyntax>().Count();
+            var newRoot = @class;
+
+            for (var current = 0; current < constructorCount; current++)
+            {
+                var constructors = newRoot.DescendantNodes().OfType<ConstructorDeclarationSyntax>();
+                var ctor = constructors.ElementAt(current);
+
+                var newCtor = ctor.WithIdentifier(identifier);
+                newRoot = newRoot.ReplaceNode(ctor, newCtor);
+            }
+
+            return newRoot;
+        }
+
+        public ClassComposer SetAccessModifier(AccessModifierTypes newType)
+        {
+            CompositionGuard.ImmediateNodeIs(Visitor.CurrentNode, typeof(ClassDeclarationSyntax));
+
+            var @class = (Visitor.CurrentNode as ClassDeclarationSyntax)!;
+            SyntaxTokenList modifiers = @class.Modifiers;
+            for (int i = modifiers.Count - 1; i >= 0; i--)
+            {
+                var m = modifiers.ElementAt(i);
+                switch (m.Kind())
+                {
+                    case SyntaxKind.InternalKeyword:
+                    case SyntaxKind.PublicKeyword:
+                        modifiers = modifiers.RemoveAt(i);
+                        break;
+                }
+            }
+
+            switch (newType)
+            {
+                case AccessModifierTypes.PUBLIC:
+                    modifiers = modifiers.Add(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
+                    break;
+                case AccessModifierTypes.INTERNAL:
+                    modifiers = modifiers.Add(SyntaxFactory.Token(SyntaxKind.InternalKeyword));
+                    break;
+                case AccessModifierTypes.NONE:
+                    break;
+                case AccessModifierTypes.PRIVATE:
+                case AccessModifierTypes.PROTECTED:
+                case AccessModifierTypes.PRIVATE_PROTECTED:
+                case AccessModifierTypes.PROTECTED_INTERNAL:
+                    throw new NotSupportedException($"Setting {newType} as an access modifier not supported");
+            }
+
+            SyntaxNode withSetModifiers = @class.WithModifiers(modifiers);
+            Visitor.ReplaceNodeAndAdjustState(Visitor.CurrentNode!, withSetModifiers);
+
+            return this;
+        }
+
+        public ClassComposer MakeStatic()
+        {
+            CompositionGuard.ImmediateNodeIs(Visitor.CurrentNode, typeof(ClassDeclarationSyntax));
+
+            var @class = (Visitor.CurrentNode as ClassDeclarationSyntax)!;
+
+            SyntaxTokenList modifiers = @class.Modifiers;
+
+            if (modifiers.Where(m => m.IsKind(SyntaxKind.StaticKeyword)).Any())
+            {
+                return this;
+            }
+
+            modifiers = modifiers.Add(SyntaxFactory.Token(SyntaxKind.StaticKeyword));
+            SyntaxNode madeStatic = @class.WithModifiers(modifiers);
+            Visitor.ReplaceNodeAndAdjustState(Visitor.CurrentNode!, madeStatic);
+
+            return this;
+        }
+
+        public ClassComposer MakeNonStatic()
+        {
+            CompositionGuard.ImmediateNodeIs(Visitor.CurrentNode, typeof(ClassDeclarationSyntax));
+
+            var @class = (Visitor.CurrentNode as ClassDeclarationSyntax)!;
+            SyntaxTokenList modifiers = @class.Modifiers;
+            for (int i = modifiers.Count - 1; i >= 0; i--)
+            {
+                var m = modifiers.ElementAt(i);
+                if (m.IsKind(SyntaxKind.StaticKeyword))
+                {
+                    modifiers = modifiers.RemoveAt(i);
+                    break;
+                }
+            }
+
+            SyntaxNode madeNonStatic = @class.WithModifiers(modifiers);
+            Visitor.ReplaceNodeAndAdjustState(Visitor.CurrentNode!, madeNonStatic);
+
+            return this;
+        }
+        #endregion
+
+        public ClassComposer Delete()
+        {
+            base.DeleteForParentNodeOfType<ClassDeclarationSyntax>();
+            return this;
         }
 
         public ClassComposer UpdateField(FieldProperties options)
@@ -82,12 +208,6 @@ namespace RoseLib.Composers
 
             Visitor.ReplaceNodeAndAdjustState(existingFieldDeclaration, newFieldDeclaration);
 
-            return this;
-        }
-
-        public ClassComposer Delete()
-        {
-            base.DeleteForParentNodeOfType<ClassDeclarationSyntax>();
             return this;
         }
     }

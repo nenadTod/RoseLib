@@ -8,6 +8,10 @@ namespace Tests.TestFiles
 {
     internal class Class1
     {
+        public Class1() { }
+
+        public Class1(bool param1) { }
+
         private bool field1;
 
         internal class InnerClass1

@@ -127,6 +127,69 @@ namespace RoseLib.Tests
         }
 
         [Test]
+        public void RenamingAClass()
+        {
+            var newClassName = "RenamedClass";
+            Regex testRegexC1 = new Regex(newClassName);
+
+
+            using (StreamReader reader = new StreamReader(".\\TestFiles\\Class1.cs"))
+            {
+                CompilationUnitNavigator navigator = new CompilationUnitNavigator(reader);
+
+                var code = navigator
+                    .SelectClassDeclaration("Class1")
+                    .StartComposing<ClassComposer>()
+                    .Rename(newClassName)
+                    .GetCode();
+
+                Assert.That(testRegexC1.Matches(code).Count, Is.EqualTo(3));
+            }
+        }
+
+        [Test]
+        public void MakingClassPublic()
+        {
+            var classWithPublic = "public class";
+            Regex testRegexC1 = new Regex(classWithPublic);
+
+
+            using (StreamReader reader = new StreamReader(".\\TestFiles\\Class1.cs"))
+            {
+                CompilationUnitNavigator navigator = new CompilationUnitNavigator(reader);
+
+                var code = navigator
+                    .SelectClassDeclaration("Class1")
+                    .StartComposing<ClassComposer>()
+                    .SetAccessModifier(Enums.AccessModifierTypes.PUBLIC)
+                    .GetCode();
+
+                Assert.IsTrue(testRegexC1.IsMatch(code));
+            }
+        }
+
+        [Test]
+        public void MakingClassStatic()
+        {
+            var @static = "static";
+            Regex testRegexC1 = new Regex(@static);
+
+
+            using (StreamReader reader = new StreamReader(".\\TestFiles\\Class1.cs"))
+            {
+                CompilationUnitNavigator navigator = new CompilationUnitNavigator(reader);
+
+                var code = navigator
+                    .SelectClassDeclaration("Class1")
+                    .StartComposing<ClassComposer>()
+                    .MakeStatic()
+                    .GetCode();
+
+                Assert.IsTrue(testRegexC1.IsMatch(code));
+            }
+        }
+
+        [Test]
         public void AddingFieldBeneathAnotherOne()
         {
             var referenceFieldName = "field2";

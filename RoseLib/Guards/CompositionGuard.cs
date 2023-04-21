@@ -32,9 +32,27 @@ namespace RoseLib.Guards
                 return;
             }
 
-            throw new InvalidActionForStateException("Nor node nor it's parent are of appropriate type");
+            throw new InvalidActionForStateException("Nor node nor it's parent are of an appropriate type");
         }
 
+        public static void ImmediateNodeIs(SyntaxNode? node, Type type)
+        {
+            if(node == null)
+            {
+                throw new InvalidActionForStateException("Selected node is null");
+            }
+            if (type == null)
+            {
+                throw new InvalidUsageException("Type to test against not provided");
+            }
 
+
+            if (node.GetType() == type)
+            {
+                return;
+            }
+
+            throw new InvalidActionForStateException("Node is not of an appropriate type");
+        }
     }
 }
