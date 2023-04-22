@@ -95,6 +95,35 @@ namespace RoseLib.Composers
             return newRoot;
         }
 
+        public ClassComposer SetBaseTypes(List<string>? baseTypes)
+        {
+            CompositionGuard.ImmediateNodeIs(Visitor.CurrentNode, typeof(ClassDeclarationSyntax));
+            var @class = (Visitor.CurrentNode as ClassDeclarationSyntax)!;
+
+            ClassDeclarationSyntax? alteredClass;
+            if(baseTypes == null || baseTypes.Count() == 0)
+            {
+                alteredClass = @class.WithBaseList(null);
+            }
+            else
+            {
+                List<BaseTypeSyntax> parsedBaseTypes = new List<BaseTypeSyntax>();
+                foreach(var baseType in baseTypes)
+                {
+                    var type = SyntaxFactory.ParseTypeName(baseType);
+                    var parsedbaseType = SyntaxFactory.SimpleBaseType(type);
+                    parsedBaseTypes.Add(parsedbaseType);
+                }
+                var syntaxList = SyntaxFactory.SeparatedList(parsedBaseTypes);
+                var baseTypeList = SyntaxFactory.BaseList(syntaxList);
+                alteredClass = @class.WithBaseList(baseTypeList);
+            }
+
+            Visitor.ReplaceNodeAndAdjustState(Visitor.CurrentNode!, alteredClass);
+
+            return this;
+        }
+
         public ClassComposer SetAccessModifier(AccessModifierTypes newType)
         {
             CompositionGuard.ImmediateNodeIs(Visitor.CurrentNode, typeof(ClassDeclarationSyntax));
@@ -127,7 +156,7 @@ namespace RoseLib.Composers
                 case AccessModifierTypes.PROTECTED:
                 case AccessModifierTypes.PRIVATE_PROTECTED:
                 case AccessModifierTypes.PROTECTED_INTERNAL:
-                    throw new NotSupportedException($"Setting {newType} as an access modifier not supported");
+                    throw new NotSupportedException($"Setting {newType} as an access modifier of a class not supported");
             }
 
             SyntaxNode withSetModifiers = @class.WithModifiers(modifiers);
@@ -177,6 +206,49 @@ namespace RoseLib.Composers
 
             return this;
         }
+
+        public ClassComposer MakePartial()
+        {
+            CompositionGuard.ImmediateNodeIs(Visitor.CurrentNode, typeof(ClassDeclarationSyntax));
+
+            var @class = (Visitor.CurrentNode as ClassDeclarationSyntax)!;
+
+            SyntaxTokenList modifiers = @class.Modifiers;
+
+            if (modifiers.Where(m => m.IsKind(SyntaxKind.PartialKeyword)).Any())
+            {
+                return this;
+            }
+
+            modifiers = modifiers.Add(SyntaxFactory.Token(SyntaxKind.PartialKeyword));
+            SyntaxNode madeStatic = @class.WithModifiers(modifiers);
+            Visitor.ReplaceNodeAndAdjustState(Visitor.CurrentNode!, madeStatic);
+
+            return this;
+        }
+
+        public ClassComposer MakeNonPartial()
+        {
+            CompositionGuard.ImmediateNodeIs(Visitor.CurrentNode, typeof(ClassDeclarationSyntax));
+
+            var @class = (Visitor.CurrentNode as ClassDeclarationSyntax)!;
+            SyntaxTokenList modifiers = @class.Modifiers;
+            for (int i = modifiers.Count - 1; i >= 0; i--)
+            {
+                var m = modifiers.ElementAt(i);
+                if (m.IsKind(SyntaxKind.PartialKeyword))
+                {
+                    modifiers = modifiers.RemoveAt(i);
+                    break;
+                }
+            }
+
+            SyntaxNode madeNonStatic = @class.WithModifiers(modifiers);
+            Visitor.ReplaceNodeAndAdjustState(Visitor.CurrentNode!, madeNonStatic);
+
+            return this;
+        }
+
         #endregion
 
         public ClassComposer Delete()

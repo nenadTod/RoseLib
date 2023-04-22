@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 
 namespace RoseLib.Tests
 {
-    public class ClassCompositionTests
+    public class ClassCompositionTests 
     {
         [Test]
         public void ClassWithAFieldPropertyAndMethod()
@@ -127,7 +127,7 @@ namespace RoseLib.Tests
         }
 
         [Test]
-        public void RenamingAClass()
+        public void RenamingClass()
         {
             var newClassName = "RenamedClass";
             Regex testRegexC1 = new Regex(newClassName);
@@ -144,6 +144,42 @@ namespace RoseLib.Tests
                     .GetCode();
 
                 Assert.That(testRegexC1.Matches(code).Count, Is.EqualTo(3));
+            }
+        }
+
+        [Test]
+        public void SettingBaseTypes()
+        {
+            var baseType1 = "object";
+            var baseType2 = $"IEquatable<{"Class1"}>";
+            var testRegexBaseTypes = new Regex($": {baseType1}, {baseType2}");
+
+
+            using (StreamReader reader = new StreamReader(".\\TestFiles\\Class1.cs"))
+            {
+                CompilationUnitNavigator navigator = new CompilationUnitNavigator(reader);
+
+                var code = navigator
+                    .SelectClassDeclaration("Class1")
+                    .StartComposing<ClassComposer>()
+                    .SetBaseTypes(new List<string> { baseType1, baseType2 })
+                    .GetCode();
+
+                Assert.IsTrue(testRegexBaseTypes.IsMatch(code));
+            }
+
+            using (StreamReader reader = new StreamReader(".\\TestFiles\\Class1.cs"))
+            {
+                CompilationUnitNavigator navigator = new CompilationUnitNavigator(reader);
+
+                var code = navigator
+                    .SelectClassDeclaration("Class1")
+                    .StartComposing<ClassComposer>()
+                    .SetBaseTypes(new List<string> { baseType1, baseType2 })
+                    .SetBaseTypes(null)
+                    .GetCode();
+
+                Assert.IsFalse(testRegexBaseTypes.IsMatch(code));
             }
         }
 
@@ -186,6 +222,41 @@ namespace RoseLib.Tests
                     .GetCode();
 
                 Assert.IsTrue(testRegexC1.IsMatch(code));
+            }
+        }
+
+        [Test]
+        public void MakingClassPartialAndNonPartial()
+        {
+            var partial = "partial";
+            Regex testRegexC1 = new Regex(partial);
+
+
+            using (StreamReader reader = new StreamReader(".\\TestFiles\\Class1.cs"))
+            {
+                CompilationUnitNavigator navigator = new CompilationUnitNavigator(reader);
+
+                var code = navigator
+                    .SelectClassDeclaration("Class1")
+                    .StartComposing<ClassComposer>()
+                    .MakePartial()
+                    .GetCode();
+
+                Assert.IsTrue(testRegexC1.IsMatch(code));
+            }
+
+            using (StreamReader reader = new StreamReader(".\\TestFiles\\Class1.cs"))
+            {
+                CompilationUnitNavigator navigator = new CompilationUnitNavigator(reader);
+
+                var code = navigator
+                    .SelectClassDeclaration("Class1")
+                    .StartComposing<ClassComposer>()
+                    .MakePartial()
+                    .MakeNonPartial()
+                    .GetCode();
+
+                Assert.IsFalse(testRegexC1.IsMatch(code));
             }
         }
 
