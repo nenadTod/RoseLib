@@ -10,8 +10,8 @@ namespace RoseLib.Model
     public class MethodProperties : AccessModifierProperties
     {
         public string MethodName { get; set; } = "";
-
         public string ReturnType { get; set; } = "";
         public List<RLParameterProperties> Parameters { get; set; } = new List<RLParameterProperties>();
+        public bool BodylessMethod { get; set; } = false;
     }
 }

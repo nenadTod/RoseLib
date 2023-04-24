@@ -142,6 +142,44 @@ namespace RoseLib.Tests
         }
 
         [Test]
+        public void InterfaceWithABodylessMethod()
+        {
+            var newNamespace = "RoseLib.Tests";
+            Regex testRegexNS = new Regex(newNamespace);
+
+            var newInterface = "ITestInterface";
+            Regex testRegexI = new Regex(newInterface);
+
+            var newMethodName = "NewMethod";
+            Regex testRegexM = new Regex(newMethodName);
+
+            Regex bodylessMethodTest = new Regex("();");
+
+            CompilationUnitComposer composer = new CompilationUnitComposer();
+            composer
+                .AddNamespace(newNamespace)
+                .EnterNamespace()
+                .AddInterface(new Model.InterfaceProperties
+                {
+                    InterfaceName = newInterface,
+                })
+                .EnterInterface()
+                .AddMethod(new Model.MethodProperties
+                {
+                    AccessModifier = Enums.AccessModifierTypes.PUBLIC,
+                    MethodName = newMethodName,
+                    ReturnType = "string",
+                    BodylessMethod = true
+                });
+
+            var code = composer.GetCode();
+            Assert.IsTrue(testRegexNS.IsMatch(code));
+            Assert.IsTrue(testRegexI.IsMatch(code));
+            Assert.IsTrue(testRegexM.IsMatch(code));
+            Assert.IsTrue(bodylessMethodTest.IsMatch(code));
+        }
+
+        [Test]
         public void SettingAttributes()
         {
             var attribute1Name = "Serializable";

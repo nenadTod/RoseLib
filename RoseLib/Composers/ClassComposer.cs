@@ -63,6 +63,13 @@ namespace RoseLib.Composers
         {
             return (base.AddMethodToType<ClassDeclarationSyntax>(options) as ClassComposer)!;
         }
+
+        public override ClassComposer SetAttributes(List<AttributeProperties> modelAttributeList)
+        {
+            base.SetAttributes(modelAttributeList);
+
+            return this;
+        }
         #endregion
 
         #region Class change methods

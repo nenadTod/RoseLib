@@ -20,6 +20,11 @@ namespace RoseLib.Composers
         {
         }
 
+        protected override bool CanHaveBodylessMethod()
+        {
+            return false;
+        }
+
         public abstract CSRTypeComposer AddField(FieldProperties options);
 
         protected CSRTypeComposer AddFieldToNodeOfType<T>(FieldProperties options) where T : TypeDeclarationSyntax

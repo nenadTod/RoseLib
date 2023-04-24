@@ -47,11 +47,22 @@ namespace RoseLib.Composers
         {
             return (base.AddMethodToType<InterfaceDeclarationSyntax>(options) as InterfaceComposer)!;
         }
+        public override InterfaceComposer SetAttributes(List<AttributeProperties> modelAttributeList)
+        {
+            base.SetAttributes(modelAttributeList);
+
+            return this;
+        }
 
         public InterfaceComposer Delete()
         {
             base.DeleteForParentNodeOfType<InterfaceDeclarationSyntax>();
             return this;
+        }
+
+        protected override bool CanHaveBodylessMethod()
+        {
+            return true;
         }
     }
 }

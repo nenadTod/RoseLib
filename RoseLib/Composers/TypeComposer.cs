@@ -21,7 +21,7 @@ namespace RoseLib.Composers
         }
 
         public abstract TypeComposer AddMethod(MethodProperties options);
-
+        protected abstract bool CanHaveBodylessMethod();
         public virtual TypeComposer AddMethodToType<T>(MethodProperties options) where T : TypeDeclarationSyntax
         {
             CompositionGuard.ImmediateOrParentOfNodeIs(Visitor.CurrentNode, typeof(T));
@@ -41,7 +41,18 @@ namespace RoseLib.Composers
             @params = @params.NormalizeWhitespace();
             method = method.WithParameterList(@params);
 
-            method = method.WithBody(SyntaxFactory.Block());
+            if (!options.BodylessMethod)
+            {
+                method = method.WithBody(SyntaxFactory.Block());
+            }
+            else if(CanHaveBodylessMethod())
+            {
+                method = method.WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
+            }
+            else
+            {
+                throw new NotSupportedException("Cannot create a method without a body.");
+            }
 
             var referenceNode = TryGetReferenceAndPopToPivot();
             var newEnclosingNode = AddMemberToCurrentNode(method, referenceNode);
@@ -82,34 +93,6 @@ namespace RoseLib.Composers
             return this;
         }
 
-        public TypeComposer SetAttributes(List<Model.AttributeProperties> modelAttributeList)
-        {
-            List<AttributeSyntax> attributeSyntaxList = new List<AttributeSyntax>();
-            foreach (var attribute in modelAttributeList)
-            {
-                AttributeArgumentListSyntax? attributeArgumentListSyntax = null;
-                if (attribute.AttributeArgumentsAsString != null)
-                {
-                    var parameterToBePassed = attribute.AttributeArgumentsAsString;
-                    attributeArgumentListSyntax = SyntaxFactory.ParseAttributeArgumentList(parameterToBePassed, 0, CSharpParseOptions.Default, false);
-                }
-
-                var attributeSyntax = SyntaxFactory.Attribute(SyntaxFactory.ParseName(attribute.Name), attributeArgumentListSyntax);
-                attributeSyntaxList.Add(attributeSyntax);
-            }
-
-            var attributeList = SyntaxFactory.AttributeList(new SeparatedSyntaxList<AttributeSyntax>().AddRange(attributeSyntaxList));
-
-            PopToPivot();
-            var typeNode = (Visitor.CurrentNode as TypeDeclarationSyntax)!;
-
-
-            var newTypeNode = typeNode.AddAttributeLists(attributeList);
-            Visitor.ReplaceNodeAndAdjustState(typeNode, newTypeNode);
-
-            return this;
-        }
-
         protected SyntaxNode AddMemberToCurrentNode(MemberDeclarationSyntax member, MemberDeclarationSyntax? referenceNode = null)
         {
             SyntaxNode newEnclosingNode;
@@ -133,5 +116,18 @@ namespace RoseLib.Composers
 
             return newEnclosingNode;
         }
+
+        #region Child navigation methods
+        public MethodComposer EnterMethod()
+        {
+            var method = Visitor.State.Peek().CurrentNode as MethodDeclarationSyntax;
+            if (method == null)
+            {
+                throw new InvalidActionForStateException("Entering methods only possible when positioned on a method declaration syntax instance.");
+            }
+
+            return new MethodComposer(Visitor);
+        }
+        #endregion
     }
 }

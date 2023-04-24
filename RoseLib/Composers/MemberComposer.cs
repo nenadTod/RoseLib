@@ -1,4 +1,6 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+﻿using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoseLib.Traversal;
 using System;
 using System.Collections.Generic;
@@ -27,6 +29,34 @@ namespace RoseLib.Composers
         protected void PopToPivot()
         {
             Visitor.PopToIndex((int)StatePivotIndex!);
+        }
+
+        public virtual MemberComposer SetAttributes(List<Model.AttributeProperties> modelAttributeList)
+        {
+            List<AttributeSyntax> attributeSyntaxList = new List<AttributeSyntax>();
+            foreach (var attribute in modelAttributeList)
+            {
+                AttributeArgumentListSyntax? attributeArgumentListSyntax = null;
+                if (attribute.AttributeArgumentsAsString != null)
+                {
+                    var parameterToBePassed = attribute.AttributeArgumentsAsString;
+                    attributeArgumentListSyntax = SyntaxFactory.ParseAttributeArgumentList(parameterToBePassed, 0, CSharpParseOptions.Default, false);
+                }
+
+                var attributeSyntax = SyntaxFactory.Attribute(SyntaxFactory.ParseName(attribute.Name), attributeArgumentListSyntax);
+                attributeSyntaxList.Add(attributeSyntax);
+            }
+
+            var attributeList = SyntaxFactory.AttributeList(new SeparatedSyntaxList<AttributeSyntax>().AddRange(attributeSyntaxList));
+
+            PopToPivot();
+            var memberNode = (Visitor.CurrentNode as MemberDeclarationSyntax)!;
+
+
+            var newTypeNode = memberNode.AddAttributeLists(attributeList);
+            Visitor.ReplaceNodeAndAdjustState(memberNode, newTypeNode);
+
+            return this;
         }
     }
 }
