@@ -13,6 +13,7 @@ namespace Tests.TestFiles
         public Class1(bool param1) { }
 
         private bool field1;
+        public int Prop1 { get; set; }
 
         internal class InnerClass1
         {
