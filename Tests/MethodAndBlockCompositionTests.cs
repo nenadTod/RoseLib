@@ -1,4 +1,5 @@
 ﻿using RoseLib.Composers;
+using RoseLib.Exceptions;
 using RoseLib.Model;
 using RoseLib.Traversal;
 using RoseLib.Traversal.Navigators;
@@ -43,6 +44,37 @@ namespace RoseLib.Tests
                 Assert.IsTrue(testRegexMT.IsMatch(code));
                 Assert.IsTrue(testRegexS.IsMatch(code));
 
+            }
+        }
+
+        [Test]
+        public void MethodWithInvalidConsoleLogStatement()
+        {
+            var newMethodName = "TestM";
+            var newMethodType = "bool";
+            var newStatement = "Console.WriteLine(\"It works!\")";
+
+            using (StreamReader reader = new StreamReader(".\\TestFiles\\Class1.cs"))
+            {
+                CompilationUnitNavigator navigator = new CompilationUnitNavigator(reader);
+
+                try
+                {
+                    navigator
+                        .SelectClassDeclaration("Class1")
+                        .StartComposing<ClassComposer>()
+                        .AddMethod(new RoseLib.Model.MethodProperties() { MethodName = newMethodName, ReturnType = newMethodType })
+                        .EnterMethod()
+                        .SetAttributes(new List<Model.AttributeProperties>() { new AttributeProperties() { Name = "TestAtt" } })
+                        .EnterBody()
+                        .InsertStatements(newStatement);
+
+                    Assert.Fail("Syntax error not caught!");
+                }
+                catch(CodeHasErrorsException)
+                {
+                    Assert.Pass("Syntax error caught!");
+                }
             }
         }
     }

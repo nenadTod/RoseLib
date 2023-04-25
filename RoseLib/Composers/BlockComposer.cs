@@ -39,7 +39,7 @@ namespace RoseLib.Composers
 
             var currentStatements = block!.Statements;
 
-            var newStatements = CreateSyntaxList(statements);
+            var newStatements = CreateStatementList(statements);
             var allStatements = currentStatements.AddRange(newStatements);
             
             var updatedBlock = block.WithStatements(allStatements);
@@ -53,7 +53,7 @@ namespace RoseLib.Composers
         #endregion
 
         #region Helper Methods
-        private SyntaxList<StatementSyntax> CreateSyntaxList(string[] statements)
+        private SyntaxList<StatementSyntax> CreateStatementList(string[] statements)
         {
             var statementsTemplate = new StatementsTemplate();
             statementsTemplate.statements = statements.ToList();
@@ -61,7 +61,9 @@ namespace RoseLib.Composers
             var tempMethod = CSharpSyntaxTree.ParseText(methodStr).GetRoot();
 
             var tempBlock = tempMethod.DescendantNodes().OfType<BlockSyntax>().First();
-            
+
+            CompositionGuard.CodeIsSyntacticallyValid(tempBlock);
+
             return tempBlock.Statements;
         }
         #endregion

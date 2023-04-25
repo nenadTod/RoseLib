@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using RoseLib.Exceptions;
+using RoseLib.Traversal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,6 +54,25 @@ namespace RoseLib.Guards
             }
 
             throw new InvalidActionForStateException("Node is not of an appropriate type");
+        }
+    
+        public static void CodeIsSyntacticallyValid(SyntaxNode node)
+        {
+            if(node.ContainsDiagnostics)
+            {
+                var diagnostics = node.GetDiagnostics();
+                var codeHasErrors = diagnostics.Any(d => d.Severity == DiagnosticSeverity.Error);
+
+                if (codeHasErrors)
+                {
+                    var descriptions = diagnostics
+                        .Where(d => d.Severity == DiagnosticSeverity.Error)
+                        .Select(ed => ed.ToString());
+                    var combinedDescription = string.Join("\n", descriptions);
+
+                    throw new CodeHasErrorsException($"Composed code has errors: {combinedDescription}");
+                }
+            }
         }
     }
 }
