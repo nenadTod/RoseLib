@@ -8,22 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="ComposersOLD\ClassComposer.cs" />
-    <Compile Remove="ComposersOLD\CompilationUnitComposer.cs" />
-    <Compile Remove="ComposersOLD\IComposer.cs" />
-    <Compile Remove="ComposersOLD\MethodComposer.cs" />
-    <Compile Remove="ComposersOLD\NamespaceComposer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="ComposersOLD\ClassComposer.cs" />
-    <None Include="ComposersOLD\CompilationUnitComposer.cs" />
-    <None Include="ComposersOLD\IComposer.cs" />
-    <None Include="ComposersOLD\MethodComposer.cs" />
-    <None Include="ComposersOLD\NamespaceComposer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="IronPython" Version="3.4.0" />
     <PackageReference Include="IronPython.StdLib" Version="3.4.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0" />
