@@ -50,21 +50,21 @@ namespace RoseLib.Composers
         #endregion
 
         #region Addition methods
-        public override ClassComposer AddField(FieldProperties options)
+        public override ClassComposer AddField(FieldProps options)
         {
             return (base.AddFieldToNodeOfType<ClassDeclarationSyntax>(options) as ClassComposer)!;
         }
 
-        public override ClassComposer AddProperty(PropertyProperties options)
+        public override ClassComposer AddProperty(PropertyProps options)
         {
             return (base.AddPropertyToType<ClassDeclarationSyntax>(options) as ClassComposer)!;
         }
-        public override ClassComposer AddMethod(MethodProperties options)
+        public override ClassComposer AddMethod(MethodProps options)
         {
             return (base.AddMethodToType<ClassDeclarationSyntax>(options) as ClassComposer)!;
         }
 
-        public override ClassComposer SetAttributes(List<AttributeProperties> modelAttributeList)
+        public override ClassComposer SetAttributes(List<AttributeProps> modelAttributeList)
         {
             base.SetAttributes(modelAttributeList);
 
@@ -264,30 +264,5 @@ namespace RoseLib.Composers
             return this;
         }
 
-        public ClassComposer UpdateField(FieldProperties options)
-        {
-            
-            var existingFieldDeclaration = Visitor.CurrentNode as FieldDeclarationSyntax;
-
-            if(existingFieldDeclaration == null)
-            {
-                throw new InvalidActionForStateException("A field must be selected to update it");
-            }
-
-            TypeSyntax type = SyntaxFactory.ParseTypeName(options.FieldType);
-            var declaration = SyntaxFactory.VariableDeclaration(type,
-                    SyntaxFactory.SeparatedList(new[]
-                        {
-                            SyntaxFactory.VariableDeclarator(SyntaxFactory.Identifier(options.FieldName))
-                        }
-                    )
-                );
-
-            var newFieldDeclaration = SyntaxFactory.FieldDeclaration(new SyntaxList<AttributeListSyntax> { }, options.ModifiersToTokenList(), declaration);
-
-            Visitor.ReplaceNodeAndAdjustState(existingFieldDeclaration, newFieldDeclaration);
-
-            return this;
-        }
     }
 }

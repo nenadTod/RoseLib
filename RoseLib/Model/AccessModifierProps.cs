@@ -12,25 +12,25 @@ namespace RoseLib.Model
     
 
     
-    public class AccessModifierProperties
+    public class AccessModifierProps
     {
-        public AccessModifierTypes AccessModifier { get; set; }
+        public AccessModifiers AccessModifier { get; set; }
 
         public string ModifiersToString()
         {
             switch (AccessModifier)
             {
-                case AccessModifierTypes.PRIVATE:
+                case AccessModifiers.PRIVATE:
                     return "private";
-                case AccessModifierTypes.PROTECTED:
+                case AccessModifiers.PROTECTED:
                     return "protected";
-                case AccessModifierTypes.PRIVATE_PROTECTED:
+                case AccessModifiers.PRIVATE_PROTECTED:
                     return "private protected";
-                case AccessModifierTypes.INTERNAL:
+                case AccessModifiers.INTERNAL:
                     return "internal";
-                case AccessModifierTypes.PROTECTED_INTERNAL:
+                case AccessModifiers.PROTECTED_INTERNAL:
                     return "protected internal";
-                case AccessModifierTypes.PUBLIC:
+                case AccessModifiers.PUBLIC:
                     return "public";
                 default:
                     return "";
@@ -42,24 +42,24 @@ namespace RoseLib.Model
             SyntaxTokenList retVal = new SyntaxTokenList();
             switch (AccessModifier)
             {
-                case AccessModifierTypes.PRIVATE:
+                case AccessModifiers.PRIVATE:
                     retVal = retVal.Add(SyntaxFactory.Token(SyntaxKind.PrivateKeyword));
                     break;
-                case AccessModifierTypes.PROTECTED:
+                case AccessModifiers.PROTECTED:
                     retVal = retVal.Add(SyntaxFactory.Token(SyntaxKind.ProtectedKeyword));
                     break;
-                case AccessModifierTypes.PRIVATE_PROTECTED:
+                case AccessModifiers.PRIVATE_PROTECTED:
                     retVal = retVal.Add(SyntaxFactory.Token(SyntaxKind.PrivateKeyword));
                     retVal = retVal.Add(SyntaxFactory.Token(SyntaxKind.ProtectedKeyword));
                     break;
-                case AccessModifierTypes.INTERNAL:
+                case AccessModifiers.INTERNAL:
                     retVal = retVal.Add(SyntaxFactory.Token(SyntaxKind.InternalKeyword));
                     break;
-                case AccessModifierTypes.PROTECTED_INTERNAL:
+                case AccessModifiers.PROTECTED_INTERNAL:
                     retVal = retVal.Add(SyntaxFactory.Token(SyntaxKind.ProtectedKeyword));
                     retVal = retVal.Add(SyntaxFactory.Token(SyntaxKind.InternalKeyword));
                     break;
-                case AccessModifierTypes.PUBLIC:
+                case AccessModifiers.PUBLIC:
                     retVal = retVal.Add(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
                     break;
             }

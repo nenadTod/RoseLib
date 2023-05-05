@@ -9,6 +9,8 @@ namespace RoseLib.Traversal.Navigators
 {
     public class EnumNavigator : BaseNavigator, IEnumMemberSelector
     {
+        public EnumNavigator() { }
+
         internal EnumNavigator(BaseNavigator? parent) : base(parent)
         {
         }

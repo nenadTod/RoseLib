@@ -25,9 +25,9 @@ namespace RoseLib.Composers
             return false;
         }
 
-        public abstract CSRTypeComposer AddField(FieldProperties options);
+        public abstract CSRTypeComposer AddField(FieldProps options);
 
-        protected CSRTypeComposer AddFieldToNodeOfType<T>(FieldProperties options) where T : TypeDeclarationSyntax
+        protected CSRTypeComposer AddFieldToNodeOfType<T>(FieldProps options) where T : TypeDeclarationSyntax
         {
             CompositionGuard.ImmediateOrParentOfNodeIs(Visitor.CurrentNode, typeof(T));
 
@@ -50,6 +50,16 @@ namespace RoseLib.Composers
             navigator.SelectFieldDeclaration(options.FieldName);
 
             return this;
+        }
+        public FieldComposer EnterField()
+        {
+            var field = Visitor.State.Peek().CurrentNode as FieldDeclarationSyntax;
+            if (field == null)
+            {
+                throw new InvalidActionForStateException("Entering fields only possible when positioned on a field declaration syntax instance.");
+            }
+
+            return new FieldComposer(Visitor);
         }
     }
 }

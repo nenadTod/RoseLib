@@ -42,22 +42,22 @@ namespace RoseLib.Tests
                 )
                 .AddNamespace(newNamespace)
                 .EnterNamespace()
-                .AddClass(new Model.ClassProperties {  
+                .AddClass(new Model.ClassProps {  
                     ClassName = newClass
                 })
                 .EnterClass()
-                .AddField(new Model.FieldProperties { 
+                .AddField(new Model.FieldProps { 
                     AccessModifier = Enums.AccessModifierTypes.PRIVATE,
                     FieldType = "string",
                     FieldName = newFieldName
                 })
-                .AddProperty(new Model.PropertyProperties
+                .AddProperty(new Model.PropertyProps
                 {
                     AccessModifier = Enums.AccessModifierTypes.PUBLIC,
                     PropertyName = newPropertyName,
                     PropertyType= "string",
                 })
-                .AddMethod(new Model.MethodProperties {
+                .AddMethod(new Model.MethodProps {
                     AccessModifier= Enums.AccessModifierTypes.PUBLIC,
                     MethodName = newMethodName,
                     ReturnType = "string",
@@ -99,17 +99,17 @@ namespace RoseLib.Tests
                 )
                 .AddNamespace(newNamespace)
                 .EnterNamespace()
-                .AddClass(new Model.ClassProperties
+                .AddClass(new Model.ClassProps
                 {
                     AccessModifier = Enums.AccessModifierTypes.PUBLIC,
                     ClassName = newClass,
                     BaseTypes = new List<string>() { baseType1, baseType2 },
-                    Attributes = new List<Model.AttributeProperties> {
-                        new Model.AttributeProperties(){ Name = attribute1},
-                        new Model.AttributeProperties()
+                    Attributes = new List<Model.AttributeProps> {
+                        new Model.AttributeProps(){ Name = attribute1},
+                        new Model.AttributeProps()
                         {
                             Name = attribute2,
-                            AttributeArgumentList = new List<string>
+                            AttributeArgs = new List<string>
                             {
                                 "user32.dll", "SetLastError=false", "ExactSpelling=false"
                             }
@@ -280,7 +280,7 @@ namespace RoseLib.Tests
                 var code = navigator
                     .SelectFieldDeclaration(referenceFieldName)
                     .StartComposing<ClassComposer>()
-                    .AddField(new Model.FieldProperties()
+                    .AddField(new Model.FieldProps()
                     {
                         FieldName = newFieldName,
                         FieldType = newFieldType,
@@ -314,7 +314,7 @@ namespace RoseLib.Tests
                 var code = navigator
                     .SelectFieldDeclaration(referenceFieldName)
                     .StartComposing<ClassComposer>()
-                    .AddProperty(new Model.PropertyProperties()
+                    .AddProperty(new Model.PropertyProps()
                     {
                         PropertyName = newPropertyName,
                         PropertyType = newPropertyType,
@@ -345,14 +345,11 @@ namespace RoseLib.Tests
                 
                 var code = navigator
                     .SelectFieldDeclaration("field1")
-                    .StartComposing<ClassComposer>()
-                    .UpdateField(new Model.FieldProperties()
-                    {
-                        FieldName = newFieldName,
-                        FieldType = newFieldType,
-                        AccessModifier = newFieldAccessModifier
-                    }
-                ).GetCode();
+                    .StartComposing<FieldComposer>()
+                    .Rename(newFieldName)
+                    .SetType(newFieldType)
+                    .SetAccessModifier(newFieldAccessModifier)
+                    .GetCode();
 
                 Assert.IsTrue(testRegexF.IsMatch(code));
             }
@@ -402,13 +399,13 @@ namespace RoseLib.Tests
                     .SelectClassDeclaration("Class1")
                     .StartComposing<ClassComposer>()
                     .SetAttributes(
-                        new List<Model.AttributeProperties>() 
+                        new List<Model.AttributeProps>() 
                         { 
-                            new Model.AttributeProperties { Name = attribute1Name },
-                            new Model.AttributeProperties 
+                            new Model.AttributeProps { Name = attribute1Name },
+                            new Model.AttributeProps 
                             { 
                                 Name = attribute2Name,
-                                AttributeArgumentList = new List<string>
+                                AttributeArgs = new List<string>
                                 {
                                     attribute2Argument1,
                                     attribute2Argument2

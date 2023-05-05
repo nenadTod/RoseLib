@@ -104,7 +104,7 @@ namespace RoseLib.Templates
         
         #line 14 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\EmptyInterfaceTemplate.tt"
  
-	public InterfaceProperties Properties {get; set;}
+	public InterfaceProps Properties {get; set;}
 
         
         #line default

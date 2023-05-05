@@ -36,10 +36,10 @@ namespace RoseLib.Tests
                 var code = navigator
                     .SelectFieldDeclaration(oldFieldName)
                     .StartComposing<FieldComposer>()
-                    .SetAccessModifier(Enums.AccessModifierTypes.PROTECTED)
+                    .SetAccessModifier(Enums.AccessModifiers.PROTECTED)
                     .SetType(newFieldType)
                     .Rename(newFieldName)
-                    .SetAttributes(new List<Model.AttributeProperties>() { new AttributeProperties() { Name = newAttributeName } })
+                    .SetAttributes(new List<Model.AttributeProps>() { new AttributeProps() { Name = newAttributeName } })
                     .GetCode();
 
                 Assert.IsFalse(testRegexOFN.IsMatch(code));

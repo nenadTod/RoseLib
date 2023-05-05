@@ -33,9 +33,9 @@ namespace RoseLib.Tests
                 var code = navigator
                     .SelectClassDeclaration("Class1")
                     .StartComposing<ClassComposer>()
-                    .AddMethod(new RoseLib.Model.MethodProperties() { MethodName = newMethodName, ReturnType = newMethodType })
+                    .AddMethod(new RoseLib.Model.MethodProps() { MethodName = newMethodName, ReturnType = newMethodType })
                     .EnterMethod()
-                    .SetAttributes(new List<Model.AttributeProperties>() { new AttributeProperties() { Name = "TestAtt" } })
+                    .SetAttributes(new List<Model.AttributeProps>() { new AttributeProps() { Name = "TestAtt" } })
                     .EnterBody()
                     .InsertStatements(newStatement)
                     .GetCode();
@@ -63,9 +63,9 @@ namespace RoseLib.Tests
                     navigator
                         .SelectClassDeclaration("Class1")
                         .StartComposing<ClassComposer>()
-                        .AddMethod(new RoseLib.Model.MethodProperties() { MethodName = newMethodName, ReturnType = newMethodType })
+                        .AddMethod(new RoseLib.Model.MethodProps() { MethodName = newMethodName, ReturnType = newMethodType })
                         .EnterMethod()
-                        .SetAttributes(new List<Model.AttributeProperties>() { new AttributeProperties() { Name = "TestAtt" } })
+                        .SetAttributes(new List<Model.AttributeProps>() { new AttributeProps() { Name = "TestAtt" } })
                         .EnterBody()
                         .InsertStatements(newStatement);
 

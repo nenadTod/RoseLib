@@ -33,7 +33,7 @@ namespace RoseLib.Tests
                 )
                 .AddNamespace(newNamespace)
                 .EnterNamespace()
-                .AddInterface(new Model.InterfaceProperties
+                .AddInterface(new Model.InterfaceProps
                 {
                     InterfaceName = newInterface
                 });
@@ -68,13 +68,13 @@ namespace RoseLib.Tests
                 )
                 .AddNamespace(newNamespace)
                 .EnterNamespace()
-                .AddInterface(new Model.InterfaceProperties
+                .AddInterface(new Model.InterfaceProps
                 {
-                    AccessModifier = Enums.AccessModifierTypes.PUBLIC,
+                    AccessModifier = Enums.AccessModifiers.PUBLIC,
                     InterfaceName = newInterface,
                     BaseTypes = new List<string>() { baseType1 },
-                    Attributes = new List<Model.AttributeProperties> {
-                        new Model.AttributeProperties(){ Name = attribute1},
+                    Attributes = new List<Model.AttributeProps> {
+                        new Model.AttributeProps(){ Name = attribute1},
                     }
                 });
 
@@ -115,20 +115,20 @@ namespace RoseLib.Tests
                 )
                 .AddNamespace(newNamespace)
                 .EnterNamespace()
-                .AddInterface(new Model.InterfaceProperties
+                .AddInterface(new Model.InterfaceProps
                 {
                     InterfaceName = newInterface,
                 })
                 .EnterInterface()
-                .AddProperty(new Model.PropertyProperties
+                .AddProperty(new Model.PropertyProps
                 {
-                    AccessModifier = Enums.AccessModifierTypes.PUBLIC,
+                    AccessModifier = Enums.AccessModifiers.PUBLIC,
                     PropertyName = newPropertyName,
                     PropertyType = "string",
                 })
-                .AddMethod(new Model.MethodProperties
+                .AddMethod(new Model.MethodProps
                 {
-                    AccessModifier = Enums.AccessModifierTypes.PUBLIC,
+                    AccessModifier = Enums.AccessModifiers.PUBLIC,
                     MethodName = newMethodName,
                     ReturnType = "string",
                 });
@@ -159,14 +159,14 @@ namespace RoseLib.Tests
             composer
                 .AddNamespace(newNamespace)
                 .EnterNamespace()
-                .AddInterface(new Model.InterfaceProperties
+                .AddInterface(new Model.InterfaceProps
                 {
                     InterfaceName = newInterface,
                 })
                 .EnterInterface()
-                .AddMethod(new Model.MethodProperties
+                .AddMethod(new Model.MethodProps
                 {
-                    AccessModifier = Enums.AccessModifierTypes.PUBLIC,
+                    AccessModifier = Enums.AccessModifiers.PUBLIC,
                     MethodName = newMethodName,
                     ReturnType = "string",
                     BodylessMethod = true
@@ -200,13 +200,13 @@ namespace RoseLib.Tests
                     .SelectInterfaceDeclaration("Interface1")
                     .StartComposing<InterfaceComposer>()
                     .SetAttributes(
-                        new List<Model.AttributeProperties>()
+                        new List<Model.AttributeProps>()
                         {
-                            new Model.AttributeProperties { Name = attribute1Name },
-                            new Model.AttributeProperties
+                            new Model.AttributeProps { Name = attribute1Name },
+                            new Model.AttributeProps
                             {
                                 Name = attribute2Name,
-                                AttributeArgumentList = new List<string>
+                                AttributeArgs = new List<string>
                                 {
                                     attribute2Argument1,
                                     attribute2Argument2

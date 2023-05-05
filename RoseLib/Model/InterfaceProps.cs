@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace RoseLib.Model
 {
-    public class InterfaceProperties: AccessModifierProperties 
+    public class InterfaceProps: AccessModifierProps 
     {
         public string InterfaceName { get; set; } = "";
         public List<string>? BaseTypes { get; set; }
-        public List<Model.AttributeProperties> Attributes { get; set; } = new List<Model.AttributeProperties>();
+        public List<Model.AttributeProps> Attributes { get; set; } = new List<Model.AttributeProps>();
     }
 }

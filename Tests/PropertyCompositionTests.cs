@@ -36,10 +36,10 @@ namespace RoseLib.Tests
                 var code = navigator
                     .SelectPropertyDeclaration(oldPropertyName)
                     .StartComposing<PropertyComposer>()
-                    .SetAccessModifier(Enums.AccessModifierTypes.PROTECTED)
+                    .SetAccessModifier(Enums.AccessModifiers.PROTECTED)
                     .SetType(newPropertyType)
                     .Rename(newPropertyName)
-                    .SetAttributes(new List<Model.AttributeProperties>() { new AttributeProperties() { Name = newAttributeName } })
+                    .SetAttributes(new List<Model.AttributeProps>() { new AttributeProps() { Name = newAttributeName } })
                     .GetCode();
 
                 Assert.IsFalse(testRegexOPN.IsMatch(code));

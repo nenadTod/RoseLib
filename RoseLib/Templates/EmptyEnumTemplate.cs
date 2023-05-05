@@ -19,9 +19,9 @@ namespace RoseLib.Templates
     /// Class to produce the template output
     /// </summary>
     
-    #line 1 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\EmptyClassTemplate.tt"
+    #line 1 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\EmptyEnumTemplate.tt"
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "17.0.0.0")]
-    public partial class EmptyClassTemplate : EmptyClassTemplateBase
+    public partial class EmptyEnumTemplate : EmptyEnumTemplateBase
     {
 #line hidden
         /// <summary>
@@ -31,122 +31,25 @@ namespace RoseLib.Templates
         {
             this.Write("\r\n");
             
-            #line 8 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\EmptyClassTemplate.tt"
- foreach(var attribute in Properties.Attributes) { 
-            
-            #line default
-            #line hidden
-            this.Write("[attribute.Name");
-            
-            #line 9 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\EmptyClassTemplate.tt"
- if(attribute.AttributeArgumentsAsString != null) { 
-            
-            #line default
-            #line hidden
-            this.Write(" ");
-            
-            #line 9 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\EmptyClassTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(attribute.AttributeArgumentsAsString));
-            
-            #line default
-            #line hidden
-            this.Write(" ");
-            
-            #line 9 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\EmptyClassTemplate.tt"
- } 
-            
-            #line default
-            #line hidden
-            this.Write("]\r\n");
-            
-            #line 10 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\EmptyClassTemplate.tt"
- } 
-            
-            #line default
-            #line hidden
-            
-            #line 11 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\EmptyClassTemplate.tt"
+            #line 8 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\EmptyEnumTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Properties.ModifiersToString()));
             
             #line default
             #line hidden
-            this.Write(" ");
+            this.Write(" enum ");
             
-            #line 11 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\EmptyClassTemplate.tt"
- if(Properties.IsStatic) {
-            
-            #line default
-            #line hidden
-            this.Write(" static ");
-            
-            #line 11 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\EmptyClassTemplate.tt"
- } 
+            #line 8 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\EmptyEnumTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Properties.EnumName));
             
             #line default
             #line hidden
-            this.Write(" ");
-            
-            #line 11 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\EmptyClassTemplate.tt"
- if(Properties.IsAbstract) {
-            
-            #line default
-            #line hidden
-            this.Write(" abstract ");
-            
-            #line 11 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\EmptyClassTemplate.tt"
- } 
-            
-            #line default
-            #line hidden
-            this.Write(" ");
-            
-            #line 11 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\EmptyClassTemplate.tt"
- if(Properties.IsPartial) {
-            
-            #line default
-            #line hidden
-            this.Write(" partial ");
-            
-            #line 11 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\EmptyClassTemplate.tt"
- } 
-            
-            #line default
-            #line hidden
-            this.Write(" class ");
-            
-            #line 11 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\EmptyClassTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Properties.ClassName));
-            
-            #line default
-            #line hidden
-            this.Write(" ");
-            
-            #line 11 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\EmptyClassTemplate.tt"
- if(Properties.BaseTypes != null && Properties.BaseTypes.Count > 0) { 
-            
-            #line default
-            #line hidden
-            this.Write(" : ");
-            
-            #line 11 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\EmptyClassTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(string.Join(", ", Properties.BaseTypes)));
-            
-            #line default
-            #line hidden
-            this.Write(" ");
-            
-            #line 11 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\EmptyClassTemplate.tt"
- } 
-            
-            #line default
-            #line hidden
-            this.Write("  {\r\n}\r\n\r\n");
+            this.Write(" { }\r\n");
             return this.GenerationEnvironment.ToString();
         }
         
-        #line 14 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\EmptyClassTemplate.tt"
+        #line 9 "C:\Users\ntodo\Desktop\Doktorske\ironPython\RoseLib\RoseLib\Templates\EmptyEnumTemplate.tt"
  
-	public ClassProps Properties {get; set;}
+	public EnumProps Properties {get; set;}
 
         
         #line default
@@ -160,7 +63,7 @@ namespace RoseLib.Templates
     /// Base class for this transformation
     /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "17.0.0.0")]
-    public class EmptyClassTemplateBase
+    public class EmptyEnumTemplateBase
     {
         #region Fields
         private global::System.Text.StringBuilder generationEnvironmentField;

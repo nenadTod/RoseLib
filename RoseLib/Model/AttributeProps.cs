@@ -6,22 +6,22 @@ using System.Threading.Tasks;
 
 namespace RoseLib.Model
 {
-    public class AttributeProperties
+    public class AttributeProps
     {
         public string Name { get; set; } = "";
-        public List<string>? AttributeArgumentList { get; set; }
+        public List<string>? AttributeArgs { get; set; }
 
         public string? AttributeArgumentsAsString
         {
             get
             {
-                if (AttributeArgumentList == null)
+                if (AttributeArgs == null)
                 {
                     return null;
                 }
                 else
                 {
-                    return "(" + string.Join(", ", AttributeArgumentList) + ")";
+                    return "(" + string.Join(", ", AttributeArgs) + ")";
                 }
             }
         }

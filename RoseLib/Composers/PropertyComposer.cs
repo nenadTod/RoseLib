@@ -161,7 +161,7 @@ namespace RoseLib.Composers
             return this;
         }
 
-        public override PropertyComposer SetAttributes(List<AttributeProperties> modelAttributeList)
+        public override PropertyComposer SetAttributes(List<AttributeProps> modelAttributeList)
         {
             base.SetAttributes(modelAttributeList);
 

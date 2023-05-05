@@ -31,7 +31,7 @@ namespace RoseLib.Composers
             Visitor.PopToIndex((int)StatePivotIndex!);
         }
 
-        public virtual MemberComposer SetAttributes(List<Model.AttributeProperties> modelAttributeList)
+        public virtual MemberComposer SetAttributes(List<Model.AttributeProps> modelAttributeList)
         {
             List<AttributeSyntax> attributeSyntaxList = new List<AttributeSyntax>();
             foreach (var attribute in modelAttributeList)

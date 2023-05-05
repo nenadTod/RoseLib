@@ -24,6 +24,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>EmptyClassTemplate.tt</DependentUpon>
     </Compile>
+    <Compile Update="Templates\EmptyEnumTemplate.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>EmptyEnumTemplate.tt</DependentUpon>
+    </Compile>
     <Compile Update="Templates\EmptyInterfaceTemplate.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -46,6 +51,10 @@
     <None Update="Templates\EmptyClassTemplate.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>EmptyClassTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="Templates\EmptyEnumTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>EmptyEnumTemplate.cs</LastGenOutput>
     </None>
     <None Update="Templates\EmptyInterfaceTemplate.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>

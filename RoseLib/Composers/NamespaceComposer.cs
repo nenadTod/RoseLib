@@ -38,7 +38,7 @@ namespace RoseLib.Composers
             }
         }
 
-        public NamespaceComposer AddClass(ClassProperties options)
+        public NamespaceComposer AddClass(ClassProps options)
         {
             CompositionGuard.ImmediateOrParentOfNodeIs(Visitor.CurrentNode, typeof(NamespaceDeclarationSyntax));
 
@@ -96,6 +96,35 @@ namespace RoseLib.Composers
             }
 
             return new InterfaceComposer(Visitor);
+        }
+
+        public NamespaceComposer AddEnum(EnumProps properties)
+        {
+            CompositionGuard.ImmediateOrParentOfNodeIs(Visitor.CurrentNode, typeof(NamespaceDeclarationSyntax));
+
+            var template = new EmptyEnumTemplate() { Properties = properties };
+            var code = template.TransformText();
+            var cu = SyntaxFactory.ParseCompilationUnit(code).NormalizeWhitespace();
+            var newEnum = cu.DescendantNodes().OfType<EnumDeclarationSyntax>().First();
+
+            var referenceNode = TryGetReferenceAndPopToPivot();
+            var newEnclosingNode = AddMemberToCurrentNode(newEnum, referenceNode);
+            Visitor.ReplaceNodeAndAdjustState(Visitor.CurrentNode!, newEnclosingNode);
+
+            BaseNavigator.CreateTempNavigator<NamespaceNavigator>(Visitor)
+                .SelectEnumDeclaration(properties.EnumName);
+
+            return this;
+        }
+        public EnumComposer EnterEnum()
+        {
+            var @enum = Visitor.State.Peek().CurrentNode as EnumDeclarationSyntax;
+            if (@enum == null)
+            {
+                throw new InvalidActionForStateException("Entering enums only possible when positioned on an enum declaration syntax instance.");
+            }
+
+            return new EnumComposer(Visitor);
         }
 
         public NamespaceComposer Delete()

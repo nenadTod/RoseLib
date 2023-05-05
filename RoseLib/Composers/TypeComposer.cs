@@ -20,9 +20,9 @@ namespace RoseLib.Composers
         {
         }
 
-        public abstract TypeComposer AddMethod(MethodProperties options);
+        public abstract TypeComposer AddMethod(MethodProps options);
         protected abstract bool CanHaveBodylessMethod();
-        public virtual TypeComposer AddMethodToType<T>(MethodProperties options) where T : TypeDeclarationSyntax
+        public virtual TypeComposer AddMethodToType<T>(MethodProps options) where T : TypeDeclarationSyntax
         {
             CompositionGuard.ImmediateOrParentOfNodeIs(Visitor.CurrentNode, typeof(T));
 
@@ -30,7 +30,7 @@ namespace RoseLib.Composers
             var method = SyntaxFactory.MethodDeclaration(returnType, options.MethodName).WithModifiers(options.ModifiersToTokenList());
 
             var @params = SyntaxFactory.ParameterList();
-            foreach (var param in options.Parameters)
+            foreach (var param in options.Params)
             {
                 var type = SyntaxFactory.IdentifierName(param.Type);
                 var name = SyntaxFactory.Identifier(param.Name);
@@ -64,9 +64,9 @@ namespace RoseLib.Composers
             return this;
         }
 
-        public abstract TypeComposer AddProperty(PropertyProperties options);
+        public abstract TypeComposer AddProperty(PropertyProps options);
 
-        public virtual TypeComposer AddPropertyToType<T>(PropertyProperties options) where T: TypeDeclarationSyntax
+        public virtual TypeComposer AddPropertyToType<T>(PropertyProps options) where T: TypeDeclarationSyntax
         {
             CompositionGuard.ImmediateOrParentOfNodeIs(Visitor.CurrentNode, typeof(T));
 
@@ -127,6 +127,17 @@ namespace RoseLib.Composers
             }
 
             return new MethodComposer(Visitor);
+        }
+
+        public PropertyComposer EnterProperty()
+        {
+            var method = Visitor.State.Peek().CurrentNode as PropertyDeclarationSyntax;
+            if (method == null)
+            {
+                throw new InvalidActionForStateException("Entering properties only possible when positioned on a property declaration syntax instance.");
+            }
+
+            return new PropertyComposer(Visitor);
         }
         #endregion
     }

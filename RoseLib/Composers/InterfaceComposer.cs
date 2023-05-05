@@ -39,15 +39,15 @@ namespace RoseLib.Composers
             }
         }
 
-        public override InterfaceComposer AddProperty(PropertyProperties options)
+        public override InterfaceComposer AddProperty(PropertyProps options)
         {
             return (base.AddPropertyToType<InterfaceDeclarationSyntax>(options) as InterfaceComposer)!;
         }
-        public override InterfaceComposer AddMethod(MethodProperties options)
+        public override InterfaceComposer AddMethod(MethodProps options)
         {
             return (base.AddMethodToType<InterfaceDeclarationSyntax>(options) as InterfaceComposer)!;
         }
-        public override InterfaceComposer SetAttributes(List<AttributeProperties> modelAttributeList)
+        public override InterfaceComposer SetAttributes(List<AttributeProps> modelAttributeList)
         {
             base.SetAttributes(modelAttributeList);
 

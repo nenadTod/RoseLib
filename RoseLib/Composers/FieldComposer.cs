@@ -17,7 +17,6 @@ namespace RoseLib.Composers
 {
     public class FieldComposer : MemberComposer
     {
-        public static int p = 3; 
         public FieldComposer(IStatefulVisitor visitor, bool pivotOnParent = false) : base(visitor, pivotOnParent)
         {
         }
@@ -43,7 +42,7 @@ namespace RoseLib.Composers
         }
         #endregion
 
-        #region Property change methods
+        #region Field change methods
         public FieldComposer Rename(string newName)
         {
             CompositionGuard.ImmediateNodeIs(Visitor.CurrentNode, typeof(FieldDeclarationSyntax));
@@ -174,7 +173,7 @@ namespace RoseLib.Composers
             return this;
         }
 
-        public override FieldComposer SetAttributes(List<AttributeProperties> modelAttributeList)
+        public override FieldComposer SetAttributes(List<AttributeProps> modelAttributeList)
         {
             base.SetAttributes(modelAttributeList);
 
