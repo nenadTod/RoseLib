@@ -47,18 +47,18 @@ namespace RoseLib.Tests
                 })
                 .EnterClass()
                 .AddField(new Model.FieldProps { 
-                    AccessModifier = Enums.AccessModifierTypes.PRIVATE,
+                    AccessModifier = Enums.AccessModifiers.PRIVATE,
                     FieldType = "string",
                     FieldName = newFieldName
                 })
                 .AddProperty(new Model.PropertyProps
                 {
-                    AccessModifier = Enums.AccessModifierTypes.PUBLIC,
+                    AccessModifier = Enums.AccessModifiers.PUBLIC,
                     PropertyName = newPropertyName,
                     PropertyType= "string",
                 })
                 .AddMethod(new Model.MethodProps {
-                    AccessModifier= Enums.AccessModifierTypes.PUBLIC,
+                    AccessModifier= Enums.AccessModifiers.PUBLIC,
                     MethodName = newMethodName,
                     ReturnType = "string",
                 });
@@ -101,7 +101,7 @@ namespace RoseLib.Tests
                 .EnterNamespace()
                 .AddClass(new Model.ClassProps
                 {
-                    AccessModifier = Enums.AccessModifierTypes.PUBLIC,
+                    AccessModifier = Enums.AccessModifiers.PUBLIC,
                     ClassName = newClass,
                     BaseTypes = new List<string>() { baseType1, baseType2 },
                     Attributes = new List<Model.AttributeProps> {
@@ -197,7 +197,7 @@ namespace RoseLib.Tests
                 var code = navigator
                     .SelectClassDeclaration("Class1")
                     .StartComposing<ClassComposer>()
-                    .SetAccessModifier(Enums.AccessModifierTypes.PUBLIC)
+                    .SetAccessModifier(Enums.AccessModifiers.PUBLIC)
                     .GetCode();
 
                 Assert.IsTrue(testRegexC1.IsMatch(code));
@@ -270,7 +270,7 @@ namespace RoseLib.Tests
             Regex testRegexF = new Regex(newFieldName);
 
             var newFieldType = "string";
-            var newFieldAccessModifier = Enums.AccessModifierTypes.PRIVATE;
+            var newFieldAccessModifier = Enums.AccessModifiers.PRIVATE;
 
 
             using (StreamReader reader = new StreamReader(".\\TestFiles\\Class1.cs"))
@@ -304,7 +304,7 @@ namespace RoseLib.Tests
             Regex testRegexP = new Regex(newPropertyName);
 
             var newPropertyType = "string";
-            var newPropertyAccessModifier = Enums.AccessModifierTypes.PUBLIC;
+            var newPropertyAccessModifier = Enums.AccessModifiers.PUBLIC;
 
 
             using (StreamReader reader = new StreamReader(".\\TestFiles\\Class1.cs"))
@@ -336,7 +336,7 @@ namespace RoseLib.Tests
             Regex testRegexF = new Regex(newFieldName);
 
             var newFieldType = "string";
-            var newFieldAccessModifier = Enums.AccessModifierTypes.PRIVATE;
+            var newFieldAccessModifier = Enums.AccessModifiers.PRIVATE;
 
 
             using (StreamReader reader = new StreamReader(".\\TestFiles\\Class1.cs"))

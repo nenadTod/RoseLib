@@ -69,7 +69,7 @@ namespace RoseLib.Composers
             return new ClassComposer(Visitor);
         }
 
-        public NamespaceComposer AddInterface(InterfaceProperties properties)
+        public NamespaceComposer AddInterface(InterfaceProps properties)
         {
             CompositionGuard.ImmediateOrParentOfNodeIs(Visitor.CurrentNode, typeof(NamespaceDeclarationSyntax));
 

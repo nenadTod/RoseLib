@@ -65,7 +65,7 @@ namespace RoseLib.Composers
             return this;
         }
 
-        public PropertyComposer SetAccessModifier(AccessModifierTypes newType)
+        public PropertyComposer SetAccessModifier(AccessModifiers newType)
         {
             CompositionGuard.ImmediateNodeIs(Visitor.CurrentNode, typeof(PropertyDeclarationSyntax));
 
@@ -87,25 +87,25 @@ namespace RoseLib.Composers
 
             switch (newType)
             {
-                case AccessModifierTypes.NONE:
+                case AccessModifiers.NONE:
                     break;
-                case AccessModifierTypes.PUBLIC:
+                case AccessModifiers.PUBLIC:
                     modifiers = modifiers.Add(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
                     break;
-                case AccessModifierTypes.INTERNAL:
+                case AccessModifiers.INTERNAL:
                     modifiers = modifiers.Add(SyntaxFactory.Token(SyntaxKind.InternalKeyword));
                     break;
-                case AccessModifierTypes.PRIVATE:
+                case AccessModifiers.PRIVATE:
                     modifiers = modifiers.Add(SyntaxFactory.Token(SyntaxKind.PrivateKeyword));
                     break;
-                case AccessModifierTypes.PROTECTED:
+                case AccessModifiers.PROTECTED:
                     modifiers = modifiers.Add(SyntaxFactory.Token(SyntaxKind.ProtectedKeyword));
                     break;
-                case AccessModifierTypes.PRIVATE_PROTECTED:
+                case AccessModifiers.PRIVATE_PROTECTED:
                     modifiers = modifiers.Add(SyntaxFactory.Token(SyntaxKind.PrivateKeyword));
                     modifiers = modifiers.Add(SyntaxFactory.Token(SyntaxKind.ProtectedKeyword));
                     break;
-                case AccessModifierTypes.PROTECTED_INTERNAL:
+                case AccessModifiers.PROTECTED_INTERNAL:
                     modifiers = modifiers.Add(SyntaxFactory.Token(SyntaxKind.ProtectedKeyword));
                     modifiers = modifiers.Add(SyntaxFactory.Token(SyntaxKind.InternalKeyword));
                     break;

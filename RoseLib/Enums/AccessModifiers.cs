@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RoseLib.Enums
 {
-    public enum AccessModifierTypes
+    public enum AccessModifiers
     {   
         NONE,
         PRIVATE,
