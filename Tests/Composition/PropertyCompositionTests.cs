@@ -10,7 +10,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace RoseLib.Tests
+namespace Tests.Composition
 {
     public class PropertyCompositionTests
     {
@@ -36,10 +36,10 @@ namespace RoseLib.Tests
                 var code = navigator
                     .SelectPropertyDeclaration(oldPropertyName)
                     .StartComposing<PropertyComposer>()
-                    .SetAccessModifier(Enums.AccessModifiers.PROTECTED)
+                    .SetAccessModifier(RoseLib.Enums.AccessModifiers.PROTECTED)
                     .SetType(newPropertyType)
                     .Rename(newPropertyName)
-                    .SetAttributes(new List<Model.AttributeProps>() { new AttributeProps() { Name = newAttributeName } })
+                    .SetAttributes(new List<RoseLib.Model.AttributeProps>() { new AttributeProps() { Name = newAttributeName } })
                     .GetCode();
 
                 Assert.IsFalse(testRegexOPN.IsMatch(code));

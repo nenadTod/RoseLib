@@ -1,4 +1,6 @@
 ﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using RoseLib.CSPath.Model;
+using RoseLib.CSPath;
 using RoseLib.Guards;
 using RoseLib.Traversal.Navigators;
 using RoseLib.Traversal.Selectors.Interfaces;
@@ -15,6 +17,7 @@ namespace RoseLib.Traversal
 {
     public static class TypeSelectionExtensions
     {
+        [CSPathConfig(Concept = "Class")]
         public static CSRTypeNavigator SelectClassDeclaration<T>(this T visitor)
             where T : ITypeSelector
         {
@@ -29,14 +32,15 @@ namespace RoseLib.Traversal
             return visitor.ToCSRTypeNavigator();
         }
 
-        public static CSRTypeNavigator SelectClassDeclaration<T>(this T visitor, string className) where T: ITypeSelector
+        [CSPathConfig(Concept = "Class", Attribute = "name")]
+        public static CSRTypeNavigator SelectClassDeclaration<T>(this T visitor, string name) where T: ITypeSelector
         {
             NavigationGuard.CurrentNodeNotNull(visitor.CurrentNode);
             var @class = visitor
                 .CurrentNode
                 ?.DescendantNodes()
                 .OfType<ClassDeclarationSyntax>()
-                .Where(cl => cl.Identifier.ToString() == className)
+                .Where(cl => cl.Identifier.ToString() == name)
                 .GetClosestDepthwise()
                 ?.FirstOrDefault();
 
@@ -44,6 +48,7 @@ namespace RoseLib.Traversal
             return visitor.ToCSRTypeNavigator();
         }
 
+        [CSPathConfig(Concept = "Class", Attribute = "regex")]
         public static CSRTypeNavigator SelectClassDeclaration<T>(this T visitor, Regex regex) where T : ITypeSelector
         {
             NavigationGuard.CurrentNodeNotNull(visitor.CurrentNode);
@@ -59,14 +64,14 @@ namespace RoseLib.Traversal
             return visitor.ToCSRTypeNavigator();
         }
 
-
-        public static CSRTypeNavigator SelectStructDeclaration<T>(this T visitor, string structName) where T: ITypeSelector
+        [CSPathConfig(Concept = "Struct", Attribute = "name")]
+        public static CSRTypeNavigator SelectStructDeclaration<T>(this T visitor, string name) where T: ITypeSelector
         {
             var @struct = visitor
                 .CurrentNode
                 ?.DescendantNodes()
                 .OfType<StructDeclarationSyntax>()
-                .Where(st => st.Identifier.ToString() == structName)
+                .Where(st => st.Identifier.ToString() == name)
                 .GetClosestDepthwise()
                 ?.FirstOrDefault();
 
@@ -74,13 +79,14 @@ namespace RoseLib.Traversal
             return visitor.ToCSRTypeNavigator();
         }
 
-        public static CSRTypeNavigator SelectRecordDeclaration<T>(this T visitor, string recordName) where T : ITypeSelector
+        [CSPathConfig(Concept = "Record", Attribute = "name")]
+        public static CSRTypeNavigator SelectRecordDeclaration<T>(this T visitor, string name) where T : ITypeSelector
         {
             var record = visitor
                 .CurrentNode
                 ?.DescendantNodes()
                 .OfType<RecordDeclarationSyntax>()
-                .Where(re => re.Identifier.ToString() == recordName)
+                .Where(re => re.Identifier.ToString() == name)
                 .GetClosestDepthwise()
                 ?.FirstOrDefault();
 
@@ -88,13 +94,14 @@ namespace RoseLib.Traversal
             return visitor.ToCSRTypeNavigator();
         }
 
-        public static TypeNavigator SelectInterfaceDeclaration<T>(this T visitor, string interfaceName) where T : ITypeSelector
+        [CSPathConfig(Concept = "Interface", Attribute = "name")]
+        public static TypeNavigator SelectInterfaceDeclaration<T>(this T visitor, string name) where T : ITypeSelector
         {
             var @interface = visitor
                 .CurrentNode
                 ?.DescendantNodes()
                 .OfType<InterfaceDeclarationSyntax>()
-                .Where(ids => ids.Identifier.ToString() == interfaceName)
+                .Where(ids => ids.Identifier.ToString() == name)
                 .GetClosestDepthwise()
                 ?.FirstOrDefault();
 
@@ -102,13 +109,14 @@ namespace RoseLib.Traversal
             return visitor.ToTypeNavigator();
         }
 
-        public static EnumNavigator SelectEnumDeclaration<T>(this T visitor, string enumName) where T : ITypeSelector
+        [CSPathConfig(Concept = "Enum", Attribute = "name")]
+        public static EnumNavigator SelectEnumDeclaration<T>(this T visitor, string name) where T : ITypeSelector
         {
             var @enum = visitor
                 .CurrentNode
                 ?.DescendantNodes()
                 .OfType<EnumDeclarationSyntax>()
-                .Where(eds => eds.Identifier.ToString() == enumName)
+                .Where(eds => eds.Identifier.ToString() == name)
                 .GetClosestDepthwise()
                 ?.FirstOrDefault();
 

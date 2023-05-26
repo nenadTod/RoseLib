@@ -1,4 +1,5 @@
 ﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using RoseLib.CSPath;
 using RoseLib.Guards;
 using RoseLib.Traversal.Navigators;
 using RoseLib.Traversal.Selectors.Interfaces;
@@ -13,6 +14,7 @@ namespace RoseLib.Traversal
 {
     public static class NamespaceSelectionExtensions
     {
+        [CSPathConfig(Concept = "Namespace")]
         public static NamespaceNavigator SelectNamespace<T>(this T visitor) where T: INamespaceSelector
         {
             NavigationGuard.CurrentNodeNotNull(visitor.CurrentNode);
@@ -29,6 +31,7 @@ namespace RoseLib.Traversal
             return visitor.ToNamespaceNavigator();
         }
 
+        [CSPathConfig(Concept = "Namespace", Attribute="name")]
         public static NamespaceNavigator SelectNamespace<T>(this T visitor, string name) where T : INamespaceSelector
         {
             NavigationGuard.CurrentNodeNotNull(visitor.CurrentNode);
@@ -46,6 +49,7 @@ namespace RoseLib.Traversal
             return visitor.ToNamespaceNavigator();
         }
 
+        [CSPathConfig(Concept = "Namespace", Attribute = "regex")]
         public static NamespaceNavigator SelectNamespace<T>(this T visitor, Regex regex) where T : INamespaceSelector
         {
             NavigationGuard.CurrentNodeNotNull(visitor.CurrentNode);

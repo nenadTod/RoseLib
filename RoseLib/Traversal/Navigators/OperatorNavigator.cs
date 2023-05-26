@@ -8,7 +8,7 @@ namespace RoseLib.Traversal.Navigators
 {
     public class OperatorNavigator: BaseNavigator
     {
-        public OperatorNavigator(BaseNavigator? parent): base(parent)
+        internal OperatorNavigator(BaseNavigator? parent): base(parent)
         {
         }
     }

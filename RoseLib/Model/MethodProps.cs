@@ -13,5 +13,7 @@ namespace RoseLib.Model
         public string ReturnType { get; set; } = "";
         public List<ParamProps> Params { get; set; } = new List<ParamProps>();
         public bool BodylessMethod { get; set; } = false;
+        public List<Model.AttributeProps> Attributes { get; set; } = new List<Model.AttributeProps>();
+
     }
 }

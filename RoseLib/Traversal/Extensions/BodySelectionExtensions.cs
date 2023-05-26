@@ -19,14 +19,14 @@ namespace RoseLib.Traversal
         /// <summary>
         ///Finds variable declaration based on the variable's name if it exists within the specified root, and is made current.
         /// </summary>
-        /// <param name="variableName">Name of the variable</param>
+        /// <param name="name">Name of the variable</param>
         /// <returns>Statement navigator</returns>
-        public static StatementNavigator SelectVariableDeclaration<T>(this T navigator, string variableName) where T : IBodySelector
+        public static StatementNavigator SelectVariableDeclaration<T>(this T navigator, string name) where T : IBodySelector
         {
-            NavigationGuard.NameNotNull(variableName);
+            NavigationGuard.NameNotNull(name);
 
             var declarator = navigator.CurrentNode?.DescendantNodes().OfType<VariableDeclaratorSyntax>()
-                .Where(v => v.Identifier.ValueText == variableName).FirstOrDefault();
+                .Where(v => v.Identifier.ValueText == name).FirstOrDefault();
             
             navigator.NextStep(declarator);
 

@@ -6,9 +6,9 @@ using RoseLib.Traversal.Navigators;
 using System.Reflection.PortableExecutable;
 using System.Text.RegularExpressions;
 
-namespace RoseLib.Tests
+namespace Tests.Composition
 {
-    public class ClassCompositionTests 
+    public class ClassCompositionTests
     {
         [Test]
         public void ClassWithAFieldPropertyAndMethod()
@@ -42,23 +42,26 @@ namespace RoseLib.Tests
                 )
                 .AddNamespace(newNamespace)
                 .EnterNamespace()
-                .AddClass(new Model.ClassProps {  
+                .AddClass(new RoseLib.Model.ClassProps
+                {
                     ClassName = newClass
                 })
                 .EnterClass()
-                .AddField(new Model.FieldProps { 
-                    AccessModifier = Enums.AccessModifiers.PRIVATE,
+                .AddField(new RoseLib.Model.FieldProps
+                {
+                    AccessModifier = RoseLib.Enums.AccessModifiers.PRIVATE,
                     FieldType = "string",
                     FieldName = newFieldName
                 })
-                .AddProperty(new Model.PropertyProps
+                .AddProperty(new RoseLib.Model.PropertyProps
                 {
-                    AccessModifier = Enums.AccessModifiers.PUBLIC,
+                    AccessModifier = RoseLib.Enums.AccessModifiers.PUBLIC,
                     PropertyName = newPropertyName,
-                    PropertyType= "string",
+                    PropertyType = "string",
                 })
-                .AddMethod(new Model.MethodProps {
-                    AccessModifier= Enums.AccessModifiers.PUBLIC,
+                .AddMethod(new RoseLib.Model.MethodProps
+                {
+                    AccessModifier = RoseLib.Enums.AccessModifiers.PUBLIC,
                     MethodName = newMethodName,
                     ReturnType = "string",
                 });
@@ -99,23 +102,7 @@ namespace RoseLib.Tests
                 )
                 .AddNamespace(newNamespace)
                 .EnterNamespace()
-                .AddClass(new Model.ClassProps
-                {
-                    AccessModifier = Enums.AccessModifiers.PUBLIC,
-                    ClassName = newClass,
-                    BaseTypes = new List<string>() { baseType1, baseType2 },
-                    Attributes = new List<Model.AttributeProps> {
-                        new Model.AttributeProps(){ Name = attribute1},
-                        new Model.AttributeProps()
-                        {
-                            Name = attribute2,
-                            AttributeArgs = new List<string>
-                            {
-                                "user32.dll", "SetLastError=false", "ExactSpelling=false"
-                            }
-                        }
-                    }
-                });
+                .AddClass(new RoseLib.Model.ClassProps { AccessModifier = RoseLib.Enums.AccessModifiers.PUBLIC, ClassName = newClass, BaseTypes = new List<string>() { baseType1, baseType2 } });
 
             var code = composer.GetCode();
             Assert.IsTrue(testRegexNS.IsMatch(code));
@@ -197,7 +184,7 @@ namespace RoseLib.Tests
                 var code = navigator
                     .SelectClassDeclaration("Class1")
                     .StartComposing<ClassComposer>()
-                    .SetAccessModifier(Enums.AccessModifiers.PUBLIC)
+                    .SetAccessModifier(RoseLib.Enums.AccessModifiers.PUBLIC)
                     .GetCode();
 
                 Assert.IsTrue(testRegexC1.IsMatch(code));
@@ -270,7 +257,7 @@ namespace RoseLib.Tests
             Regex testRegexF = new Regex(newFieldName);
 
             var newFieldType = "string";
-            var newFieldAccessModifier = Enums.AccessModifiers.PRIVATE;
+            var newFieldAccessModifier = RoseLib.Enums.AccessModifiers.PRIVATE;
 
 
             using (StreamReader reader = new StreamReader(".\\TestFiles\\Class1.cs"))
@@ -280,7 +267,7 @@ namespace RoseLib.Tests
                 var code = navigator
                     .SelectFieldDeclaration(referenceFieldName)
                     .StartComposing<ClassComposer>()
-                    .AddField(new Model.FieldProps()
+                    .AddField(new RoseLib.Model.FieldProps()
                     {
                         FieldName = newFieldName,
                         FieldType = newFieldType,
@@ -304,7 +291,7 @@ namespace RoseLib.Tests
             Regex testRegexP = new Regex(newPropertyName);
 
             var newPropertyType = "string";
-            var newPropertyAccessModifier = Enums.AccessModifiers.PUBLIC;
+            var newPropertyAccessModifier = RoseLib.Enums.AccessModifiers.PUBLIC;
 
 
             using (StreamReader reader = new StreamReader(".\\TestFiles\\Class1.cs"))
@@ -314,7 +301,7 @@ namespace RoseLib.Tests
                 var code = navigator
                     .SelectFieldDeclaration(referenceFieldName)
                     .StartComposing<ClassComposer>()
-                    .AddProperty(new Model.PropertyProps()
+                    .AddProperty(new RoseLib.Model.PropertyProps()
                     {
                         PropertyName = newPropertyName,
                         PropertyType = newPropertyType,
@@ -336,13 +323,13 @@ namespace RoseLib.Tests
             Regex testRegexF = new Regex(newFieldName);
 
             var newFieldType = "string";
-            var newFieldAccessModifier = Enums.AccessModifiers.PRIVATE;
+            var newFieldAccessModifier = RoseLib.Enums.AccessModifiers.PRIVATE;
 
 
             using (StreamReader reader = new StreamReader(".\\TestFiles\\Class1.cs"))
             {
                 CompilationUnitNavigator navigator = new CompilationUnitNavigator(reader);
-                
+
                 var code = navigator
                     .SelectFieldDeclaration("field1")
                     .StartComposing<FieldComposer>()
@@ -399,11 +386,11 @@ namespace RoseLib.Tests
                     .SelectClassDeclaration("Class1")
                     .StartComposing<ClassComposer>()
                     .SetAttributes(
-                        new List<Model.AttributeProps>() 
-                        { 
-                            new Model.AttributeProps { Name = attribute1Name },
-                            new Model.AttributeProps 
-                            { 
+                        new List<RoseLib.Model.AttributeProps>()
+                        {
+                            new RoseLib.Model.AttributeProps { Name = attribute1Name },
+                            new RoseLib.Model.AttributeProps
+                            {
                                 Name = attribute2Name,
                                 AttributeArgs = new List<string>
                                 {

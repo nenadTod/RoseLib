@@ -8,21 +8,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RoseLib.Guards;
+using RoseLib.CSPath.Model;
+using RoseLib.CSPath;
 
 namespace RoseLib.Traversal
 {
     public static class TypeMemberSelectionExensions
     {
         #region Property selection
-        public static PropertyNavigator SelectPropertyDeclaration<T>(this T visitor, string propertyName) where T : ITypeMemberSelector
+
+        [CSPathConfig(Concept = "Property", Attribute = "name")]
+        public static PropertyNavigator SelectPropertyDeclaration<T>(this T visitor, string name) where T : ITypeMemberSelector
         {
             NavigationGuard.CurrentNodeNotNull(visitor.CurrentNode);
-            NavigationGuard.NameNotNull(propertyName);
+            NavigationGuard.NameNotNull(name);
 
             var result = visitor.CurrentNode?
                 .DescendantNodes()
                 .OfType<PropertyDeclarationSyntax>()
-                .Where(p => p.Identifier.ValueText == propertyName)
+                .Where(p => p.Identifier.ValueText == name)
                 .GetClosestDepthwise()
                 ?.FirstOrDefault();
 
@@ -64,15 +68,16 @@ namespace RoseLib.Traversal
             return visitor.ToMethodNavigator();
         }
 
-        public static MethodNavigator SelectMethodDeclaration<T>(this T visitor, string methodName) where T : ITypeMemberSelector
+        [CSPathConfig(Concept = "Method", Attribute = "name")]
+        public static MethodNavigator SelectMethodDeclaration<T>(this T visitor, string name) where T : ITypeMemberSelector
         {
             NavigationGuard.CurrentNodeNotNull(visitor.CurrentNode);
-            NavigationGuard.NameNotNull(methodName);
+            NavigationGuard.NameNotNull(name);
 
             var methodDeclaration = visitor.CurrentNode?
                 .DescendantNodes()
                 .OfType<MethodDeclarationSyntax>()
-                .Where(p => p.Identifier.ValueText == methodName)
+                .Where(p => p.Identifier.ValueText == name)
                 .GetClosestDepthwise()
                 ?.FirstOrDefault();
 

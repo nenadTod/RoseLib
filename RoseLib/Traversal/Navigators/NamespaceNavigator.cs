@@ -1,4 +1,5 @@
-﻿using RoseLib.Traversal.Selectors.Interfaces;
+﻿using RoseLib.CSPath.Engine;
+using RoseLib.Traversal.Selectors.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;

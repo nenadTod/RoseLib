@@ -6,11 +6,11 @@ using RoseLib.Traversal.Navigators;
 using System.Reflection.PortableExecutable;
 using System.Text.RegularExpressions;
 
-namespace RoseLib.Tests
+namespace Tests.Composition
 {
     public class CompilationUnitCompositionTests
     {
-        
+
 
         [Test]
         public void AddNamespace()
@@ -40,7 +40,7 @@ namespace RoseLib.Tests
                     .StartComposing()
                     .AddUsingDirectives(newUsing)
                     .GetCode();
-                
+
                 Assert.IsTrue(testRegex.IsMatch(code));
             }
         }

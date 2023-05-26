@@ -1,19 +1,31 @@
 CSPath:
-  path+=PathElements
+  path+=PathPart
 ;
 
-PathElements:
-  RelativeDescend | Descend | Element
-;
-
-RelativeDescend:
-  tokens= /(\/\/)/
+PathPart:
+  descend=Descend concept=Concept
 ;
 
 Descend:
   tokens= /(\/)/
 ;
 
-Element:
-  name= /[^\/]*/
+Concept:
+  name= /[^\/\[\]\=]*/ predicate=Predicate?
+; 
+
+Predicate:
+  open= /[\[]/ predicateExpression=PredicateExpression close= /[\]]/ 
+;
+
+PredicateExpression:
+  AttributePredicate
+;
+
+AttributePredicate:
+  attribute=/[a-zA-Z]+/ equals= '=' value=Value
+;
+
+Value:
+	STRING
 ;

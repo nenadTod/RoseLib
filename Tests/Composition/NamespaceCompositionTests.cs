@@ -6,7 +6,7 @@ using RoseLib.Traversal.Navigators;
 using System.Reflection.PortableExecutable;
 using System.Text.RegularExpressions;
 
-namespace RoseLib.Tests
+namespace Tests.Composition
 {
     public class NamespaceCompositionTests
     {
@@ -34,7 +34,7 @@ namespace RoseLib.Tests
                 )
                 .AddNamespace(newNamespace)
                 .EnterNamespace()
-                .AddClass(new Model.ClassProps { ClassName = newClass });
+                .AddClass(new RoseLib.Model.ClassProps { ClassName = newClass });
 
             var code = composer.GetCode();
             Assert.IsTrue(testRegexNS.IsMatch(code));
@@ -74,8 +74,8 @@ namespace RoseLib.Tests
                 )
                 .AddNamespace(newNamespace)
                 .EnterNamespace()
-                .AddClass(new Model.ClassProps { ClassName = newClass1 })
-                .AddClass(new Model.ClassProps { ClassName = newClass2 });
+                .AddClass(new RoseLib.Model.ClassProps { ClassName = newClass1 })
+                .AddClass(new RoseLib.Model.ClassProps { ClassName = newClass2 });
 
             var code = composer.GetCode();
             Assert.IsTrue(testRegexNS.IsMatch(code));

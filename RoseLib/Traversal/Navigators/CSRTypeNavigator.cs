@@ -1,4 +1,5 @@
 ﻿using RoseLib.Composers;
+using RoseLib.CSPath.Engine;
 using RoseLib.Traversal.Selectors.Interfaces;
 using System;
 using System.Collections.Generic;

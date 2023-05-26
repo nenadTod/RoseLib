@@ -7,9 +7,11 @@ using System.Text;
 using System.Threading.Tasks;
 using RoseLib.Composers;
 using RoseLib.Traversal.Selectors.Interfaces;
+using RoseLib.CSPath.Engine;
 
 namespace RoseLib.Traversal.Navigators
 {
+
     public class CompilationUnitNavigator : BaseNavigator, INamespaceSelector, ITypeSelector, ITypeMemberSelector, ICSRTypeMemberSelector
     {
         public CompilationUnitNavigator() : base()

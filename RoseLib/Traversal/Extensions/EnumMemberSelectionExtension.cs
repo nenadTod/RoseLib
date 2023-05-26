@@ -1,4 +1,6 @@
 ﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using RoseLib.CSPath.Model;
+using RoseLib.CSPath;
 using RoseLib.Guards;
 using RoseLib.Traversal.Navigators;
 using RoseLib.Traversal.Selectors.Interfaces;
@@ -12,17 +14,19 @@ namespace RoseLib.Traversal
 {
     public static class EnumMemberSelectionExtension
     {
-        public static BaseNavigator SelectEnumMemberDeclaration<T>(this T navigator, string enumDeclarationName) where T : IEnumMemberSelector
+
+        [CSPathConfig(Concept = "EnumMember", Attribute = "name")]
+        public static BaseNavigator SelectEnumMemberDeclaration<T>(this T navigator, string name) where T : IEnumMemberSelector
         {
             NavigationGuard.CurrentNodeNotNull(navigator.CurrentNode);
-            NavigationGuard.NameNotNull(enumDeclarationName);
+            NavigationGuard.NameNotNull(name);
 
             EnumMemberDeclarationSyntax? foundDeclaration = navigator.CurrentNode?
                 .DescendantNodes()
                 .OfType<EnumMemberDeclarationSyntax>()
                 .Where(emd => 
                 {
-                    return emd.Identifier.Text.Equals(enumDeclarationName);
+                    return emd.Identifier.Text.Equals(name);
                 })
                 .GetClosestDepthwise()
                 ?.FirstOrDefault();

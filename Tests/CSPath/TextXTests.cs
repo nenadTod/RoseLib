@@ -13,7 +13,7 @@ using System.Xml.Linq;
 using Assert = NUnit.Framework.Assert;
 using RoseLib.CSPath;
 
-namespace RoseLib.Tests
+namespace Tests.CSPath
 {
     public class TextXTests
     {
@@ -70,11 +70,21 @@ model = hello_meta.model_from_str(sentence)
         [Test]
         public void TestRoseLibCSPathIntegration()
         {
-            var scope = CSPathInterpretation.GetScopeForCSPath("//Namespace/Class/Field");
+            var output = CSPathParser.GetRawModelForCSPath("/Namespace/Class/Field");
 
-            Assert.NotNull(scope);
-            Assert.NotNull(scope.model);
-            Assert.AreEqual(6, scope.path_elements_count);
+            Assert.NotNull(output.rawModel);
+            Assert.That(output.rawModelSize, NUnit.Framework.Is.EqualTo(3));
+        }
+
+        [Test]
+        public void TestCSPathModelExtraction()
+        {
+            // For now, only strings are fully supported
+            // There is no need for other types at the moment
+            var model = CSPathParser.GetModelForCSPath("/Namespace[name='test']/Class/Field");
+
+            Assert.NotNull(model);
+            Assert.That(model.Count, NUnit.Framework.Is.EqualTo(3));
         }
     }
 }

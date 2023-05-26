@@ -6,7 +6,7 @@ using RoseLib.Traversal.Navigators;
 using System.Reflection.PortableExecutable;
 using System.Text.RegularExpressions;
 
-namespace RoseLib.Tests
+namespace Tests.Composition
 {
     public class InterfaceCompositionTests
     {
@@ -33,7 +33,7 @@ namespace RoseLib.Tests
                 )
                 .AddNamespace(newNamespace)
                 .EnterNamespace()
-                .AddInterface(new Model.InterfaceProps
+                .AddInterface(new RoseLib.Model.InterfaceProps
                 {
                     InterfaceName = newInterface
                 });
@@ -68,13 +68,13 @@ namespace RoseLib.Tests
                 )
                 .AddNamespace(newNamespace)
                 .EnterNamespace()
-                .AddInterface(new Model.InterfaceProps
+                .AddInterface(new RoseLib.Model.InterfaceProps
                 {
-                    AccessModifier = Enums.AccessModifiers.PUBLIC,
+                    AccessModifier = RoseLib.Enums.AccessModifiers.PUBLIC,
                     InterfaceName = newInterface,
                     BaseTypes = new List<string>() { baseType1 },
-                    Attributes = new List<Model.AttributeProps> {
-                        new Model.AttributeProps(){ Name = attribute1},
+                    Attributes = new List<RoseLib.Model.AttributeProps> {
+                        new RoseLib.Model.AttributeProps(){ Name = attribute1},
                     }
                 });
 
@@ -115,20 +115,20 @@ namespace RoseLib.Tests
                 )
                 .AddNamespace(newNamespace)
                 .EnterNamespace()
-                .AddInterface(new Model.InterfaceProps
+                .AddInterface(new RoseLib.Model.InterfaceProps
                 {
                     InterfaceName = newInterface,
                 })
                 .EnterInterface()
-                .AddProperty(new Model.PropertyProps
+                .AddProperty(new RoseLib.Model.PropertyProps
                 {
-                    AccessModifier = Enums.AccessModifiers.PUBLIC,
+                    AccessModifier = RoseLib.Enums.AccessModifiers.PUBLIC,
                     PropertyName = newPropertyName,
                     PropertyType = "string",
                 })
-                .AddMethod(new Model.MethodProps
+                .AddMethod(new RoseLib.Model.MethodProps
                 {
-                    AccessModifier = Enums.AccessModifiers.PUBLIC,
+                    AccessModifier = RoseLib.Enums.AccessModifiers.PUBLIC,
                     MethodName = newMethodName,
                     ReturnType = "string",
                 });
@@ -159,14 +159,14 @@ namespace RoseLib.Tests
             composer
                 .AddNamespace(newNamespace)
                 .EnterNamespace()
-                .AddInterface(new Model.InterfaceProps
+                .AddInterface(new RoseLib.Model.InterfaceProps
                 {
                     InterfaceName = newInterface,
                 })
                 .EnterInterface()
-                .AddMethod(new Model.MethodProps
+                .AddMethod(new RoseLib.Model.MethodProps
                 {
-                    AccessModifier = Enums.AccessModifiers.PUBLIC,
+                    AccessModifier = RoseLib.Enums.AccessModifiers.PUBLIC,
                     MethodName = newMethodName,
                     ReturnType = "string",
                     BodylessMethod = true
@@ -200,10 +200,10 @@ namespace RoseLib.Tests
                     .SelectInterfaceDeclaration("Interface1")
                     .StartComposing<InterfaceComposer>()
                     .SetAttributes(
-                        new List<Model.AttributeProps>()
+                        new List<RoseLib.Model.AttributeProps>()
                         {
-                            new Model.AttributeProps { Name = attribute1Name },
-                            new Model.AttributeProps
+                            new RoseLib.Model.AttributeProps { Name = attribute1Name },
+                            new RoseLib.Model.AttributeProps
                             {
                                 Name = attribute2Name,
                                 AttributeArgs = new List<string>

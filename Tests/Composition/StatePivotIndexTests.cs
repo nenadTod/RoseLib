@@ -6,7 +6,7 @@ using RoseLib.Traversal.Navigators;
 using System.Reflection.PortableExecutable;
 using System.Text.RegularExpressions;
 
-namespace RoseLib.Tests
+namespace Tests.Composition
 {
     public class StatePivotIndexTests
     {

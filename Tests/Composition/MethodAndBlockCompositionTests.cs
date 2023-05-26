@@ -10,7 +10,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace RoseLib.Tests
+namespace Tests.Composition
 {
     public class MethodAndBlockCompositionTests
     {
@@ -33,9 +33,9 @@ namespace RoseLib.Tests
                 var code = navigator
                     .SelectClassDeclaration("Class1")
                     .StartComposing<ClassComposer>()
-                    .AddMethod(new RoseLib.Model.MethodProps() { MethodName = newMethodName, ReturnType = newMethodType })
+                    .AddMethod(new MethodProps() { MethodName = newMethodName, ReturnType = newMethodType })
                     .EnterMethod()
-                    .SetAttributes(new List<Model.AttributeProps>() { new AttributeProps() { Name = "TestAtt" } })
+                    .SetAttributes(new List<RoseLib.Model.AttributeProps>() { new AttributeProps() { Name = "TestAtt" } })
                     .EnterBody()
                     .InsertStatements(newStatement)
                     .GetCode();
@@ -63,15 +63,15 @@ namespace RoseLib.Tests
                     navigator
                         .SelectClassDeclaration("Class1")
                         .StartComposing<ClassComposer>()
-                        .AddMethod(new RoseLib.Model.MethodProps() { MethodName = newMethodName, ReturnType = newMethodType })
+                        .AddMethod(new MethodProps() { MethodName = newMethodName, ReturnType = newMethodType })
                         .EnterMethod()
-                        .SetAttributes(new List<Model.AttributeProps>() { new AttributeProps() { Name = "TestAtt" } })
+                        .SetAttributes(new List<RoseLib.Model.AttributeProps>() { new AttributeProps() { Name = "TestAtt" } })
                         .EnterBody()
                         .InsertStatements(newStatement);
 
                     Assert.Fail("Syntax error not caught!");
                 }
-                catch(CodeHasErrorsException)
+                catch (CodeHasErrorsException)
                 {
                     Assert.Pass("Syntax error caught!");
                 }

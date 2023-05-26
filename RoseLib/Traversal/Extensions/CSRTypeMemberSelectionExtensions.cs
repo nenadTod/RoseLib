@@ -1,5 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using RoseLib.CSPath.Model;
+using RoseLib.CSPath;
 using RoseLib.Guards;
 using RoseLib.Traversal.Navigators;
 using RoseLib.Traversal.Selectors.Interfaces;
@@ -17,11 +19,12 @@ namespace RoseLib.Traversal
     public static class CSRTypeMemberSelectionExtensions
     {
         #region Field selection
-        
-        public static FieldNavigator SelectFieldDeclaration<T>(this T navigator, string fieldName) where T: ICSRTypeMemberSelector
+
+        [CSPathConfig(Concept = "Field", Attribute = "name")]
+        public static FieldNavigator SelectFieldDeclaration<T>(this T navigator, string name) where T: ICSRTypeMemberSelector
         {
             NavigationGuard.CurrentNodeNotNull(navigator.CurrentNode);
-            NavigationGuard.NameNotNull(fieldName);
+            NavigationGuard.NameNotNull(name);
 
             FieldDeclarationSyntax? foundDeclaration = navigator.CurrentNode?
                 .DescendantNodes()
@@ -29,7 +32,7 @@ namespace RoseLib.Traversal
                 .Where(
                     fd => fd.DescendantNodes()
                             .OfType<VariableDeclaratorSyntax>()
-                            .Where(vd => vd.Identifier.ValueText == fieldName)
+                            .Where(vd => vd.Identifier.ValueText == name)
                             .Any()
                 )
                 .GetClosestDepthwise()

@@ -5,11 +5,11 @@ using RoseLib.Traversal;
 using RoseLib.Traversal.Navigators;
 using System.Text.RegularExpressions;
 
-namespace RoseLib.Tests
+namespace Tests.Navigation
 {
     public class NamespaceAndTypeNavigationTests
     {
-    [SetUp]
+        [SetUp]
         public void Setup()
         {
         }
@@ -36,7 +36,7 @@ namespace RoseLib.Tests
             {
                 CompilationUnitNavigator navigator = new CompilationUnitNavigator(reader);
                 navigator.SelectLastFieldDeclaration();
-                
+
                 var selection = navigator.State.Peek();
                 var fieldDeclaration = selection.CurrentNode as FieldDeclarationSyntax;
                 var variableDeclaratorWithName = fieldDeclaration?.DescendantNodes()
