@@ -23,14 +23,15 @@ namespace RoseLib.CSPath.Engine
         private void Init()
         {
             firstHanlder = new CompilationUnitHandler();
+            firstHanlder.NextHandler = new NamespaceHandler();
         }
         
-        public SyntaxNode Evaluate(StreamReader reader, string path) 
+        public BaseNavigator Evaluate(StreamReader reader, string path) 
         {
             var csPathModel = CSPathParser.GetModelForCSPath(path);
             
             var cuNavigator = new CompilationUnitNavigator(reader);
-            if (csPathModel.Count == 0) { return cuNavigator.AsVisitor.CurrentNode!; }
+            if (csPathModel.Count == 0) { return cuNavigator; }
 
             Context context = new Context(cuNavigator, csPathModel[0]);
             int processedPathParts = 0;
@@ -42,7 +43,7 @@ namespace RoseLib.CSPath.Engine
                 processedPathParts++;
             } while (processedPathParts < csPathModel.Count);
 
-            return context.Visitor.CurrentNode!;
+            return (context.Visitor as BaseNavigator)!;
         }
     }
 }

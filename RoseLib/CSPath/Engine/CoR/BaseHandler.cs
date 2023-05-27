@@ -1,5 +1,7 @@
-﻿using RoseLib.CSPath.Model;
+﻿using RoseLib.CSPath.Exceptions;
+using RoseLib.CSPath.Model;
 using RoseLib.Traversal;
+using RoseLib.Traversal.Navigators;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +19,20 @@ namespace RoseLib.CSPath.Engine.CoR
 
         internal BaseHandler? NextHandler { get; set; }
         internal abstract void HandleDescent(Context context);
+        protected void HandleDescendForNavigator<T>(Context context) where T : BaseNavigator
+        {
+            if (context == null) { throw new ArgumentNullException("context"); }
+
+            if (!(context.Visitor is T))
+            {
+                if (NextHandler != null) { NextHandler.HandleDescent(context); }
+                else { throw new PathNotSupportedExeption(context.PathPart); }
+            }
+            else
+            {
+                Descend(context.Visitor, typeof(T), context);
+            }
+        }
         protected virtual void Descend(object visitor, Type visitorType, Context context)
         {
 

@@ -123,5 +123,22 @@ namespace RoseLib.Traversal.Navigators
             throw new InvalidActionForStateException("The provided composer type cannot process the state.");
         }
 
+        public string GetCSPath()
+        {
+            var stateAsList = State.ToList();
+            stateAsList.Reverse();
+            var pathParts = stateAsList
+                .Where(so => so.PathPart != null)
+                .Select(so => so.PathPart);
+
+            var returnValue = "";
+            foreach ( var pathPart in pathParts )
+            {
+                returnValue += pathPart.ToString();
+            }
+
+            return returnValue;
+        }
+
     }
 }

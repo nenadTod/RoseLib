@@ -1,11 +1,15 @@
 ﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoseLib.CSPath;
 using RoseLib.Guards;
+using RoseLib.Model;
+using RoseLib.Traversal.Extensions;
 using RoseLib.Traversal.Navigators;
 using RoseLib.Traversal.Selectors.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -14,6 +18,7 @@ namespace RoseLib.Traversal
 {
     public static class NamespaceSelectionExtensions
     {
+        [MethodImpl(MethodImplOptions.NoInlining)]
         [CSPathConfig(Concept = "Namespace")]
         public static NamespaceNavigator SelectNamespace<T>(this T visitor) where T: INamespaceSelector
         {
@@ -25,7 +30,11 @@ namespace RoseLib.Traversal
 
             if (@namespace != null)
             {
-                visitor.NextStep(@namespace);
+                visitor.NextStep(new SelectedObject(
+                    @namespace,
+                    ExtensionsHelper.GetPathPartForMethod(MethodBase.GetCurrentMethod()!)
+                    )
+                );
             }
 
             return visitor.ToNamespaceNavigator();

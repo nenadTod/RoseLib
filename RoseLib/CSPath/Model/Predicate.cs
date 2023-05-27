@@ -20,7 +20,7 @@ namespace RoseLib.CSPath.Model
 
         public override string ToString()
         {
-            return $"[{Attribute}={Value ?? "?"}]";
+            return $"[{Attribute}={(Value != null ? "'" + Value + "'" : "?")}]";
         }
 
         // Only Attribute name is significant here

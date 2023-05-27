@@ -9,14 +9,14 @@ using System.Threading.Tasks;
 
 namespace RoseLib.CSPath.Engine.CoR
 {
-    internal class CompilationUnitHandler : BaseHandler
+    internal class NamespaceHandler : BaseHandler
     {
-        internal CompilationUnitHandler() { 
-            InitializeForType(typeof(CompilationUnitNavigator)); 
+        internal NamespaceHandler() { 
+            InitializeForType(typeof(NamespaceNavigator)); 
         }
         internal override void HandleDescent(Context context)
         {
-            HandleDescendForNavigator<CompilationUnitNavigator>(context);
+            HandleDescendForNavigator<NamespaceNavigator>(context);
         }
     }
 }

@@ -14,6 +14,7 @@ using Assert = NUnit.Framework.Assert;
 using RoseLib.CSPath;
 using RoseLib.CSPath.Engine;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using RoseLib.Traversal.Navigators;
 
 namespace Tests.CSPath
 {
@@ -28,16 +29,46 @@ namespace Tests.CSPath
         }
 
         [Test]
-        public void TestEngineRun()
+        public void TestEngineFindNamespace()
+        {
+            var cSPath = "/Namespace";
+            using (StreamReader reader = new StreamReader(".\\TestFiles\\Class1.cs"))
+            {
+                CPathEngine cSPathEngine = new CPathEngine();
+                var navigator = cSPathEngine.Evaluate(reader, cSPath);
+
+
+                Assert.True(navigator != null);
+                Assert.True(navigator is NamespaceNavigator);
+                Assert.True(navigator!.GetCSPath().Equals(cSPath));
+            }
+        }
+
+        [Test]
+        public void TestEngineFindNamespaceWithName()
         {
             using (StreamReader reader = new StreamReader(".\\TestFiles\\Class1.cs"))
             {
                 CPathEngine cSPathEngine = new CPathEngine();
-                var selectedSyntaxNode = cSPathEngine.Evaluate(reader, "/Namespace");
+                var navigator = cSPathEngine.Evaluate(reader, "/Namespace[name='Tests.TestFiles']");
 
 
-                Assert.True(selectedSyntaxNode != null);
-                Assert.True(selectedSyntaxNode is NamespaceDeclarationSyntax);
+                Assert.True(navigator != null);
+                Assert.True(navigator is NamespaceNavigator);
+            }
+        }
+
+        [Test]
+        public void TestEngineFindClassInNamespace()
+        {
+            using (StreamReader reader = new StreamReader(".\\TestFiles\\Class1.cs"))
+            {
+                CPathEngine cSPathEngine = new CPathEngine();
+                var navigator = cSPathEngine.Evaluate(reader, "/Namespace/Class");
+
+
+                Assert.True(navigator != null);
+                Assert.True(navigator is CSRTypeNavigator);
             }
         }
     }
