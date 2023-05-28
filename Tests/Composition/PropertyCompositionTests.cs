@@ -1,4 +1,5 @@
-﻿using RoseLib.Composers;
+﻿using Microsoft.CodeAnalysis.CSharp;
+using RoseLib.Composers;
 using RoseLib.Exceptions;
 using RoseLib.Model;
 using RoseLib.Traversal;
@@ -46,6 +47,13 @@ namespace Tests.Composition
                 Assert.IsTrue(testRegexPN.IsMatch(code));
                 Assert.IsTrue(testRegexModifiers.IsMatch(code));
                 Assert.IsTrue(testRegexAttribute.IsMatch(code));
+
+                var newCodeNavigator = new CompilationUnitNavigator(SyntaxFactory.ParseCompilationUnit(code));
+                var propertyHash = newCodeNavigator
+                    .SelectPropertyDeclaration(newPropertyName)
+                    .GetSubtreeHashCode();
+                Assert.IsNotEmpty(propertyHash);
+
             }
         }
     }

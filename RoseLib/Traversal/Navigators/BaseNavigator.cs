@@ -10,6 +10,7 @@ using RoseLib.Composers;
 using RoseLib.Traversal.Selectors.Interfaces;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoseLib.Exceptions;
+using System.Security.Cryptography;
 
 namespace RoseLib.Traversal.Navigators
 {
@@ -132,13 +133,29 @@ namespace RoseLib.Traversal.Navigators
                 .Select(so => so.PathPart);
 
             var returnValue = "";
-            foreach ( var pathPart in pathParts )
+            foreach (var pathPart in pathParts)
             {
-                returnValue += pathPart.ToString();
+                returnValue += pathPart!.ToString();
             }
 
             return returnValue;
         }
 
+        public string GetSubtreeHashCode()
+        {
+            var syntaxNode = AsVisitor.CurrentNode;
+
+            if(syntaxNode == null)
+            {
+                throw new Exception("Cannot calculate subtree hash code, current node is null");
+            }
+
+            var subtreeCode = syntaxNode.ToFullString();
+            var cu = SyntaxFactory.ParseCompilationUnit(subtreeCode);
+            var normalizedCodeWithoutComments = new CommentsRemover().Visit(cu).NormalizeWhitespace().ToFullString();
+
+            var sha1 = SHA1.Create();
+            return Convert.ToHexString(sha1.ComputeHash(Encoding.UTF8.GetBytes(normalizedCodeWithoutComments)));
+        }
     }
 }

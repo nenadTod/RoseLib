@@ -8,6 +8,7 @@ using RoseLib.Traversal.Navigators;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -293,6 +294,23 @@ namespace RoseLib.Composers
             return compilationUnit
                 .NormalizeWhitespace()
                 .ToFullString();
+        }
+
+        public string GetSubtreeHashCode()
+        {
+            var syntaxNode = Visitor.CurrentNode;
+
+            if (syntaxNode == null)
+            {
+                throw new Exception("Cannot calculate subtree hash code, current node is null");
+            }
+
+            var subtreeCode = syntaxNode.ToFullString();
+            var cu = SyntaxFactory.ParseCompilationUnit(subtreeCode);
+            var normalizedCodeWithoutComments = new CommentsRemover().Visit(cu).NormalizeWhitespace().ToFullString();
+
+            var sha1 = SHA1.Create();
+            return Convert.ToHexString(sha1.ComputeHash(Encoding.UTF8.GetBytes(normalizedCodeWithoutComments)));
         }
     }
 }

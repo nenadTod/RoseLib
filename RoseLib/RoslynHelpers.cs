@@ -1,4 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections;
@@ -46,6 +47,20 @@ namespace RoseLib
             return nodesWithDepth
                 .Where(tuple => tuple.Item2 == minDepth)
                 .Select(tuple => tuple.Item1);
+        }     
+    }
+    internal class CommentsRemover : CSharpSyntaxRewriter
+    {
+        public override SyntaxTrivia VisitTrivia(SyntaxTrivia trivia)
+        {
+            switch (trivia.Kind())
+            {
+                case SyntaxKind.SingleLineCommentTrivia:
+                case SyntaxKind.MultiLineCommentTrivia:
+                    return default; // new SyntaxTrivia()  // if C# <= 7.0
+                default:
+                    return trivia;
+            }
         }
     }
 }
