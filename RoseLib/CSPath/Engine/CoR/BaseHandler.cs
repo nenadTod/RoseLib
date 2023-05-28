@@ -39,6 +39,8 @@ namespace RoseLib.CSPath.Engine.CoR
             var concept = context.PathPart.Concept;
 
             var methodInfo = conceptHandlingMethods[concept];
+            if(methodInfo == null) { throw new PathNotSupportedExeption(context.PathPart); }
+
             var specializedMethodInfo = methodInfo.MakeGenericMethod(visitorType);
 
 

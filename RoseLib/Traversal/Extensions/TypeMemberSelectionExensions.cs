@@ -10,6 +10,10 @@ using System.Threading.Tasks;
 using RoseLib.Guards;
 using RoseLib.CSPath.Model;
 using RoseLib.CSPath;
+using System.Runtime.CompilerServices;
+using RoseLib.Model;
+using RoseLib.Traversal.Extensions;
+using System.Reflection;
 
 namespace RoseLib.Traversal
 {
@@ -17,6 +21,7 @@ namespace RoseLib.Traversal
     {
         #region Property selection
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
         [CSPathConfig(Concept = "Property", Attribute = "name")]
         public static PropertyNavigator SelectPropertyDeclaration<T>(this T visitor, string name) where T : ITypeMemberSelector
         {
@@ -30,7 +35,11 @@ namespace RoseLib.Traversal
                 .GetClosestDepthwise()
                 ?.FirstOrDefault();
 
-            visitor.NextStep(result);
+            visitor.NextStep(new SelectedObject(
+                result,
+                ExtensionsHelper.GetPathPartForMethodAndValue(MethodBase.GetCurrentMethod()!, name)
+                )
+            );
             return visitor.ToPropertyNavigator();
         }
 
@@ -68,6 +77,7 @@ namespace RoseLib.Traversal
             return visitor.ToMethodNavigator();
         }
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
         [CSPathConfig(Concept = "Method", Attribute = "name")]
         public static MethodNavigator SelectMethodDeclaration<T>(this T visitor, string name) where T : ITypeMemberSelector
         {
@@ -81,7 +91,11 @@ namespace RoseLib.Traversal
                 .GetClosestDepthwise()
                 ?.FirstOrDefault();
 
-            visitor.NextStep(methodDeclaration);
+            visitor.NextStep(new SelectedObject(
+                methodDeclaration,
+                ExtensionsHelper.GetPathPartForMethodAndValue(MethodBase.GetCurrentMethod()!, name)
+                )
+            );
             return visitor.ToMethodNavigator();
         }
 

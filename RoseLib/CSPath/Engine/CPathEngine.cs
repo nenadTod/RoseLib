@@ -14,7 +14,7 @@ namespace RoseLib.CSPath.Engine
 {
     public class CPathEngine
     {
-        private BaseHandler? firstHanlder;
+        private BaseHandler? cuHandler;
         public CPathEngine()
         {
             Init();
@@ -22,8 +22,19 @@ namespace RoseLib.CSPath.Engine
 
         private void Init()
         {
-            firstHanlder = new CompilationUnitHandler();
-            firstHanlder.NextHandler = new NamespaceHandler();
+            cuHandler = new CompilationUnitHandler();
+
+            var nsHandler = new NamespaceHandler();
+            cuHandler.NextHandler = nsHandler;
+
+            var typeHandler = new TypeHandler();
+            nsHandler.NextHandler = typeHandler;
+
+            var csrTypeHandler = new CSRTypeHandler();
+            typeHandler.NextHandler = csrTypeHandler;
+
+            var enumHandler = new EnumHandler();
+            csrTypeHandler.NextHandler = enumHandler;
         }
         
         public BaseNavigator Evaluate(StreamReader reader, string path) 
@@ -38,7 +49,7 @@ namespace RoseLib.CSPath.Engine
             do
             {
                 context.PathPart = csPathModel[processedPathParts];
-                firstHanlder!.HandleDescent(context);
+                cuHandler!.HandleDescent(context);
 
                 processedPathParts++;
             } while (processedPathParts < csPathModel.Count);

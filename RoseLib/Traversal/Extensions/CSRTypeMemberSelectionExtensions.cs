@@ -13,6 +13,8 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using RoseLib.Model;
+using RoseLib.Traversal.Extensions;
 
 namespace RoseLib.Traversal
 {
@@ -20,13 +22,14 @@ namespace RoseLib.Traversal
     {
         #region Field selection
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
         [CSPathConfig(Concept = "Field", Attribute = "name")]
-        public static FieldNavigator SelectFieldDeclaration<T>(this T navigator, string name) where T: ICSRTypeMemberSelector
+        public static FieldNavigator SelectFieldDeclaration<T>(this T visitor, string name) where T: ICSRTypeMemberSelector
         {
-            NavigationGuard.CurrentNodeNotNull(navigator.CurrentNode);
+            NavigationGuard.CurrentNodeNotNull(visitor.CurrentNode);
             NavigationGuard.NameNotNull(name);
 
-            FieldDeclarationSyntax? foundDeclaration = navigator.CurrentNode?
+            FieldDeclarationSyntax? foundDeclaration = visitor.CurrentNode?
                 .DescendantNodes()
                 .OfType<FieldDeclarationSyntax>()
                 .Where(
@@ -38,23 +41,27 @@ namespace RoseLib.Traversal
                 .GetClosestDepthwise()
                 ?.FirstOrDefault();
 
-            navigator.NextStep(foundDeclaration);
+            visitor.NextStep(new SelectedObject(
+                foundDeclaration,
+                ExtensionsHelper.GetPathPartForMethodAndValue(MethodBase.GetCurrentMethod()!, name)
+                )
+            );
 
-            return navigator.ToFieldNavigator();
+            return visitor.ToFieldNavigator();
         }
 
-        public static FieldNavigator SelectLastFieldDeclaration<T>(this T navigator) where T : ICSRTypeMemberSelector
+        public static FieldNavigator SelectLastFieldDeclaration<T>(this T visitor) where T : ICSRTypeMemberSelector
         {
-            NavigationGuard.CurrentNodeNotNull(navigator.CurrentNode);
-            SyntaxNode? lastFieldDeclaration = navigator.CurrentNode?
+            NavigationGuard.CurrentNodeNotNull(visitor.CurrentNode);
+            SyntaxNode? lastFieldDeclaration = visitor.CurrentNode?
                 .DescendantNodes()
                 .OfType<FieldDeclarationSyntax>()
                 .GetClosestDepthwise()
                 ?.LastOrDefault();
 
-            navigator.NextStep(lastFieldDeclaration);
+            visitor.NextStep(lastFieldDeclaration);
 
-            return navigator.ToFieldNavigator();
+            return visitor.ToFieldNavigator();
         }
 
         #endregion

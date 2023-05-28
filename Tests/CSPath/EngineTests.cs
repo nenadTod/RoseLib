@@ -71,5 +71,117 @@ namespace Tests.CSPath
                 Assert.True(navigator is CSRTypeNavigator);
             }
         }
+
+        [Test]
+        public void TestEngineFindClassByName()
+        {
+            var csPath = "/Class[name='Class1']";
+            using (StreamReader reader = new StreamReader(".\\TestFiles\\Class1.cs"))
+            {
+                CPathEngine cSPathEngine = new CPathEngine();
+                var navigator = cSPathEngine.Evaluate(reader, csPath);
+
+
+                Assert.True(navigator != null);
+                Assert.True(navigator is CSRTypeNavigator);
+                Assert.True(navigator!.GetCSPath().Equals(csPath));
+            }
+        }
+
+        [Test]
+        public void TestEngineFindInterfaceByName()
+        {
+            var csPath = "/Interface[name='INestedInterface1']";
+            using (StreamReader reader = new StreamReader(".\\TestFiles\\Interface1.cs"))
+            {
+                CPathEngine cSPathEngine = new CPathEngine();
+                var navigator = cSPathEngine.Evaluate(reader, csPath);
+
+
+                Assert.True(navigator != null);
+                Assert.True(navigator is TypeNavigator);
+                Assert.True(navigator!.GetCSPath().Equals(csPath));
+            }
+        }
+
+        [Test]
+        public void TestEngineFindEnumByName()
+        {
+            var csPath = "/Enum[name='Enum1']";
+            using (StreamReader reader = new StreamReader(".\\TestFiles\\Enum1.cs"))
+            {
+                CPathEngine cSPathEngine = new CPathEngine();
+                var navigator = cSPathEngine.Evaluate(reader, csPath);
+
+
+                Assert.True(navigator != null);
+                Assert.True(navigator is EnumNavigator);
+                Assert.True(navigator!.GetCSPath().Equals(csPath));
+            }
+        }
+
+        [Test]
+        public void TestEngineFindEnumMemberByName()
+        {
+            var csPath = "/Enum[name='Enum1']/EnumMember[name='green']";
+            using (StreamReader reader = new StreamReader(".\\TestFiles\\Enum1.cs"))
+            {
+                CPathEngine cSPathEngine = new CPathEngine();
+                var navigator = cSPathEngine.Evaluate(reader, csPath);
+
+
+                Assert.True(navigator != null);
+                Assert.True(navigator is BaseNavigator);
+                Assert.True(navigator!.GetCSPath().Equals(csPath));
+            }
+        }
+
+        [Test]
+        public void TestEngineFindMethodInClassByName()
+        {
+            var csPath = "/Class[name='Class1']/Method[name='Method1']";
+            using (StreamReader reader = new StreamReader(".\\TestFiles\\Class1.cs"))
+            {
+                CPathEngine cSPathEngine = new CPathEngine();
+                var navigator = cSPathEngine.Evaluate(reader, csPath);
+
+
+                Assert.True(navigator != null);
+                Assert.True(navigator is MethodNavigator);
+                Assert.True(navigator!.GetCSPath().Equals(csPath));
+            }
+        }
+
+        [Test]
+        public void TestEngineFindPropInClassByName()
+        {
+            var csPath = "/Class[name='Class1']/Property[name='Prop1']";
+            using (StreamReader reader = new StreamReader(".\\TestFiles\\Class1.cs"))
+            {
+                CPathEngine cSPathEngine = new CPathEngine();
+                var navigator = cSPathEngine.Evaluate(reader, csPath);
+
+
+                Assert.True(navigator != null);
+                Assert.True(navigator is PropertyNavigator);
+                Assert.True(navigator!.GetCSPath().Equals(csPath));
+            }
+        }
+
+        [Test]
+        public void TestEngineFindFieldInClassByName()
+        {
+            var csPath = "/Class[name='Class1']/Field[name='field1']";
+            using (StreamReader reader = new StreamReader(".\\TestFiles\\Class1.cs"))
+            {
+                CPathEngine cSPathEngine = new CPathEngine();
+                var navigator = cSPathEngine.Evaluate(reader, csPath);
+
+
+                Assert.True(navigator != null);
+                Assert.True(navigator is FieldNavigator);
+                Assert.True(navigator!.GetCSPath().Equals(csPath));
+            }
+        }
     }
 }

@@ -28,14 +28,12 @@ namespace RoseLib.Traversal
                 .OfType<NamespaceDeclarationSyntax>()
                 .FirstOrDefault();
 
-            if (@namespace != null)
-            {
-                visitor.NextStep(new SelectedObject(
-                    @namespace,
-                    ExtensionsHelper.GetPathPartForMethod(MethodBase.GetCurrentMethod()!)
-                    )
-                );
-            }
+            visitor.NextStep(new SelectedObject(
+                @namespace,
+                ExtensionsHelper.GetPathPartForMethod(MethodBase.GetCurrentMethod()!)
+                )
+            );
+            
 
             return visitor.ToNamespaceNavigator();
         }
@@ -50,10 +48,11 @@ namespace RoseLib.Traversal
                 .Where((nds) => nds.Name.ToFullString().Trim().Equals(name))
                 .FirstOrDefault();
 
-            if (@namespace != null)
-            {
-                visitor.NextStep(@namespace);
-            }
+            visitor.NextStep(new SelectedObject(
+                @namespace,
+                ExtensionsHelper.GetPathPartForMethodAndValue(MethodBase.GetCurrentMethod()!, name)
+                )
+            );
 
             return visitor.ToNamespaceNavigator();
         }
@@ -68,10 +67,11 @@ namespace RoseLib.Traversal
                 .Where((nds) => regex.IsMatch(nds.Name.ToFullString()))
                 .FirstOrDefault();
 
-            if (@namespace != null)
-            {
-                visitor.NextStep(@namespace);
-            }
+            visitor.NextStep(new SelectedObject(
+                @namespace,
+                ExtensionsHelper.GetPathPartForMethodAndValue(MethodBase.GetCurrentMethod()!, regex.ToString())
+                )
+            );
 
             return visitor.ToNamespaceNavigator();
         } 

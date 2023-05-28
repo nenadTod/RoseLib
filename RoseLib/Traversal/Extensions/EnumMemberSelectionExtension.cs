@@ -9,19 +9,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
+using RoseLib.Model;
+using RoseLib.Traversal.Extensions;
+using System.Reflection;
 
 namespace RoseLib.Traversal
 {
     public static class EnumMemberSelectionExtension
     {
-
+        [MethodImpl(MethodImplOptions.NoInlining)]
         [CSPathConfig(Concept = "EnumMember", Attribute = "name")]
-        public static BaseNavigator SelectEnumMemberDeclaration<T>(this T navigator, string name) where T : IEnumMemberSelector
+        public static BaseNavigator SelectEnumMemberDeclaration<T>(this T visitor, string name) where T : IEnumMemberSelector
         {
-            NavigationGuard.CurrentNodeNotNull(navigator.CurrentNode);
+            NavigationGuard.CurrentNodeNotNull(visitor.CurrentNode);
             NavigationGuard.NameNotNull(name);
 
-            EnumMemberDeclarationSyntax? foundDeclaration = navigator.CurrentNode?
+            EnumMemberDeclarationSyntax? foundDeclaration = visitor.CurrentNode?
                 .DescendantNodes()
                 .OfType<EnumMemberDeclarationSyntax>()
                 .Where(emd => 
@@ -31,9 +35,13 @@ namespace RoseLib.Traversal
                 .GetClosestDepthwise()
                 ?.FirstOrDefault();
 
-            navigator.NextStep(foundDeclaration);
+            visitor.NextStep(new SelectedObject(
+                foundDeclaration,
+                ExtensionsHelper.GetPathPartForMethodAndValue(MethodBase.GetCurrentMethod()!, name)
+                )
+            );
 
-            return navigator.ToBaseNavigator();
+            return visitor.ToBaseNavigator();
         }
     }
 }
