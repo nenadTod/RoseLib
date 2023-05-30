@@ -126,36 +126,12 @@ namespace RoseLib.Traversal.Navigators
 
         public string GetCSPath()
         {
-            var stateAsList = State.ToList();
-            stateAsList.Reverse();
-            var pathParts = stateAsList
-                .Where(so => so.PathPart != null)
-                .Select(so => so.PathPart);
-
-            var returnValue = "";
-            foreach (var pathPart in pathParts)
-            {
-                returnValue += pathPart!.ToString();
-            }
-
-            return returnValue;
+            return AsVisitor.GetCSPath();
         }
 
         public string GetSubtreeHashCode()
         {
-            var syntaxNode = AsVisitor.CurrentNode;
-
-            if(syntaxNode == null)
-            {
-                throw new Exception("Cannot calculate subtree hash code, current node is null");
-            }
-
-            var subtreeCode = syntaxNode.ToFullString();
-            var cu = SyntaxFactory.ParseCompilationUnit(subtreeCode);
-            var normalizedCodeWithoutComments = new CommentsRemover().Visit(cu).NormalizeWhitespace().ToFullString();
-
-            var sha1 = SHA1.Create();
-            return Convert.ToHexString(sha1.ComputeHash(Encoding.UTF8.GetBytes(normalizedCodeWithoutComments)));
+            return AsVisitor.GetSubtreeHashCode();
         }
     }
 }

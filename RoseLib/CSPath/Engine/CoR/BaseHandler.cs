@@ -26,7 +26,7 @@ namespace RoseLib.CSPath.Engine.CoR
             if (!(context.Visitor is T))
             {
                 if (NextHandler != null) { NextHandler.HandleDescent(context); }
-                else { throw new PathNotSupportedExeption(context.PathPart); }
+                else { throw new PathNotSupportedException(context.PathPart); }
             }
             else
             {
@@ -39,7 +39,7 @@ namespace RoseLib.CSPath.Engine.CoR
             var concept = context.PathPart.Concept;
 
             var methodInfo = conceptHandlingMethods[concept];
-            if(methodInfo == null) { throw new PathNotSupportedExeption(context.PathPart); }
+            if(methodInfo == null) { throw new PathNotSupportedException(context.PathPart); }
 
             var specializedMethodInfo = methodInfo.MakeGenericMethod(visitorType);
 

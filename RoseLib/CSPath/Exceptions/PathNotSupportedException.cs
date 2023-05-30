@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace RoseLib.CSPath.Exceptions
 {
-    public class PathNotSupportedExeption: Exception
+    public class PathNotSupportedException: Exception
     {
-        public PathNotSupportedExeption(PathPart part) : base($"Stuck at part: {part}") { }
+        public PathNotSupportedException(PathPart part) : base($"Stuck at part: {part}") { }
     }
 }
