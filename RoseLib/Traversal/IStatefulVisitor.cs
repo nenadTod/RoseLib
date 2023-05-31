@@ -248,7 +248,7 @@ namespace RoseLib.Traversal
             return annotation;
         }
 
-        public string GetCSPath()
+        public string GetCSPathImpl()
         {
             var stateAsList = State.ToList();
             stateAsList.Reverse();
@@ -265,7 +265,7 @@ namespace RoseLib.Traversal
             return returnValue;
         }
 
-        public string GetSubtreeHashCode()
+        public string GetSubtreeHashCodeImpl()
         {
             var syntaxNode = CurrentNode;
 

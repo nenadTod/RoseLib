@@ -298,11 +298,11 @@ namespace RoseLib.Composers
 
         public string GetSubtreeHashCode()
         {
-            return Visitor.GetSubtreeHashCode();            
+            return Visitor.GetSubtreeHashCodeImpl();            
         }
         public string GetCSPath()
         {
-            return Visitor.GetCSPath();
+            return Visitor.GetCSPathImpl();
         }
     }
 }

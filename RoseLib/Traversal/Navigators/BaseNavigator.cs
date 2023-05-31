@@ -126,12 +126,12 @@ namespace RoseLib.Traversal.Navigators
 
         public string GetCSPath()
         {
-            return AsVisitor.GetCSPath();
+            return AsVisitor.GetCSPathImpl();
         }
 
         public string GetSubtreeHashCode()
         {
-            return AsVisitor.GetSubtreeHashCode();
+            return AsVisitor.GetSubtreeHashCodeImpl();
         }
     }
 }

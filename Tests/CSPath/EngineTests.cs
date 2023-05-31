@@ -40,7 +40,7 @@ namespace Tests.CSPath
 
                 Assert.True(navigator != null);
                 Assert.True(navigator is NamespaceNavigator);
-                Assert.True(navigator!.GetCSPath().Equals(cSPath));
+                Assert.True(navigator!.AsVisitor.GetCSPathImpl().Equals(cSPath));
             }
         }
 
