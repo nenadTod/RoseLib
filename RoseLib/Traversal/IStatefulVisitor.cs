@@ -86,7 +86,7 @@ namespace RoseLib.Traversal
                 throw new InvalidOperationException($"{GetType()}: Selection failed!");
             }
 
-            State.Push(new SelectedObject(nodes));
+            State.Push(new SelectedObject(nodes, null));
         }
 
         internal void NextStep(SelectedObject? selectedObject)
@@ -207,14 +207,14 @@ namespace RoseLib.Traversal
                     if (oldSelectedObject.CurrentNode == oldNode)
                     {
                         var insertedNewNode = newRoot.GetAnnotatedNodes(annotation).First();
-                        newState.Push(new SelectedObject(insertedNewNode));
+                        newState.Push(new SelectedObject(insertedNewNode, oldSelectedObject.PathPart));
                     }
                     else
                     {
                         var freshNode = newRoot.GetCurrentNode(oldSelectedObject.CurrentNode);
                         if (freshNode != null)
                         {
-                            newState.Push(new SelectedObject(freshNode));
+                            newState.Push(new SelectedObject(freshNode, oldSelectedObject.PathPart));
                         }
                     }
 
@@ -222,7 +222,7 @@ namespace RoseLib.Traversal
                 else if (oldSelectedObject.CurrentNodesList != null)
                 {
                     var freshNodes = newRoot.GetCurrentNodes(oldSelectedObject.CurrentNodesList);
-                    newState.Push(new SelectedObject(freshNodes.ToList()));
+                    newState.Push(new SelectedObject(freshNodes.ToList(), oldSelectedObject.PathPart));
                 }
             }
 

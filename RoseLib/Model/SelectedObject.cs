@@ -15,7 +15,7 @@ namespace RoseLib.Model
 
         public PathPart? PathPart { get; set; }
 
-        public SelectedObject(SyntaxNode? node, PathPart pathPart)
+        public SelectedObject(SyntaxNode? node, PathPart? pathPart)
         {
             if (node == null)
             {
@@ -35,7 +35,7 @@ namespace RoseLib.Model
             CurrentNode = node;
         }
 
-        public SelectedObject(List<SyntaxNode> nodeList)
+        public SelectedObject(List<SyntaxNode> nodeList, PathPart? pathPart)
         {
             if (nodeList == null)
             {
@@ -43,6 +43,7 @@ namespace RoseLib.Model
             }
 
             CurrentNodesList = nodeList;
+            PathPart = pathPart;
         }
     }
 }

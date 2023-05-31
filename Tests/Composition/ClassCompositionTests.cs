@@ -68,7 +68,6 @@ namespace Tests.Composition
 
             var code = composer.GetCode();
             var cspath = composer.GetCSPath();
-            Console.WriteLine(cspath);
             var hashCode = composer.GetSubtreeHashCode();
             Assert.IsTrue(testRegexNS.IsMatch(code));
             Assert.IsTrue(testRegexU.IsMatch(code));

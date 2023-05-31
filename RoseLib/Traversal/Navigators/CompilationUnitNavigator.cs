@@ -40,7 +40,6 @@ namespace RoseLib.Traversal.Navigators
             return navigator;
         }
 
-
         NamespaceNavigator INamespaceSelector.ToNamespaceNavigator()
         {
             return new NamespaceNavigator(this);
