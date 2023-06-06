@@ -11,6 +11,7 @@
   <ItemGroup>
     <Compile Remove="TestFiles\Class1.cs" />
     <Compile Remove="TestFiles\Enum1.cs" />
+    <Compile Remove="TestFiles\FieldCompositionTests.cs" />
     <Compile Remove="TestFiles\Interface1.cs" />
   </ItemGroup>
 
@@ -21,6 +22,7 @@
     <None Include="TestFiles\Enum1.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="TestFiles\FieldCompositionTests.cs" />
     <None Include="TestFiles\Interface1.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

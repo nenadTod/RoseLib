@@ -22,15 +22,33 @@ namespace RoseLib.Composers
 
         public abstract TypeComposer AddMethod(MethodProps options);
         protected abstract bool CanHaveBodylessMethod();
-        public virtual TypeComposer AddMethodToType<T>(MethodProps options) where T : TypeDeclarationSyntax
+        public virtual TypeComposer AddMethodToType<T>(MethodProps props) where T : TypeDeclarationSyntax
         {
             CompositionGuard.ImmediateOrParentOfNodeIs(Visitor.CurrentNode, typeof(T));
 
-            TypeSyntax returnType = SyntaxFactory.ParseTypeName(options.ReturnType);
-            var method = SyntaxFactory.MethodDeclaration(returnType, options.MethodName).WithModifiers(options.ModifiersToTokenList());
+            List<AttributeSyntax> attributeSyntaxList = new List<AttributeSyntax>();
+            foreach (var attribute in props.Attributes)
+            {
+                AttributeArgumentListSyntax? attributeArgumentListSyntax = null;
+                if (attribute.AttributeArgumentsAsString != null)
+                {
+                    var parameterToBePassed = attribute.AttributeArgumentsAsString;
+                    attributeArgumentListSyntax = SyntaxFactory.ParseAttributeArgumentList(parameterToBePassed, 0, CSharpParseOptions.Default, false);
+                }
+
+                var attributeSyntax = SyntaxFactory.Attribute(SyntaxFactory.ParseName(attribute.Name), attributeArgumentListSyntax);
+                attributeSyntaxList.Add(attributeSyntax);
+            }
+
+            var attributeList = SyntaxFactory.AttributeList(new SeparatedSyntaxList<AttributeSyntax>().AddRange(attributeSyntaxList));
+
+            TypeSyntax returnType = SyntaxFactory.ParseTypeName(props.ReturnType);
+            var method = SyntaxFactory.MethodDeclaration(returnType, props.MethodName)
+                .WithModifiers(props.ModifiersToTokenList())
+                .AddAttributeLists(attributeList);
 
             var @params = SyntaxFactory.ParameterList();
-            foreach (var param in options.Params)
+            foreach (var param in props.Params)
             {
                 var type = SyntaxFactory.IdentifierName(param.Type);
                 var name = SyntaxFactory.Identifier(param.Name);
@@ -41,7 +59,7 @@ namespace RoseLib.Composers
             @params = @params.NormalizeWhitespace();
             method = method.WithParameterList(@params);
 
-            if (!options.BodylessMethod)
+            if (!props.BodylessMethod)
             {
                 method = method.WithBody(SyntaxFactory.Block());
             }
@@ -59,7 +77,7 @@ namespace RoseLib.Composers
             Visitor.ReplaceNodeAndAdjustState(Visitor.CurrentNode!, newEnclosingNode);
 
             var navigator = BaseNavigator.CreateTempNavigator<CSRTypeNavigator>(Visitor);
-            navigator.SelectMethodDeclaration(options.MethodName);
+            navigator.SelectMethodDeclaration(props.MethodName);
 
             return this;
         }

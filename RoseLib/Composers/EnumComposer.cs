@@ -16,14 +16,9 @@ using System.Threading.Tasks;
 
 namespace RoseLib.Composers
 {
-    public enum NS
-    {
-        da = 0, b = 1,
-    }
 
     public class EnumComposer : MemberComposer
     {
-        public static int p = 3; 
         public EnumComposer(IStatefulVisitor visitor, bool pivotOnParent = false) : base(visitor, pivotOnParent)
         {
         }

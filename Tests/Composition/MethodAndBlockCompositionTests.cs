@@ -33,9 +33,14 @@ namespace Tests.Composition
                 var code = navigator
                     .SelectClassDeclaration("Class1")
                     .StartComposing<ClassComposer>()
-                    .AddMethod(new MethodProps() { MethodName = newMethodName, ReturnType = newMethodType })
+                    .AddMethod(new MethodProps() {
+                        MethodName = newMethodName,
+                        ReturnType = newMethodType,
+                        Attributes = new List<RoseLib.Model.AttributeProps>() {
+                            new AttributeProps() { Name = "TestAtt" } 
+                        }
+                    })
                     .EnterMethod()
-                    .SetAttributes(new List<RoseLib.Model.AttributeProps>() { new AttributeProps() { Name = "TestAtt" } })
                     .EnterBody()
                     .InsertStatements(newStatement)
                     .GetCode();
