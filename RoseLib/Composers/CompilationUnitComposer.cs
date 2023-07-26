@@ -12,7 +12,7 @@ using RoseLib.Traversal;
 
 namespace RoseLib.Composers
 {
-    public class CompilationUnitComposer : BaseComposer
+    public partial class CompilationUnitComposer : BaseComposer
     {
         public CompilationUnitComposer(): base(new CompilationUnitNavigator(), false)
         {

@@ -15,9 +15,7 @@ using RoseLib.Guards;
 
 namespace RoseLib.Composers
 {
-
-    [Serializable]
-    public class ClassComposer: CSRTypeComposer
+    public partial class ClassComposer: CSRTypeComposer
     {
         internal ClassComposer(IStatefulVisitor visitor, bool pivotOnParent = false) : base(visitor, pivotOnParent)
         {

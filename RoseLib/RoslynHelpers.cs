@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace RoseLib
 {
-    internal static class RoslynHelper
+    public static class RoslynHelper
     {
         internal static int GetNodeDepth(this SyntaxNode node)
         {
@@ -47,7 +47,43 @@ namespace RoseLib
             return nodesWithDepth
                 .Where(tuple => tuple.Item2 == minDepth)
                 .Select(tuple => tuple.Item1);
-        }     
+        }
+
+        public static string? GetMemberName(MemberDeclarationSyntax member)
+        {
+            if (member == null)
+            {
+                return null;
+            }
+
+            switch (member)
+            {
+                case NamespaceDeclarationSyntax namespaceDeclarationSyntax:
+                    return namespaceDeclarationSyntax.Name.ToString();
+                case ClassDeclarationSyntax classDeclaration:
+                    return classDeclaration.Identifier.Text;
+                case InterfaceDeclarationSyntax interfaceDeclaration:
+                    return interfaceDeclaration.Identifier.Text;
+                case EnumDeclarationSyntax enumDeclaration:
+                    return enumDeclaration.Identifier.Text;
+                case StructDeclarationSyntax structDeclaration:
+                    return structDeclaration.Identifier.Text;
+                case MethodDeclarationSyntax methodDeclarationSyntax:
+                    return methodDeclarationSyntax.Identifier.Text;
+                case PropertyDeclarationSyntax propertyDeclaration:
+                    return propertyDeclaration.Identifier.Text;
+                case FieldDeclarationSyntax fieldDeclaration:
+                    return fieldDeclaration.DescendantNodes()
+                        .OfType<VariableDeclaratorSyntax>()
+                        .FirstOrDefault()
+                        ?.Identifier.Text;
+                case null:
+                    return null;
+                default:
+                    throw new ArgumentException($"Extracting name not supported for type ${member.GetType()}");
+
+            }
+        }
     }
     internal class CommentsRemover : CSharpSyntaxRewriter
     {

@@ -1,9 +1,11 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using RoseLib.Exceptions;
 using RoseLib.Guards;
 using RoseLib.Templates;
 using RoseLib.Traversal;
+using RoseLib.Traversal.Navigators;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +14,8 @@ using System.Threading.Tasks;
 
 namespace RoseLib.Composers
 {
-    public class BlockComposer : BaseComposer
+
+    public partial class BlockComposer : BaseComposer
     {
         public BlockComposer(IStatefulVisitor visitor, bool pivotOnParent = false) : base(visitor, pivotOnParent)
         {
@@ -41,15 +44,39 @@ namespace RoseLib.Composers
 
             var newStatements = CreateStatementList(statements);
             var allStatements = currentStatements.AddRange(newStatements);
-            
+
             var updatedBlock = block.WithStatements(allStatements);
             
             Visitor.ReplaceNodeAndAdjustState(Visitor.CurrentNode!, updatedBlock);
+
+            var blockNavigator = BaseNavigator.CreateTempNavigator<BlockNavigator>(Visitor);
+            blockNavigator.SelectLastStatementDeclaration();
 
             return this;
         }
 
 
+        #endregion
+
+        #region Navigation 
+        public BlockComposer EnterSubblock()
+        {
+            var statement = Visitor.State.Peek().CurrentNode as StatementSyntax;
+            if (statement == null)
+            {
+                throw new InvalidActionForStateException("Entering subblocks only possible when positioned on a statement syntax instance.");
+            }
+
+            var subblock = statement
+                .DescendantNodes()
+                .OfType<BlockSyntax>()
+                .GetClosestDepthwise()
+                ?.FirstOrDefault();
+
+            this.Visitor.NextStep(subblock);
+
+            return this;
+        }
         #endregion
 
         #region Helper Methods

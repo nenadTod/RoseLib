@@ -14,23 +14,39 @@ namespace RoseLib.Traversal
 {
     public static class BodySelectionExtensions
     {
-
-
-        /// <summary>
-        ///Finds variable declaration based on the variable's name if it exists within the specified root, and is made current.
-        /// </summary>
-        /// <param name="name">Name of the variable</param>
-        /// <returns>Statement navigator</returns>
-        public static StatementNavigator SelectVariableDeclaration<T>(this T navigator, string name) where T : IBodySelector
+        public static StatementNavigator SelectLastStatementDeclaration<T>(this T navigator) where T : IBodySelector
         {
-            NavigationGuard.NameNotNull(name);
+            if (navigator.CurrentNode is BlockSyntax)
+            {
+                var lastStatement = navigator
+                                .CurrentNode
+                                ?.DescendantNodes()
+                                .OfType<StatementSyntax>()
+                                .GetClosestDepthwise()
+                                ?.LastOrDefault();
 
-            var declarator = navigator.CurrentNode?.DescendantNodes().OfType<VariableDeclaratorSyntax>()
-                .Where(v => v.Identifier.ValueText == name).FirstOrDefault();
+                navigator.NextStep(lastStatement);
+
+                return navigator.ToStatementNavigator();
+            }
+            else if(navigator.CurrentNode is MethodDeclarationSyntax)
+            {
+                var method = navigator.CurrentNode as MethodDeclarationSyntax;
+                var methodsBody = method.Body;
+
+                var lastStatement = methodsBody
+                               ?.DescendantNodes()
+                               .OfType<StatementSyntax>()
+                               .GetClosestDepthwise()
+                               ?.LastOrDefault();
+
+                navigator.NextStep(lastStatement);
+
+                return navigator.ToStatementNavigator();
+            } else { 
+                throw new NotSupportedException("Not able to select the last statement - current node type not supported."); 
+            }
             
-            navigator.NextStep(declarator);
-
-            return navigator.ToStatementNavigator();
         }
     }
 }

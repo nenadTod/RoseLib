@@ -15,7 +15,11 @@ namespace Tests.TestFiles
         private bool field1;
         public int Prop1 { get; set; } // Comment
 
-        public void Method1() { }
+        public void Method1() 
+        {
+            var variable = true;
+            return;
+        }
 
         internal class InnerClass1
         {

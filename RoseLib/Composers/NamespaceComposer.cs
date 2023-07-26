@@ -10,7 +10,7 @@ using RoseLib.Traversal.Navigators;
 
 namespace RoseLib.Composers
 {
-    public class NamespaceComposer : MemberComposer
+    public partial class NamespaceComposer : MemberComposer
     {
         internal NamespaceComposer(IStatefulVisitor visitor, bool pivotOnParent = false) : base(visitor, pivotOnParent)
         {

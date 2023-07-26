@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace RoseLib.Composers
 {
-    public class InterfaceComposer: TypeComposer
+    public partial class InterfaceComposer: TypeComposer
     {
         internal InterfaceComposer(IStatefulVisitor visitor, bool pivotOnParent = false) : base(visitor, pivotOnParent)
         {

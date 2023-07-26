@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace RoseLib.Composers
 {
-    public class MethodComposer : MemberComposer
+    public partial class MethodComposer : MemberComposer
     {
         public MethodComposer(IStatefulVisitor visitor, bool pivotOnParent = false) : base(visitor, pivotOnParent)
         {
