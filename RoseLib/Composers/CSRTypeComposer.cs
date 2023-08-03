@@ -29,7 +29,7 @@ namespace RoseLib.Composers
 
         protected CSRTypeComposer AddFieldToNodeOfType<T>(FieldProps options) where T : TypeDeclarationSyntax
         {
-            CompositionGuard.ImmediateOrParentOfNodeIs(Visitor.CurrentNode, typeof(T));
+            CompositionGuard.NodeOrParentIs(Visitor.CurrentNode, typeof(T));
 
             TypeSyntax type = SyntaxFactory.ParseTypeName(options.FieldType);
             var declaration = SyntaxFactory.VariableDeclaration(type,

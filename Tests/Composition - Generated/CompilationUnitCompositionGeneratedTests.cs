@@ -10,17 +10,16 @@ using System.Threading.Tasks;
 
 namespace Tests.Composition
 {
-    public class NamespaceCompositionGeneratedTests
+    public class CompilationUnitCompositionGeneratedTests
     {
         [Test]
-        public void AddingControllerToNamespace()
+        public void AddingNamespaceWithAClassToCU()
         {
-            var referenceNamespaceName = "Tests.TestFiles";
 
-            var resourceName = "Country";
-            var resourcePath = "countries";
+            var namespaceName = "Tests.Composition";
+            var className = "Class2";
 
-            Regex testRegexRN = new Regex(resourceName);
+            Regex testRegexRN = new Regex(namespaceName);
 
 
             using (StreamReader reader = new StreamReader(".\\TestFiles\\Class1.cs"))
@@ -28,9 +27,8 @@ namespace Tests.Composition
                 CompilationUnitNavigator navigator = new CompilationUnitNavigator(reader);
 
                 var code = navigator
-                    .SelectNamespace(referenceNamespaceName)
-                    .StartComposing<NamespaceComposer>()
-                    .AddController(resourceName, resourcePath)
+                    .StartComposing<CompilationUnitComposer>()
+                    .AddVSClass(namespaceName, className)
                     .GetCode();
 
                 Assert.IsTrue(testRegexRN.IsMatch(code));

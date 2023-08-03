@@ -17,8 +17,7 @@ namespace Tests.TestFiles
 
         public void Method1() 
         {
-            var variable = true;
-            return;
+            var variable = true; 
         }
 
         internal class InnerClass1

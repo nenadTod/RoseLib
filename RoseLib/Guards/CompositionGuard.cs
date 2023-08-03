@@ -11,7 +11,7 @@ namespace RoseLib.Guards
 {
     public static class CompositionGuard
     {
-        public static void ImmediateOrParentOfNodeIs(SyntaxNode? node, Type type)
+        public static void NodeOrParentIs(SyntaxNode? node, Type type)
         {
             if (node == null)
             {
@@ -36,7 +36,7 @@ namespace RoseLib.Guards
             throw new InvalidActionForStateException("Nor node nor it's parent are of an appropriate type");
         }
 
-        public static void ImmediateNodeIs(SyntaxNode? node, Type type)
+        public static void NodeIs(SyntaxNode? node, Type type)
         {
             if(node == null)
             {
@@ -56,7 +56,7 @@ namespace RoseLib.Guards
             throw new InvalidActionForStateException("Node is not of an appropriate type");
         }
     
-        public static void CodeIsSyntacticallyValid(SyntaxNode node)
+        public static void IsSyntacticallyValid(SyntaxNode node)
         {
             if(node.ContainsDiagnostics)
             {

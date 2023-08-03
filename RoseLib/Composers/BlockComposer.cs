@@ -37,7 +37,7 @@ namespace RoseLib.Composers
 
         public BlockComposer InsertStatements(params string[] statements)
         {
-            CompositionGuard.ImmediateNodeIs(Visitor.CurrentNode, typeof(BlockSyntax));
+            CompositionGuard.NodeIs(Visitor.CurrentNode, typeof(BlockSyntax));
             var block = Visitor.CurrentNode as BlockSyntax;
 
             var currentStatements = block!.Statements;
@@ -89,7 +89,7 @@ namespace RoseLib.Composers
 
             var tempBlock = tempMethod.DescendantNodes().OfType<BlockSyntax>().First();
 
-            CompositionGuard.CodeIsSyntacticallyValid(tempBlock);
+            CompositionGuard.IsSyntacticallyValid(tempBlock);
 
             return tempBlock.Statements;
         }

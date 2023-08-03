@@ -17,7 +17,7 @@ namespace RoseLib.Composers
     {
         public ClassComposer AddGetOneMethod(string name, string returnType)
         {
-            CompositionGuard.ImmediateOrParentOfNodeIs(Visitor.CurrentNode, typeof(ClassDeclarationSyntax)); 
+            CompositionGuard.NodeOrParentIs(Visitor.CurrentNode, typeof(ClassDeclarationSyntax)); 
 
             var fragment = $"[Route(\"{{id:int}}\")] public {returnType} {name}(int id){{return _context.getOne(id);}}".Replace('\r', ' ').Replace('\n', ' ');
 

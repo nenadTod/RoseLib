@@ -25,7 +25,7 @@ namespace Tests.Navigation
 
 
                 var selection = navigator.State.Peek();
-                var returnStatement = selection.CurrentNode as ReturnStatementSyntax;
+                var returnStatement = selection.CurrentNode as LocalDeclarationStatementSyntax;
 
                 Assert.NotNull(returnStatement);
             }

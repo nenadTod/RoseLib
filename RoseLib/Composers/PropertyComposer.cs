@@ -45,7 +45,7 @@ namespace RoseLib.Composers
         #region Property change methods
         public PropertyComposer Rename(string newName)
         {
-            CompositionGuard.ImmediateNodeIs(Visitor.CurrentNode, typeof(PropertyDeclarationSyntax));
+            CompositionGuard.NodeIs(Visitor.CurrentNode, typeof(PropertyDeclarationSyntax));
 
             var identifier = SyntaxFactory.Identifier(newName);
             var renamedProperty = (Visitor.CurrentNode as PropertyDeclarationSyntax)!.WithIdentifier(identifier);
@@ -56,7 +56,7 @@ namespace RoseLib.Composers
 
         public PropertyComposer SetType(string type)
         {
-            CompositionGuard.ImmediateNodeIs(Visitor.CurrentNode, typeof(PropertyDeclarationSyntax));
+            CompositionGuard.NodeIs(Visitor.CurrentNode, typeof(PropertyDeclarationSyntax));
 
             var identifier = SyntaxFactory.IdentifierName(type);
             var property = (Visitor.CurrentNode as PropertyDeclarationSyntax)!.WithType(identifier);
@@ -67,7 +67,7 @@ namespace RoseLib.Composers
 
         public PropertyComposer SetAccessModifier(AccessModifiers newType)
         {
-            CompositionGuard.ImmediateNodeIs(Visitor.CurrentNode, typeof(PropertyDeclarationSyntax));
+            CompositionGuard.NodeIs(Visitor.CurrentNode, typeof(PropertyDeclarationSyntax));
 
             var property = (Visitor.CurrentNode as PropertyDeclarationSyntax)!;
             SyntaxTokenList modifiers = property.Modifiers;
@@ -121,7 +121,7 @@ namespace RoseLib.Composers
 
         public PropertyComposer MakeStatic()
         {
-            CompositionGuard.ImmediateNodeIs(Visitor.CurrentNode, typeof(PropertyDeclarationSyntax));
+            CompositionGuard.NodeIs(Visitor.CurrentNode, typeof(PropertyDeclarationSyntax));
 
             var property = (Visitor.CurrentNode as PropertyDeclarationSyntax)!;
 
@@ -141,7 +141,7 @@ namespace RoseLib.Composers
 
         public PropertyComposer MakeNonStatic()
         {
-            CompositionGuard.ImmediateNodeIs(Visitor.CurrentNode, typeof(PropertyDeclarationSyntax));
+            CompositionGuard.NodeIs(Visitor.CurrentNode, typeof(PropertyDeclarationSyntax));
 
             var property = (Visitor.CurrentNode as PropertyDeclarationSyntax)!;
             SyntaxTokenList modifiers = property.Modifiers;

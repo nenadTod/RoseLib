@@ -73,7 +73,7 @@ namespace RoseLib.Composers
         #region Class change methods
         public ClassComposer Rename(string newName)
         {
-            CompositionGuard.ImmediateNodeIs(Visitor.CurrentNode, typeof(ClassDeclarationSyntax));
+            CompositionGuard.NodeIs(Visitor.CurrentNode, typeof(ClassDeclarationSyntax));
 
             var identifier = SyntaxFactory.Identifier(newName);
             var renamedClass = (Visitor.CurrentNode as ClassDeclarationSyntax)!.WithIdentifier(identifier);
@@ -102,7 +102,7 @@ namespace RoseLib.Composers
 
         public ClassComposer SetBaseTypes(List<string>? baseTypes)
         {
-            CompositionGuard.ImmediateNodeIs(Visitor.CurrentNode, typeof(ClassDeclarationSyntax));
+            CompositionGuard.NodeIs(Visitor.CurrentNode, typeof(ClassDeclarationSyntax));
             var @class = (Visitor.CurrentNode as ClassDeclarationSyntax)!;
 
             ClassDeclarationSyntax? alteredClass;
@@ -131,7 +131,7 @@ namespace RoseLib.Composers
 
         public ClassComposer SetAccessModifier(AccessModifiers newType)
         {
-            CompositionGuard.ImmediateNodeIs(Visitor.CurrentNode, typeof(ClassDeclarationSyntax));
+            CompositionGuard.NodeIs(Visitor.CurrentNode, typeof(ClassDeclarationSyntax));
 
             var @class = (Visitor.CurrentNode as ClassDeclarationSyntax)!;
             SyntaxTokenList modifiers = @class.Modifiers;
@@ -172,7 +172,7 @@ namespace RoseLib.Composers
 
         public ClassComposer MakeStatic()
         {
-            CompositionGuard.ImmediateNodeIs(Visitor.CurrentNode, typeof(ClassDeclarationSyntax));
+            CompositionGuard.NodeIs(Visitor.CurrentNode, typeof(ClassDeclarationSyntax));
 
             var @class = (Visitor.CurrentNode as ClassDeclarationSyntax)!;
 
@@ -192,7 +192,7 @@ namespace RoseLib.Composers
 
         public ClassComposer MakeNonStatic()
         {
-            CompositionGuard.ImmediateNodeIs(Visitor.CurrentNode, typeof(ClassDeclarationSyntax));
+            CompositionGuard.NodeIs(Visitor.CurrentNode, typeof(ClassDeclarationSyntax));
 
             var @class = (Visitor.CurrentNode as ClassDeclarationSyntax)!;
             SyntaxTokenList modifiers = @class.Modifiers;
@@ -214,7 +214,7 @@ namespace RoseLib.Composers
 
         public ClassComposer MakePartial()
         {
-            CompositionGuard.ImmediateNodeIs(Visitor.CurrentNode, typeof(ClassDeclarationSyntax));
+            CompositionGuard.NodeIs(Visitor.CurrentNode, typeof(ClassDeclarationSyntax));
 
             var @class = (Visitor.CurrentNode as ClassDeclarationSyntax)!;
 
@@ -234,7 +234,7 @@ namespace RoseLib.Composers
 
         public ClassComposer MakeNonPartial()
         {
-            CompositionGuard.ImmediateNodeIs(Visitor.CurrentNode, typeof(ClassDeclarationSyntax));
+            CompositionGuard.NodeIs(Visitor.CurrentNode, typeof(ClassDeclarationSyntax));
 
             var @class = (Visitor.CurrentNode as ClassDeclarationSyntax)!;
             SyntaxTokenList modifiers = @class.Modifiers;

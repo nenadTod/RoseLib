@@ -24,7 +24,7 @@ namespace RoseLib.Composers
         protected abstract bool CanHaveBodylessMethod();
         public virtual TypeComposer AddMethodToType<T>(MethodProps props) where T : TypeDeclarationSyntax
         {
-            CompositionGuard.ImmediateOrParentOfNodeIs(Visitor.CurrentNode, typeof(T));
+            CompositionGuard.NodeOrParentIs(Visitor.CurrentNode, typeof(T));
 
             List<AttributeSyntax> attributeSyntaxList = new List<AttributeSyntax>();
             foreach (var attribute in props.Attributes)
@@ -86,7 +86,7 @@ namespace RoseLib.Composers
 
         public virtual TypeComposer AddPropertyToType<T>(PropertyProps options) where T: TypeDeclarationSyntax
         {
-            CompositionGuard.ImmediateOrParentOfNodeIs(Visitor.CurrentNode, typeof(T));
+            CompositionGuard.NodeOrParentIs(Visitor.CurrentNode, typeof(T));
 
             PropertyDeclarationSyntax @property = SyntaxFactory
                 .PropertyDeclaration(SyntaxFactory.ParseTypeName(options.PropertyType), options.PropertyName)

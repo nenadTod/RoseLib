@@ -45,7 +45,7 @@ namespace RoseLib.Composers
         #region Method change methods
         public MethodComposer Rename(string newName)
         {
-            CompositionGuard.ImmediateNodeIs(Visitor.CurrentNode, typeof(MethodDeclarationSyntax));
+            CompositionGuard.NodeIs(Visitor.CurrentNode, typeof(MethodDeclarationSyntax));
 
             var identifier = SyntaxFactory.Identifier(newName);
             var renamedMethod = (Visitor.CurrentNode as MethodDeclarationSyntax)!.WithIdentifier(identifier);
@@ -56,7 +56,7 @@ namespace RoseLib.Composers
 
         public MethodComposer SetReturnType(string type)
         {
-            CompositionGuard.ImmediateNodeIs(Visitor.CurrentNode, typeof(MethodDeclarationSyntax));
+            CompositionGuard.NodeIs(Visitor.CurrentNode, typeof(MethodDeclarationSyntax));
 
             var identifier = SyntaxFactory.IdentifierName(type);
             var method = (Visitor.CurrentNode as MethodDeclarationSyntax)!.WithReturnType(identifier);
@@ -67,7 +67,7 @@ namespace RoseLib.Composers
 
         public MethodComposer Parameters(params ParamProps[] parameters)
         {
-            CompositionGuard.ImmediateNodeIs(Visitor.CurrentNode, typeof(MethodDeclarationSyntax));
+            CompositionGuard.NodeIs(Visitor.CurrentNode, typeof(MethodDeclarationSyntax));
 
             var @params = SyntaxFactory.ParameterList();
             foreach (var param in parameters)
@@ -87,7 +87,7 @@ namespace RoseLib.Composers
 
         public MethodComposer AppendParameters(params ParamProps[] parameters)
         {
-            CompositionGuard.ImmediateNodeIs(Visitor.CurrentNode, typeof(MethodDeclarationSyntax));
+            CompositionGuard.NodeIs(Visitor.CurrentNode, typeof(MethodDeclarationSyntax));
 
             var existingParams = (Visitor.CurrentNode as MethodDeclarationSyntax)!.ParameterList;
 
@@ -110,7 +110,7 @@ namespace RoseLib.Composers
 
         public MethodComposer SetAccessModifier(AccessModifiers newType)
         {
-            CompositionGuard.ImmediateNodeIs(Visitor.CurrentNode, typeof(MethodDeclarationSyntax));
+            CompositionGuard.NodeIs(Visitor.CurrentNode, typeof(MethodDeclarationSyntax));
 
             var method = (Visitor.CurrentNode as MethodDeclarationSyntax)!;
             SyntaxTokenList modifiers = method.Modifiers;
@@ -164,7 +164,7 @@ namespace RoseLib.Composers
 
         public MethodComposer MakeStatic()
         {
-            CompositionGuard.ImmediateNodeIs(Visitor.CurrentNode, typeof(MethodDeclarationSyntax));
+            CompositionGuard.NodeIs(Visitor.CurrentNode, typeof(MethodDeclarationSyntax));
 
             var method = (Visitor.CurrentNode as MethodDeclarationSyntax)!;
 
@@ -184,7 +184,7 @@ namespace RoseLib.Composers
 
         public MethodComposer MakeNonStatic()
         {
-            CompositionGuard.ImmediateNodeIs(Visitor.CurrentNode, typeof(MethodDeclarationSyntax));
+            CompositionGuard.NodeIs(Visitor.CurrentNode, typeof(MethodDeclarationSyntax));
 
             var method = (Visitor.CurrentNode as MethodDeclarationSyntax)!;
             SyntaxTokenList modifiers = method.Modifiers;
@@ -206,7 +206,7 @@ namespace RoseLib.Composers
 
         public MethodComposer MakePartial()
         {
-            CompositionGuard.ImmediateNodeIs(Visitor.CurrentNode, typeof(MethodDeclarationSyntax));
+            CompositionGuard.NodeIs(Visitor.CurrentNode, typeof(MethodDeclarationSyntax));
 
             var method = (Visitor.CurrentNode as MethodDeclarationSyntax)!;
 
@@ -226,7 +226,7 @@ namespace RoseLib.Composers
 
         public MethodComposer MakeNonPartial()
         {
-            CompositionGuard.ImmediateNodeIs(Visitor.CurrentNode, typeof(MethodDeclarationSyntax));
+            CompositionGuard.NodeIs(Visitor.CurrentNode, typeof(MethodDeclarationSyntax));
 
             var method = (Visitor.CurrentNode as MethodDeclarationSyntax)!;
             SyntaxTokenList modifiers = method.Modifiers;
@@ -255,7 +255,7 @@ namespace RoseLib.Composers
 
         public BlockComposer EnterBody()
         {
-            CompositionGuard.ImmediateNodeIs(Visitor.CurrentNode, typeof(MethodDeclarationSyntax));
+            CompositionGuard.NodeIs(Visitor.CurrentNode, typeof(MethodDeclarationSyntax));
             
             var method = Visitor.State.Peek().CurrentNode as MethodDeclarationSyntax;
             if (method == null)

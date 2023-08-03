@@ -40,7 +40,7 @@ namespace RoseLib.Composers
 
         public NamespaceComposer AddClass(ClassProps options)
         {
-            CompositionGuard.ImmediateOrParentOfNodeIs(Visitor.CurrentNode, typeof(NamespaceDeclarationSyntax));
+            CompositionGuard.NodeOrParentIs(Visitor.CurrentNode, typeof(NamespaceDeclarationSyntax));
 
             var template = new EmptyClassTemplate() { Properties = options };
             var code = template.TransformText();
@@ -71,7 +71,7 @@ namespace RoseLib.Composers
 
         public NamespaceComposer AddInterface(InterfaceProps properties)
         {
-            CompositionGuard.ImmediateOrParentOfNodeIs(Visitor.CurrentNode, typeof(NamespaceDeclarationSyntax));
+            CompositionGuard.NodeOrParentIs(Visitor.CurrentNode, typeof(NamespaceDeclarationSyntax));
 
             var template = new EmptyInterfaceTemplate() { Properties = properties };
             var code = template.TransformText();
@@ -100,7 +100,7 @@ namespace RoseLib.Composers
 
         public NamespaceComposer AddEnum(EnumProps properties)
         {
-            CompositionGuard.ImmediateOrParentOfNodeIs(Visitor.CurrentNode, typeof(NamespaceDeclarationSyntax));
+            CompositionGuard.NodeOrParentIs(Visitor.CurrentNode, typeof(NamespaceDeclarationSyntax));
 
             var template = new EmptyEnumTemplate() { Properties = properties };
             var code = template.TransformText();

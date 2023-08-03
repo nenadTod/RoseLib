@@ -52,7 +52,7 @@ namespace RoseLib.Composers
         #region Enum change methods
         public EnumComposer Rename(string newName)
         {
-            CompositionGuard.ImmediateNodeIs(Visitor.CurrentNode, typeof(EnumDeclarationSyntax));
+            CompositionGuard.NodeIs(Visitor.CurrentNode, typeof(EnumDeclarationSyntax));
 
             var identifier = SyntaxFactory.Identifier(newName);
             var @enum = (Visitor.CurrentNode as EnumDeclarationSyntax)!;
@@ -64,7 +64,7 @@ namespace RoseLib.Composers
 
         public EnumComposer SetAccessModifier(AccessModifiers newType)
         {
-            CompositionGuard.ImmediateNodeIs(Visitor.CurrentNode, typeof(EnumDeclarationSyntax));
+            CompositionGuard.NodeIs(Visitor.CurrentNode, typeof(EnumDeclarationSyntax));
 
             var @enum = (Visitor.CurrentNode as EnumDeclarationSyntax)!;
             SyntaxTokenList modifiers = @enum.Modifiers;
@@ -109,7 +109,7 @@ namespace RoseLib.Composers
 
         public EnumComposer AddEnumMember(string identifier)
         {
-            CompositionGuard.ImmediateOrParentOfNodeIs(Visitor.CurrentNode, typeof(EnumDeclarationSyntax));
+            CompositionGuard.NodeOrParentIs(Visitor.CurrentNode, typeof(EnumDeclarationSyntax));
             var newEnumMember = SyntaxFactory.EnumMemberDeclaration(identifier);
 
             var referenceNode = (EnumMemberDeclarationSyntax) TryGetReferenceAndPopToPivot()!;

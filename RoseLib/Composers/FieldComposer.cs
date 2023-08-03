@@ -45,7 +45,7 @@ namespace RoseLib.Composers
         #region Field change methods
         public FieldComposer Rename(string newName)
         {
-            CompositionGuard.ImmediateNodeIs(Visitor.CurrentNode, typeof(FieldDeclarationSyntax));
+            CompositionGuard.NodeIs(Visitor.CurrentNode, typeof(FieldDeclarationSyntax));
 
             var identifier = SyntaxFactory.Identifier(newName);
             var variableDeclarator = (Visitor.CurrentNode as FieldDeclarationSyntax)!
@@ -62,7 +62,7 @@ namespace RoseLib.Composers
 
         public FieldComposer SetType(string type)
         {
-            CompositionGuard.ImmediateNodeIs(Visitor.CurrentNode, typeof(FieldDeclarationSyntax));
+            CompositionGuard.NodeIs(Visitor.CurrentNode, typeof(FieldDeclarationSyntax));
 
             var identifier = SyntaxFactory.IdentifierName(type);
             var variableDeclaration = (Visitor.CurrentNode as FieldDeclarationSyntax)!
@@ -79,7 +79,7 @@ namespace RoseLib.Composers
 
         public FieldComposer SetAccessModifier(AccessModifiers newType)
         {
-            CompositionGuard.ImmediateNodeIs(Visitor.CurrentNode, typeof(FieldDeclarationSyntax));
+            CompositionGuard.NodeIs(Visitor.CurrentNode, typeof(FieldDeclarationSyntax));
 
             var field = (Visitor.CurrentNode as FieldDeclarationSyntax)!;
             SyntaxTokenList modifiers = field.Modifiers;
@@ -133,7 +133,7 @@ namespace RoseLib.Composers
 
         public FieldComposer MakeStatic()
         {
-            CompositionGuard.ImmediateNodeIs(Visitor.CurrentNode, typeof(FieldDeclarationSyntax));
+            CompositionGuard.NodeIs(Visitor.CurrentNode, typeof(FieldDeclarationSyntax));
 
             var field = (Visitor.CurrentNode as FieldDeclarationSyntax)!;
 
@@ -153,7 +153,7 @@ namespace RoseLib.Composers
 
         public FieldComposer MakeNonStatic()
         {
-            CompositionGuard.ImmediateNodeIs(Visitor.CurrentNode, typeof(FieldDeclarationSyntax));
+            CompositionGuard.NodeIs(Visitor.CurrentNode, typeof(FieldDeclarationSyntax));
 
             var field = (Visitor.CurrentNode as FieldDeclarationSyntax)!;
             SyntaxTokenList modifiers = field.Modifiers;

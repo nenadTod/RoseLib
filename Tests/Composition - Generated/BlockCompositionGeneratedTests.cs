@@ -17,8 +17,8 @@ namespace Tests.Composition
         {
             var referenceMethodName = "Method1";
 
-            var ifClause = "4 > 3";
-            Regex testRegexIC = new Regex(ifClause);
+            var str = "\"Hello World\"";
+            Regex testRegexIC = new Regex(str);
 
 
             using (StreamReader reader = new StreamReader(".\\TestFiles\\Class1.cs"))
@@ -29,7 +29,7 @@ namespace Tests.Composition
                     .SelectMethodDeclaration(referenceMethodName)
                     .StartComposing<MethodComposer>()
                     .EnterBody()
-                    .AddIfBlock(ifClause)
+                    .AddIf(str)
                     .GetCode();
 
                 Assert.IsTrue(testRegexIC.IsMatch(code));

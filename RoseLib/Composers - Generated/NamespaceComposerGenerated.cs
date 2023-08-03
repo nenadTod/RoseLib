@@ -14,12 +14,11 @@ namespace RoseLib.Composers
 { 
     public partial class NamespaceComposer
     {
-        public NamespaceComposer AddController(string resourcePath, string resourceName, string controllerName)
+
+        public NamespaceComposer AddController(string resourceName, string resourcePath)
         {
-            CompositionGuard.ImmediateOrParentOfNodeIs(Visitor.CurrentNode, typeof(NamespaceDeclarationSyntax));
-
-            var fragment = $"[RoutePrefix(\"api/{resourcePath}\")] public class {controllerName}Controller: ApiController {{ private {resourceName}Context _context; public {controllerName}Controller({resourceName}Context context){{_context = context;}}[Route(\"\")] public IEnumerable<{resourceName}> GetAll(){{return _context.getAll();}}}}";
-
+            CompositionGuard.NodeOrParentIs(Visitor.CurrentNode, typeof(NamespaceDeclarationSyntax));
+            var fragment = $@"[RoutePrefix(""api/{resourcePath}"")] public class {resourceName}Controller: ApiController {{ private {resourceName}Context _context; public {resourceName}Controller({resourceName}Context context){{_context = context;}}[Route("""")] public IEnumerable<{resourceName}> GetAll(){{return _context.getAll();}}}}".Replace('\r', ' ').Replace('\n', ' ');
             var member = SyntaxFactory.ParseMemberDeclaration(fragment);
             if (member!.ContainsDiagnostics)
             {
@@ -29,12 +28,9 @@ namespace RoseLib.Composers
             var referenceNode = TryGetReferenceAndPopToPivot();
             var newEnclosingNode = AddMemberToCurrentNode(member!, referenceNode);
             Visitor.ReplaceNodeAndAdjustState(Visitor.CurrentNode!, newEnclosingNode);
-
-
-            var navigator = BaseNavigator.CreateTempNavigator<NamespaceNavigator>(Visitor); 
+            var navigator = BaseNavigator.CreateTempNavigator<NamespaceNavigator>(Visitor);
             var name = RoslynHelper.GetMemberName(member);
             navigator.SelectClassDeclaration(name);
-
             return this;
         }
     }
