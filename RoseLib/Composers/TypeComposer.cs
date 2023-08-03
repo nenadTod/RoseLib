@@ -44,8 +44,12 @@ namespace RoseLib.Composers
 
             TypeSyntax returnType = SyntaxFactory.ParseTypeName(props.ReturnType);
             var method = SyntaxFactory.MethodDeclaration(returnType, props.MethodName)
-                .WithModifiers(props.ModifiersToTokenList())
-                .AddAttributeLists(attributeList);
+                .WithModifiers(props.ModifiersToTokenList());
+
+            if (props.Attributes != null &&  props.Attributes.Count > 0)
+            {
+                method = method.AddAttributeLists(attributeList);
+            }
 
             var @params = SyntaxFactory.ParameterList();
             foreach (var param in props.Params)

@@ -69,6 +69,37 @@ namespace RoseLib.Composers
             return new ClassComposer(Visitor);
         }
 
+        public NamespaceComposer AddStruct(StructProps options)
+        {
+            CompositionGuard.NodeOrParentIs(Visitor.CurrentNode, typeof(NamespaceDeclarationSyntax));
+
+            var template = new EmptyStructTemplate() { Properties = options };
+            var code = template.TransformText();
+            var cu = SyntaxFactory.ParseCompilationUnit(code).NormalizeWhitespace();
+            var newStruct = cu.DescendantNodes().OfType<StructDeclarationSyntax>().First();
+
+
+            var referenceNode = TryGetReferenceAndPopToPivot();
+            var newEnclosingNode = AddMemberToCurrentNode(newStruct, referenceNode);
+            Visitor.ReplaceNodeAndAdjustState(Visitor.CurrentNode!, newEnclosingNode);
+
+            BaseNavigator.CreateTempNavigator<NamespaceNavigator>(Visitor)
+                .SelectStructDeclaration(options.StructName);
+
+            return this;
+        }
+
+        public StructComposer EnterStruct()
+        {
+            var @struct = Visitor.State.Peek().CurrentNode as StructDeclarationSyntax;
+            if (@struct == null)
+            {
+                throw new InvalidActionForStateException("Entering structs only possible when positioned on a struct declaration syntax instance.");
+            }
+
+            return new StructComposer(Visitor);
+        }
+
         public NamespaceComposer AddInterface(InterfaceProps properties)
         {
             CompositionGuard.NodeOrParentIs(Visitor.CurrentNode, typeof(NamespaceDeclarationSyntax));

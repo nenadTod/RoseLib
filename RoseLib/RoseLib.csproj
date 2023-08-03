@@ -19,6 +19,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Templates\EmptyStructTemplate.cs">
+      <DependentUpon>EmptyStructTemplate.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Update="Templates\EmptyClassTemplate.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -47,6 +52,10 @@
     </None>
     <None Update="CSPath\cspath_to_model.py">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Templates\EmptyStructTemplate.tt">
+      <LastGenOutput>EmptyStructTemplate.cs</LastGenOutput>
+      <Generator>TextTemplatingFilePreprocessor</Generator>
     </None>
     <None Update="Templates\EmptyClassTemplate.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>

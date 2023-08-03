@@ -104,6 +104,10 @@ namespace RoseLib.Traversal.Navigators
             {
                 return (new ClassComposer(this, pivotOnParent) as T)!;
             }
+            if (typeof(T).Equals(typeof(StructComposer)) && StructComposer.CanProcessCurrentSelection(this, pivotOnParent))
+            {
+                return (new StructComposer(this, pivotOnParent) as T)!;
+            }
             if (typeof(T).Equals(typeof(InterfaceComposer)) && InterfaceComposer.CanProcessCurrentSelection(this, pivotOnParent))
             {
                 return (new InterfaceComposer(this, pivotOnParent) as T)!;
