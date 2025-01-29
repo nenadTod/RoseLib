@@ -7,8 +7,13 @@
 
 ## Architecture Overview
 
-Here, I present two groups of classes: selectors and composers. Selectors allow easy selection of Roslyn syntax tree nodes. Composers facilitate changing of selected nodes. 
+Here, I present two groups of classes: navigators and composers. Navigators allow easy selection of Roslyn syntax tree nodes. Composers facilitate changing of selected nodes. 
 
 Both groups have API built with Fluent Interface style in mind. Simplified Class diagrams for both groups are shown beneath.
 
-![Simplified class diagram showing selectors.](https://github.com/nenadTod/RoseLib/blob/master/09%20traversal%20CD.png)
+### Navigators Class Diagram
+![Simplified class diagram showing navigators.](https://github.com/nenadTod/RoseLib/blob/master/09%20traversal%20CD.png)
+
+### Composers Class Diagram
+
+![Simplified class diagram showing composers.](https://github.com/nenadTod/RoseLib/blob/master/10%20composing%20CD.png)
