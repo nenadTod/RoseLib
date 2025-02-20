@@ -28,5 +28,21 @@ namespace RoseLib.Composers
             blockNavigator.SelectLastStatementDeclaration();
             return this;
         }
+
+        public BlockComposer AddSaveWithConcurrencyHandling(string findOneExpression)
+        {
+            CompositionGuard.NodeIs(Visitor.CurrentNode, typeof(BlockSyntax));
+            string fragment = $"try {{ db.SaveChanges(); unitOfWork.Complete(); }} catch(DbUpdateConcurrencyException) {{ if({findOneExpression}) {{ return NotFound(); }} else {{ throw; }} }}".Replace('\r', ' ').Replace('\n', ' ').Replace("\u200B", "");
+            var block = Visitor.CurrentNode as BlockSyntax;
+            var currentStatements = block!.Statements;
+            var newStatements = CreateStatementList(new string[] { fragment });
+            var allStatements = currentStatements.AddRange(newStatements);
+            var updatedBlock = block.WithStatements(allStatements);
+            Visitor.ReplaceNodeAndAdjustState(Visitor.CurrentNode!, updatedBlock);
+            var blockNavigator = BaseNavigator.CreateTempNavigator<BlockNavigator>(Visitor);
+            blockNavigator.SelectLastStatementDeclaration();
+            return this;
+        }
+
     }
 }

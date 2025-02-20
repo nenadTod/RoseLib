@@ -33,6 +33,26 @@ namespace RoseLib.Composers
             CompilationUnitNavigator.CreateTempNavigator(Visitor).SelectNamespace(memberName!);
             return this;
         }
+
+
+        public CompilationUnitComposer AddMigrationBasis(string migrationName)
+        {
+            CompositionGuard.NodeOrParentIs(Visitor.CurrentNode, typeof(CompilationUnitSyntax));
+            Visitor.PopUntil(typeof(CompilationUnitSyntax));
+            var compilationUnit = (Visitor.CurrentNode as CompilationUnitSyntax)!;
+            var fragment = $"namespace RentApp.Migrations {{ public partial class {migrationName} : DbMigration {{ public override void Up() {{ }} public override void Down() {{ }} }} }}".Replace('\r', ' ').Replace('\n', ' ').Replace("\u200B", "");
+            var parsedCU = SyntaxFactory.ParseSyntaxTree(fragment).GetRoot();
+            if (parsedCU!.ContainsDiagnostics)
+            {
+                throw new Exception("Idiom filled with provided parameters not rendered as syntactically valid.");
+            }
+
+            var @namespace = BaseNavigator.CreateTempNavigator<CompilationUnitNavigator>(parsedCU).SelectNamespace().AsVisitor.CurrentNode as NamespaceDeclarationSyntax;
+            CompilationUnitSyntax newCompilationUnit = compilationUnit.AddMembers(@namespace!);
+            Visitor.SetHead(newCompilationUnit);
+            var memberName = RoslynHelper.GetMemberName(@namespace!);
+            CompilationUnitNavigator.CreateTempNavigator(Visitor).SelectNamespace(memberName!);
+            return this;
+        }
     }
 }
-namespace Tests.Composition { internal class Class2 { } }

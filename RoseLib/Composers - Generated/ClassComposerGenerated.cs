@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using RoseLib.Traversal;
 using RoseLib.CSPath;
 using System.Runtime.InteropServices;
+using static IronPython.Modules._ast;
 
 namespace RoseLib.Composers
 {
@@ -37,6 +38,44 @@ namespace RoseLib.Composers
             var memberName = RoslynHelper.GetMemberName(member);
             navigator.SelectMethodDeclaration(memberName); 
 
+            return this;
+        }
+
+        public ClassComposer AddDBSet(string type, string setName)
+        {
+            CompositionGuard.NodeOrParentIs(Visitor.CurrentNode, typeof(ClassDeclarationSyntax));
+            var fragment = $"public DbSet<{type}> {setName} {{ get; set; }}".Replace('\r', ' ').Replace('\n', ' ').Replace("\u200B", "");
+            var member = SyntaxFactory.ParseMemberDeclaration(fragment);
+            if (member!.ContainsDiagnostics)
+            {
+                throw new Exception("Idiom filled with provided parameters not rendered as syntactically valid.");
+            }
+
+            var referenceNode = TryGetReferenceAndPopToPivot();
+            var newEnclosingNode = AddMemberToCurrentNode(member!, referenceNode);
+            Visitor.ReplaceNodeAndAdjustState(Visitor.CurrentNode!, newEnclosingNode);
+            var navigator = BaseNavigator.CreateTempNavigator<CSRTypeNavigator>(Visitor);
+            var memberName = RoslynHelper.GetMemberName(member);
+            navigator.SelectPropertyDeclaration(memberName);
+            return this;
+        }
+
+        public ClassComposer AddPutMethod(string methodName, string methodParameter)
+        {
+            CompositionGuard.NodeOrParentIs(Visitor.CurrentNode, typeof(ClassDeclarationSyntax));
+            var fragment = $"[ResponseType(typeof(void))] public IHttpActionResult {methodName}(int id, {methodParameter}) {{ if(!ModelState.IsValid) {{ return BadRequest(ModelState); }} }}".Replace('\r', ' ').Replace('\n', ' ').Replace("\u200B", "");
+            var member = SyntaxFactory.ParseMemberDeclaration(fragment);
+            if (member!.ContainsDiagnostics)
+            {
+                throw new Exception("Idiom filled with provided parameters not rendered as syntactically valid.");
+            }
+
+            var referenceNode = TryGetReferenceAndPopToPivot();
+            var newEnclosingNode = AddMemberToCurrentNode(member!, referenceNode);
+            Visitor.ReplaceNodeAndAdjustState(Visitor.CurrentNode!, newEnclosingNode);
+            var navigator = BaseNavigator.CreateTempNavigator<CSRTypeNavigator>(Visitor);
+            var memberName = RoslynHelper.GetMemberName(member);
+            navigator.SelectMethodDeclaration(memberName);
             return this;
         }
     }
