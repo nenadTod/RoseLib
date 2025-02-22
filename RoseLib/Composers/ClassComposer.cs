@@ -68,7 +68,75 @@ namespace RoseLib.Composers
 
             return this;
         }
+
+        public ClassComposer AddConstructor(ConstructorProps options)
+        {
+            var constructor = SyntaxFactory.ConstructorDeclaration(
+                SyntaxFactory.Identifier(options.ClassName)
+            );
+
+            constructor = constructor.WithModifiers(options.ModifiersToTokenList());
+
+            var @params = SyntaxFactory.ParameterList();
+            foreach (var param in options.Params)
+            {
+                var type = SyntaxFactory.IdentifierName(param.Type);
+                var name = SyntaxFactory.Identifier(param.Name);
+                var paramSyntax = SyntaxFactory
+                    .Parameter(new SyntaxList<AttributeListSyntax>(), SyntaxFactory.TokenList(), type, name, null);
+                @params = @params.AddParameters(paramSyntax);
+            }
+            @params = @params.NormalizeWhitespace();
+            constructor = constructor.WithParameterList(@params);
+            
+            if(options.BaseArguments.Count > 0)
+            {
+                var @arguments = SyntaxFactory.ArgumentList();
+                foreach(var baseArgument in options.BaseArguments)
+                {
+                    var @argument = SyntaxFactory.Argument(SyntaxFactory.IdentifierName(baseArgument));
+                    @arguments = arguments.AddArguments(argument);
+                }
+
+                @arguments.NormalizeWhitespace();
+                constructor = constructor.WithInitializer(
+                    SyntaxFactory.ConstructorInitializer
+                    (
+                        SyntaxKind.BaseConstructorInitializer,
+                        @arguments
+                    )
+                );
+            }
+
+            constructor = constructor.WithBody(SyntaxFactory.Block());
+
+            var referenceNode = TryGetReferenceAndPopToPivot();
+            var newEnclosingNode = AddMemberToCurrentNode(constructor, referenceNode);
+            Visitor.ReplaceNodeAndAdjustState(Visitor.CurrentNode!, newEnclosingNode);
+
+            var navigator = BaseNavigator.CreateTempNavigator<CSRTypeNavigator>(Visitor);
+            navigator.SelectConstructorDeclaration(options.Params.Select(p => p.Type).ToArray()); 
+
+            return this;
+        }
         #endregion
+
+
+        public ConstructorComposer EnterConstructor()
+        {
+            CompositionGuard.NodeIs(Visitor.CurrentNode, typeof(ConstructorDeclarationSyntax));
+
+            var constructor = Visitor.State.Peek().CurrentNode as ConstructorDeclarationSyntax;
+            if (constructor == null)
+            {
+                throw new InvalidActionForStateException("Entering body possible when positioned on a method declaration syntax instance.");
+            }
+
+            Visitor.NextStep(new SelectedObject(constructor));
+
+            return new ConstructorComposer(Visitor);
+        }
+
 
         #region Class change methods
         public ClassComposer Rename(string newName)

@@ -56,5 +56,46 @@ namespace Tests.Composition
 
             }
         }
+
+        [Test]
+        public void AddPropertyWithGet()
+        {
+            var existingPropertyName = "Prop1";
+
+            var newPropertyType = "bool";
+            Regex testRegexType = new Regex($"{newPropertyType}");
+
+            var newPropertyName = "Prop2";
+            Regex testRegexName = new Regex($"{newPropertyName}");
+
+            var newPropertyGetStatement = "throw new Exception(\"Not Implemented\");";
+            Regex testStatement = new Regex($"throw new Exception");
+
+            using (StreamReader reader = new StreamReader(".\\TestFiles\\Class1.cs"))
+            {
+                CompilationUnitNavigator navigator = new CompilationUnitNavigator(reader);
+
+                var code = navigator
+                    .SelectPropertyDeclaration(existingPropertyName)
+                    .StartComposing<ClassComposer>()
+                    .AddProperty(new PropertyProps()
+                    {
+                        PropertyName = newPropertyName,
+                        PropertyType = newPropertyType,
+                        AccessModifier = RoseLib.Enums.AccessModifiers.PUBLIC,
+                        PropertyWith = PropertyWith.Get,
+                        InitializeEmptyAccessorBodies = true
+                    }
+                    )
+                    .EnterProperty()
+                    .EnterGetBody()
+                    .InsertStatements(newPropertyGetStatement)
+                    .GetCode();
+
+                Assert.IsTrue(testRegexType.IsMatch(code));
+                Assert.IsTrue(testRegexName.IsMatch(code));
+                Assert.IsTrue(testStatement.IsMatch(code));
+            }
+        }
     }
 }

@@ -124,6 +124,10 @@ namespace RoseLib.Traversal.Navigators
             {
                 return (new FieldComposer(this, pivotOnParent) as T)!;
             }
+            if (typeof(T).Equals(typeof(ConstructorComposer)) && ConstructorComposer.CanProcessCurrentSelection(this, pivotOnParent))
+            {
+                return (new ConstructorComposer(this, pivotOnParent) as T)!;
+            }
 
             throw new InvalidActionForStateException("The provided composer type cannot process the state.");
         }

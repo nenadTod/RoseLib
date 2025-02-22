@@ -78,6 +78,53 @@ namespace Tests.Composition
         }
 
         [Test]
+        public void ClassWithAConstructor()
+        {
+            var newClass = "TestClass";
+            Regex testRegexC = new Regex(newClass);
+
+            CompilationUnitComposer composer = new CompilationUnitComposer();
+            composer
+                .AddUsingDirectives(
+                    "System",
+                    "System.Collections.Generic",
+                    "System.Linq",
+                    "System.Text",
+                    "System.Threading.Tasks"
+                )
+                .AddNamespace("Test")
+                .EnterNamespace()
+                .AddClass(new RoseLib.Model.ClassProps
+                {
+                    ClassName = newClass
+                })
+                .EnterClass()
+                .AddConstructor(
+                    new RoseLib.Model.ConstructorProps()
+                    {
+                        ClassName = newClass,
+                        AccessModifier = RoseLib.Enums.AccessModifiers.PUBLIC,
+                        Params = new List<RoseLib.Model.ParamProps>()
+                        {
+                            new RoseLib.Model.ParamProps()
+                            {
+                                Name = "test",
+                                Type = "int"
+                            }
+                        },
+                        BaseArguments = new List<string>() { "test" }
+                    }
+                )
+                .EnterConstructor()
+                .EnterBody()
+                .InsertStatements("throw new Exception(\"test\");");
+
+            var code = composer.GetCode();
+            Assert.Pass();
+        }
+
+
+        [Test]
         public void PublicClassWithAttributesAndBaseList()
         {
             var newNamespace = "RoseLib.Tests";

@@ -37,5 +37,24 @@ namespace RoseLib.Composers
             navigator.SelectMethodDeclaration(name);
             return this;
         }
+
+        public InterfaceComposer AddIRepositoryGetAllMethod()
+        {
+            CompositionGuard.NodeOrParentIs(Visitor.CurrentNode, typeof(InterfaceDeclarationSyntax));
+            var fragment = $"IEnumerable<VehicleType> GetAll(int pageIndex, int pageSize);".Replace('\r', ' ').Replace('\n', ' ').Replace("\u200B", "");
+            var member = SyntaxFactory.ParseMemberDeclaration(fragment);
+            if (member!.ContainsDiagnostics)
+            {
+                throw new Exception("Idiom filled with provided parameters not rendered as syntactically valid.");
+            }
+
+            var referenceNode = TryGetReferenceAndPopToPivot();
+            var newEnclosingNode = AddMemberToCurrentNode(member!, referenceNode);
+            Visitor.ReplaceNodeAndAdjustState(Visitor.CurrentNode!, newEnclosingNode);
+            var navigator = BaseNavigator.CreateTempNavigator<CSRTypeNavigator>(Visitor);
+            var memberName = RoslynHelper.GetMemberName(member);
+            navigator.SelectMethodDeclaration(memberName);
+            return this;
+        }
     }
 }

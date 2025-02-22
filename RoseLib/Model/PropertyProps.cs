@@ -10,5 +10,14 @@ namespace RoseLib.Model
     {
         public string PropertyName { get; set; } = "";
         public string PropertyType { get; set; } = "";
+        public PropertyWith PropertyWith { get; set; } = PropertyWith.GetAndSet;
+        public bool InitializeEmptyAccessorBodies { get; set; }
+    }
+
+    public enum PropertyWith
+    {
+        GetAndSet,
+        Set,
+        Get
     }
 }

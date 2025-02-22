@@ -169,5 +169,69 @@ namespace RoseLib.Composers
         }
 
         #endregion
+
+        #region Child navigation
+
+        public BlockComposer EnterGetBody()
+        {
+            CompositionGuard.NodeIs(Visitor.CurrentNode, typeof(PropertyDeclarationSyntax));
+
+            var property = Visitor.State.Peek().CurrentNode as PropertyDeclarationSyntax;
+            if (property == null)
+            {
+                throw new InvalidActionForStateException("Entering body possible when positioned on a method declaration syntax instance.");
+            }
+
+            var getAccessor = property
+                .DescendantNodes()
+                .Where(node => node.Kind() == SyntaxKind.GetAccessorDeclaration)
+                .FirstOrDefault() as AccessorDeclarationSyntax;
+
+            if (getAccessor == null)
+            {
+                throw new InvalidOperationException("Cannot enter the get accessor.");
+            }
+
+            if (getAccessor.Body == null)
+            {
+                throw new InvalidOperationException("Cannot enter a body of a bodyless get accessor.");
+            }
+
+            Visitor.NextStep(new SelectedObject(getAccessor.Body));
+
+            return new BlockComposer(Visitor);
+        }
+
+        public BlockComposer EnterSetBody()
+        {
+            CompositionGuard.NodeIs(Visitor.CurrentNode, typeof(PropertyDeclarationSyntax));
+
+            var property = Visitor.State.Peek().CurrentNode as PropertyDeclarationSyntax;
+            if (property == null)
+            {
+                throw new InvalidActionForStateException("Entering body possible when positioned on a method declaration syntax instance.");
+            }
+
+            var setAccessor = property
+                .DescendantNodes()
+                .Where(node => node.Kind() == SyntaxKind.SetAccessorDeclaration)
+                .FirstOrDefault() as AccessorDeclarationSyntax;
+
+            if (setAccessor == null)
+            {
+                throw new InvalidOperationException("Cannot enter the get accessor.");
+            }
+
+            if (setAccessor.Body == null)
+            {
+                throw new InvalidOperationException("Cannot enter a body of a bodyless set accessor.");
+            }
+
+            Visitor.NextStep(new SelectedObject(setAccessor.Body));
+
+            return new BlockComposer(Visitor);
+        }
+
+        #endregion
     }
 }

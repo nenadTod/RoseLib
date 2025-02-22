@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="TestFiles\CaseStudy\IUnitOfWork.cs" />
+    <Compile Remove="TestFiles\CaseStudy\RADBContext.cs" />
+    <Compile Remove="TestFiles\CaseStudy\RADBUnitOfWork.cs" />
+    <Compile Remove="TestFiles\CaseStudy\Vehicle.cs" />
     <Compile Remove="TestFiles\Class1.cs" />
     <Compile Remove="TestFiles\Enum1.cs" />
     <Compile Remove="TestFiles\FieldCompositionTests.cs" />
@@ -17,6 +21,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="TestFiles\CaseStudy\IUnitOfWork.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestFiles\CaseStudy\RADBContext.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestFiles\CaseStudy\RADBUnitOfWork.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="TestFiles\Struct1.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -45,6 +58,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RoseLib\RoseLib.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="TestFiles\CaseStudy\Vehicle.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

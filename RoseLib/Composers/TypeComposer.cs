@@ -96,14 +96,44 @@ namespace RoseLib.Composers
                 .PropertyDeclaration(SyntaxFactory.ParseTypeName(options.PropertyType), options.PropertyName)
                 .WithModifiers(options.ModifiersToTokenList());
 
-            @property = @property.AddAccessorListAccessors(
-                SyntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
-                    .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken)
-                    ));
-            @property = @property.AddAccessorListAccessors(
+            if(options.PropertyWith == PropertyWith.GetAndSet || options.PropertyWith == PropertyWith.Get)
+            {
+                if (!options.InitializeEmptyAccessorBodies)
+                {
+                    @property = @property
+                        .AddAccessorListAccessors(
+                            SyntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
+                                .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken)));
+                }
+                else
+                {
+                    @property = @property
+                        .AddAccessorListAccessors(
+                            SyntaxFactory
+                            .AccessorDeclaration(SyntaxKind.GetAccessorDeclaration).
+                            WithBody(SyntaxFactory.Block())
+                         );
+                }
+                
+            }
+            if (options.PropertyWith == PropertyWith.GetAndSet || options.PropertyWith == PropertyWith.Set)
+            {
+                if (!options.InitializeEmptyAccessorBodies)
+                {
+                    @property = @property.AddAccessorListAccessors(
                 SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
                 .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken)
                 ));
+                }
+                else
+                {
+                    @property = @property.AddAccessorListAccessors(
+                    SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
+                    .WithBody(SyntaxFactory.Block()));
+                }
+            }
+
+                
 
             var referenceNode = TryGetReferenceAndPopToPivot();
             var newEnclosingNode = AddMemberToCurrentNode(@property, referenceNode);
