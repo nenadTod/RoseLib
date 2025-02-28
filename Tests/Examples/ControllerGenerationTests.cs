@@ -58,34 +58,35 @@ namespace Tests.CaseStudy
                 .AddNamespace("RentApp.Controllers")
                 .EnterNamespace()
                 .AddClass(new RoseLib.Model.ClassProps()
-                    {
-                        AccessModifier = RoseLib.Enums.AccessModifiers.PUBLIC,
-                        ClassName = "VehicleTypeController",
-                        BaseTypes = new List<string>() { "ApiController" }
-                    }
+                {
+                    AccessModifier = RoseLib.Enums.AccessModifiers.PUBLIC,
+                    ClassName = "VehicleTypeController",
+                    BaseTypes = new List<string>() { "ApiController" }
+                }
                 )
                 .EnterClass()
                 .AddField(new RoseLib.Model.FieldProps()
-                    {
-                        AccessModifier = RoseLib.Enums.AccessModifiers.PRIVATE,
-                        FieldType = "IUnitOfWork",
-                        FieldName = "db"
-                    }
+                {
+                    AccessModifier = RoseLib.Enums.AccessModifiers.PRIVATE,
+                    FieldType = "IUnitOfWork",
+                    FieldName = "db"
+                }
                 )
-                //.AddConstructor(new RoseLib.Model.ConstructorProps()
-                //  {
-                //      AccessModifier = RoseLib.Enums.AccessModifiers.PUBLIC,
-                //      Params = { 
-                    //    new RoseLib.Model.ParamProps()
-                    //    {
-                    //        Name = "context",
-                    //        Type = "IUnitOfWork"
-                    //    }
-                    //  }
-                //)
-                //.EnterConstructor()
-                //.EnterBody()
-                //.InsertStatements("db = context;")
+                .AddConstructor(new RoseLib.Model.ConstructorProps()
+                  {
+                      AccessModifier = RoseLib.Enums.AccessModifiers.PUBLIC,
+                      Params = {
+                        new RoseLib.Model.ParamProps()
+                        {
+                            Name = "context",
+                            Type = "IUnitOfWork"
+                        }
+                    }
+                  }
+                )
+                .EnterConstructor()
+                .EnterBody()
+                .InsertStatements("db = context;")
                 .GetCode();
 
             using (StreamWriter writer = new StreamWriter(".\\TestFiles\\CaseStudy\\VehicleTypeController.cs"))

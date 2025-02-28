@@ -53,7 +53,6 @@ namespace Tests.CaseStudy
         }
 
 
-        // PTODO: Potencijalno poboljsanje - id + tip :) Ako zatreba.
         [Test]
         public void AddReferenceToModelClass()
         {
@@ -81,7 +80,6 @@ namespace Tests.CaseStudy
                 writer.Write(code);
             }
         }
-
 
         [Test]
         public void AddModelClassBasic()

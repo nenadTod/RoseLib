@@ -15,7 +15,6 @@ namespace Tests.CaseStudy
 {
     public class IdentityDbContextAdditionsTests
     {
-        // PTODO: Potencijalno poboljsanje - ceo fajl iz pocetka, ako ne postoji :) Ako zatreba.
         [Test]
         public void AddDBSet()
         {
@@ -49,12 +48,11 @@ namespace Tests.CaseStudy
                     .SelectLastPropertyDeclaration()
                     .StartComposing<ClassComposer>()
                     .AddProperty(new PropertyProps()
-                        {
-                            AccessModifier = RoseLib.Enums.AccessModifiers.PUBLIC,
-                            PropertyType = "DbSet<VehicleType>",
-                            PropertyName = "VehicleTypes"
-                        }
-                    )
+                    {
+                        AccessModifier = RoseLib.Enums.AccessModifiers.PUBLIC,
+                        PropertyType = "DbSet<VehicleType>",
+                        PropertyName = "VehicleTypes"
+                    })
                     .GetCode();
             }
 

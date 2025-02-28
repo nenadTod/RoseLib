@@ -40,7 +40,6 @@ namespace Tests.CaseStudy
         }
 
 
-
         [Test]
         public void AddIRepositoryBasisBasic()
         {

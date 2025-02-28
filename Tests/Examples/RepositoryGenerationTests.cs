@@ -1,4 +1,5 @@
 ﻿using RoseLib.Composers;
+using RoseLib.Model;
 using RoseLib.Traversal;
 using RoseLib.Traversal.Navigators;
 using System;
@@ -51,7 +52,7 @@ namespace Tests.CaseStudy
                 )
                 .AddNamespace("RentApp.Persistance.Repository")
                 .EnterNamespace()
-                .AddClass(new RoseLib.Model.ClassProps()
+                .AddClass(new ClassProps()
                     {
                         AccessModifier = RoseLib.Enums.AccessModifiers.PUBLIC,
                         ClassName = "VehicleTypeRepository",
@@ -63,55 +64,55 @@ namespace Tests.CaseStudy
                     }
                 )
                 .EnterClass()
-                .AddProperty(new RoseLib.Model.PropertyProps()
+                .AddProperty(new PropertyProps()
                     {
                         AccessModifier = RoseLib.Enums.AccessModifiers.PROTECTED,
                         PropertyType = "RADBContext",
                         PropertyName = "RADBContext",
+                        PropertyWith = PropertyWith.Get,
+                        InitializeEmptyAccessorBodies = true
                     }
                 )
-                //.EnterProperty()
-                //.EnterGetBody()
-                //.InsertStatements("return context as RADBContext;")
-                //.StartNavigating()
-                //.SelectProperty("RADBContext")
-                //.StartComposing<ClassComposer>()
-                //.AddConstructor(new RoseLib.Model.ConstructorProps()
-                //  {
-                //      AccessModifier = RoseLib.Enums.AccessModifiers.PUBLIC,
-                //      Params = { 
-                        //    new RoseLib.Model.ParamProps()
-                        //    {
-                        //        Name = "pageIndex",
-                        //        Type = "int"
-                        //    },
-                        //    new RoseLib.Model.ParamProps()
-                        //    {
-                        //        Name = "pageSize",
-                        //        Type = "int"
-                        //    }
-                        //},
-                //      BaseParams = {  
-                //            new RoseLib.Model.ParamProps()
-                        //    {
-                        //        Name = "pageSize",
-                        //    }
-                //      }
-                //  }
-                //)
-                .AddMethod(new RoseLib.Model.MethodProps()
+                .EnterProperty()
+                .EnterGetBody()
+                .InsertStatements("return context as RADBContext;")
+                .StartNavigating()
+                .SelectPropertyDeclaration("RADBContext")
+                .StartComposing<ClassComposer>()
+                .AddConstructor(new ConstructorProps()
+                {
+                    AccessModifier = RoseLib.Enums.AccessModifiers.PUBLIC,
+                    Params = new List<ParamProps>()
+                    {
+                        new ParamProps()
+                            {
+                                Name = "pageIndex",
+                                Type = "int"
+                            },
+                            new ParamProps()
+                            {
+                                Name = "pageSize",
+                                Type = "int"
+                            }
+                    },
+                    BaseArguments = new List<string>()
+                    {
+                        "pageSize"
+                    }
+                })
+                .AddMethod(new MethodProps()
                     {
                         AccessModifier = RoseLib.Enums.AccessModifiers.PUBLIC,
                         ReturnType = "IEnumerable<BranchOffice>",
                         MethodName = "GetAll",
-                        Params = new List<RoseLib.Model.ParamProps>()
+                        Params = new List<ParamProps>()
                         {
-                            new RoseLib.Model.ParamProps()
+                            new ParamProps()
                             {
                                 Type = "int",
                                 Name = "pageIndex"
                             },
-                            new RoseLib.Model.ParamProps()
+                            new ParamProps()
                             {
                                 Type = "int",
                                 Name = "pageSize"

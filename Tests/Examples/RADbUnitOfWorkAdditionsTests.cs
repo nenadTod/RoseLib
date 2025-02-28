@@ -15,7 +15,6 @@ namespace Tests.CaseStudy
 {
     public class RADbUnitOfWorkAdditionsTests
     {
-        // PTODO: Potencijalno poboljsanje - ceo fajl iz pocetka, ako ne postoji :) Ako zatreba.
         [Test]
         public void AddIRepository()
         {
